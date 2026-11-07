@@ -14,7 +14,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden;background:#000;color:#eee;font-family:'Share Tech Mono',monospace}
 body{height:100dvh}
-.pano{position:fixed;inset:0;background:url(../assets/img/klub.webp) 0 50%/auto 100% repeat-x;animation:pan 60s ease-in-out infinite alternate;filter:contrast(1.05)}
+.pano{position:fixed;inset:0;background:#3a3a3e url(../assets/img/klub.webp) 0 50%/auto 100% repeat-x;animation:pan 60s ease-in-out infinite alternate;filter:grayscale(1) brightness(.45) contrast(.9)}
 @keyframes pan{to{background-position:100% 50%}}
 @media (min-aspect-ratio:247/100){.pano{background-size:100% auto;background-position:50% 50%;animation:zoom 30s ease-in-out infinite alternate}@keyframes zoom{to{transform:scale(1.08)}}}
 .vig{position:fixed;inset:0;background:radial-gradient(ellipse at 50% 50%,transparent 40%,rgba(0,0,0,.75) 100%),repeating-linear-gradient(180deg,rgba(255,255,255,.025) 0 1px,transparent 1px 3px);pointer-events:none}
@@ -24,11 +24,20 @@ body{height:100dvh}
 .back{height:36px;padding:0 14px;border-radius:999px;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);font-size:11px;letter-spacing:.24em;transition:border-color .25s}
 .back:hover{border-color:#fff}
 @media (prefers-reduced-motion:reduce){.pano{animation:none}}
+.apps{position:fixed;left:0;right:0;top:calc(72px + env(safe-area-inset-top,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 12px}
+@media (orientation:portrait){.apps{grid-template-columns:1fr;grid-template-rows:1fr 1fr}}
+.app{position:relative;border-radius:8px;overflow:hidden;background:#111;border:1px solid rgba(255,255,255,.18);box-shadow:0 20px 50px rgba(0,0,0,.6)}
+.app iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.app span{position:absolute;left:8px;top:8px;z-index:2;padding:5px 8px;border-radius:3px;background:rgba(0,0,0,.65);font-size:10px;letter-spacing:.22em;color:#ddd;pointer-events:none}
 </style>
 </head>
 <body>
 <div class="pano" role="img" aria-label="KLUB"></div>
 <div class="vig"></div>
+<main class="apps">
+  <div class="app"><span>POSTERS CINE</span><iframe src="https://msp-theater.netlify.app/" title="POSTERS CINE" allow="autoplay; fullscreen" allowfullscreen></iframe></div>
+  <div class="app"><span>POSTERS KLUB</span><iframe src="https://msp-klub.netlify.app/" title="POSTERS KLUB" allow="autoplay; fullscreen" allowfullscreen></iframe></div>
+</main>
 <header class="top">
   <a href="../"><img src="../assets/logos/mediaservi-badge.svg" alt="mediaservi.com"></a>
   <a class="back" href="../#conecta" id="back">← VOLVER</a>
