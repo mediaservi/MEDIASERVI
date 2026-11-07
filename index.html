@@ -27,6 +27,10 @@ a{color:inherit;text-decoration:none}
 canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 #wipe{position:fixed;inset:0;width:100%;height:100%;z-index:40;pointer-events:none}
 .scan{position:fixed;inset:0;z-index:30;pointer-events:none;background:repeating-linear-gradient(180deg,rgba(255,255,255,.018) 0 1px,transparent 1px 3px);mix-blend-mode:overlay}
+.bgvid{position:fixed;inset:0;z-index:1;overflow:hidden;pointer-events:none;opacity:0;transition:opacity 1.4s ease;mix-blend-mode:screen;
+  -webkit-mask:radial-gradient(ellipse at 50% 50%,#000 35%,transparent 85%);mask:radial-gradient(ellipse at 50% 50%,#000 35%,transparent 85%)}
+.bgvid.on{opacity:.5}
+.bgvid iframe{position:absolute;left:50%;top:50%;width:100vw;height:56.25vw;min-width:177.78vh;min-height:100vh;border:0;transform:translate(-50%,-50%) scale(1.35)}
 .vign{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,transparent 45%,rgba(0,0,0,.6) 100%)}
 
 /* ============ HUD ============ */
@@ -90,20 +94,6 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 @keyframes float{50%{transform:translateY(-8px)}}
 .mevi .holo{position:absolute;left:6%;right:6%;bottom:-6px;height:18px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,255,4,.55),transparent);filter:blur(4px)}
 .home .txt{display:flex;flex-direction:column;align-items:center;gap:clamp(14px,2.4vh,22px)}
-.hi{font:900 clamp(40px,7.4vw,104px)/.95 Inter,sans-serif;letter-spacing:.02em;text-align:center;text-transform:uppercase}
-.hi .s{display:block;background:var(--steel);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 8px 22px rgba(0,0,0,.8))}
-.hi .g{display:block;background:linear-gradient(90deg,var(--green),var(--blue) 50%,var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 16px rgba(0,180,255,.45))}
-.tv{position:relative;width:clamp(260px,34vw,520px);aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#000;border:2px solid #2a2930;cursor:pointer;
-  box-shadow:0 0 0 1px rgba(255,255,255,.06),0 0 30px rgba(0,180,255,.18),0 30px 60px rgba(0,0,0,.7)}
-.tv img,.tv iframe{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border:0}
-.tv::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.12),transparent 40%),repeating-linear-gradient(180deg,rgba(0,0,0,.18) 0 1px,transparent 1px 3px);pointer-events:none}
-.tv.playing::after{display:none}
-.tv .play{position:absolute;left:50%;top:50%;width:68px;height:68px;margin:-34px 0 0 -34px;border-radius:50%;z-index:2;display:flex;align-items:center;justify-content:center;
-  background:rgba(7,6,11,.6);border:2px solid var(--green);box-shadow:0 0 22px rgba(0,255,4,.45);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:transform .25s}
-.tv:hover .play{transform:scale(1.08)}
-.tv .play svg{width:26px;height:26px;margin-left:4px;fill:var(--green)}
-.tv .lab{position:absolute;left:10px;top:10px;z-index:2;font:600 10px/1 'Share Tech Mono',monospace;letter-spacing:.2em;color:#fff;padding:5px 8px;border-radius:3px;background:rgba(0,0,0,.6)}
-.tv .lab i{display:inline-block;width:6px;height:6px;border-radius:50%;background:#ff3040;margin-right:6px;box-shadow:0 0 8px #ff3040;animation:pulse 1.2s infinite}
 
 /* 02 · CONECTA */
 .grid{display:grid;gap:clamp(8px,1.2vw,14px)}
@@ -127,6 +117,11 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 .fav{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:16px;min-height:clamp(84px,13vh,128px);padding:14px 16px;border-radius:6px;overflow:hidden;
   background:rgba(14,13,18,.8);border:1px solid rgba(255,255,255,.07);box-shadow:0 2px 0 #000;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:border-color .3s,box-shadow .3s,transform .3s}
 .fav::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--green),var(--blue),var(--violet));opacity:.5;transition:opacity .3s}
+.fav .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1;opacity:0;filter:blur(3px) grayscale(.5) brightness(.75);transform:scale(1.08);transition:opacity .5s,filter .5s,transform .6s}
+.fav .ph.ok{opacity:.28}
+.fav:hover .ph.ok{opacity:.95;filter:none;transform:scale(1)}
+.fav{isolation:isolate}
+.fav::after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,rgba(7,6,11,.85),rgba(7,6,11,.15) 70%);pointer-events:none}
 .fav .n{font:900 clamp(10px,.9vw,11px)/1 'Doto',monospace;letter-spacing:.14em;color:var(--amber);text-shadow:0 0 6px rgba(255,176,0,.6)}
 .fav b{font:900 clamp(14px,1.6vw,19px)/1.1 Inter,sans-serif;letter-spacing:.02em;text-transform:uppercase}
 .fav small{font:600 10px/1 'Share Tech Mono',monospace;letter-spacing:.12em;color:#77748a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -182,7 +177,6 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   .fit{padding:8px 16px}
   .home{flex-direction:column;gap:14px}
   .mevi{width:min(46vw,200px)}
-  .tv{width:min(88vw,420px)}
   .g5{grid-template-columns:repeat(2,minmax(0,1fr));width:min(88vw,420px)}
   .tile{flex-direction:row;justify-content:flex-start;gap:10px;padding:12px}
   .tile .tx{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0}
@@ -195,6 +189,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   .tile small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
   .tile .tx{max-width:calc(100% - 40px)}
   .fav{min-height:62px;gap:8px;padding:10px 12px}
+  .fav .ph.ok{opacity:.45;filter:blur(1px) grayscale(.3) brightness(.8)}
 }
 @media (min-width:761px){.tile .tx{display:contents}}
 @media (max-height:520px) and (orientation:landscape){
@@ -206,6 +201,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 </head>
 <body>
 <canvas id="fx" aria-hidden="true"></canvas>
+<div class="bgvid" id="bgvid" aria-hidden="true"><iframe title="" tabindex="-1" allow="autoplay; encrypted-media" src="https://www.youtube-nocookie.com/embed/vKN4AcGz7zs?autoplay=1&mute=1&controls=0&loop=1&playlist=vKN4AcGz7zs&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&fs=0&playsinline=1&cc_load_policy=0"></iframe></div>
 <div class="vign"></div>
 
 <header class="top">
@@ -221,14 +217,6 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
     <div class="fit">
       <div class="home">
         <div class="mevi" data-in style="--i:0"><img src="assets/img/mevi.webp" alt="Hi I'm MEVI" width="938" height="1100"><span class="holo"></span></div>
-        <div class="txt">
-          <h1 class="hi" data-in style="--i:1"><span class="s">Hi, I'm</span><span class="g">MEVI</span></h1>
-          <div class="tv" id="tv" data-in style="--i:2" role="button" tabindex="0" aria-label="Reproducir vídeo">
-            <img src="https://i.ytimg.com/vi/vKN4AcGz7zs/hqdefault.jpg" alt="" loading="eager">
-            <span class="lab"><i></i>PLAY</span>
-            <span class="play"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
-          </div>
-        </div>
       </div>
     </div>
   </section>
@@ -312,16 +300,16 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
     { n: 'WhatsApp', h: 'wa.me/JosepTarroja', u: 'https://wa.me/JosepTarroja', i: 'siWhatsapp', c: '#00ff04' }
   ];
   const FAVS = [
-    ['Hard Rock', 'https://www.hardrock.com/'],
-    ['Universal Destinations & Experiences', 'https://www.universaldestinationsandexperiences.com/'],
-    ['Disney Connect', 'https://disneyconnect.com/'],
-    ['Royal Caribbean', 'https://www.royalcaribbean.com/esp/es/cruise-ships?'],
-    ['Puy du Fou', 'http://www.puydufou.com'],
-    ['Atlantis Bahamas', 'https://www.atlantisbahamas.com/'],
-    ['Xcaret', 'https://www.xcaret.com/es/'],
-    ['IAAPA', 'https://www.iaapa.org/es/'],
-    ['Tropical Islands', 'https://www.tropical-islands.de/en'],
-    ['Atlantis The Palm', 'https://www.atlantis.com/es/atlantis-the-palm']
+    ['Hard Rock', 'https://www.hardrock.com/', 'hardrock'],
+    ['Universal Destinations & Experiences', 'https://www.universaldestinationsandexperiences.com/', 'universal'],
+    ['Disney Connect', 'https://disneyconnect.com/', 'disney'],
+    ['Royal Caribbean', 'https://www.royalcaribbean.com/esp/es/cruise-ships?', 'royalcaribbean'],
+    ['Puy du Fou', 'http://www.puydufou.com', 'puydufou'],
+    ['Atlantis Bahamas', 'https://www.atlantisbahamas.com/', 'atlantisbahamas'],
+    ['Xcaret', 'https://www.xcaret.com/es/', 'xcaret'],
+    ['IAAPA', 'https://www.iaapa.org/es/', 'iaapa'],
+    ['Tropical Islands', 'https://www.tropical-islands.de/en', 'tropicalislands'],
+    ['Atlantis The Palm', 'https://www.atlantis.com/es/atlantis-the-palm', 'atlantisthepalm']
   ];
   const PROJS = [
     { n: 'VJSHOW', d: 'Visuales reactivos al audio para sesiones de VJ y salas inmersivas', u: 'https://mediaservi.github.io/VJSHOW/', img: 'assets/img/vjshow.webp', c: '#e100ff' },
@@ -333,8 +321,13 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   const ext = 'target="_blank" rel="noopener"';
   document.getElementById('social').innerHTML = SOCIAL.map((s, k) =>
     `<a class="tile" href="${s.u}" ${ext} data-in style="--i:${k + 2};--c:${s.c};--cg:${hexA(s.c, .3)}">${s.i === 'li' ? '<span class="li">in</span>' : svg(ICON[s.i])}<span class="tx"><b>${s.n}</b><small>${s.h}</small></span></a>`).join('');
-  document.getElementById('favs').innerHTML = FAVS.map(([n, u], k) =>
-    `<a class="fav" href="${u}" ${ext} data-in style="--i:${k + 2}"><span class="n">${String(k + 1).padStart(2, '0')} ♥</span><b>${n}</b><small>${u.replace(/^https?:\/\/(www\.)?/, '').replace(/\/.*$/, '')} ↗</small></a>`).join('');
+  document.getElementById('favs').innerHTML = FAVS.map(([n, u, f], k) =>
+    `<a class="fav" href="${u}" ${ext} data-in style="--i:${k + 2}"><img class="ph" data-f="${f}" alt="" loading="lazy"><span class="n">${String(k + 1).padStart(2, '0')} ♥</span><b>${n}</b><small>${u.replace(/^https?:\/\/(www\.)?/, '').replace(/\/.*$/, '')} ↗</small></a>`).join('');
+  // imagen de cada experiencia: assets/fav/<nombre>.jpg (también vale .png, .webp o .jpeg)
+  const EXTS = ['jpg', 'png', 'webp', 'jpeg'];
+  document.querySelectorAll('.fav .ph').forEach(im => { let e = 0;
+    im.onerror = () => { e++; if (e < EXTS.length) im.src = `assets/fav/${im.dataset.f}.${EXTS[e]}`; else im.remove(); };
+    im.onload = () => im.classList.add('ok'); im.src = `assets/fav/${im.dataset.f}.${EXTS[0]}`; });
   document.getElementById('projs').innerHTML = PROJS.map((p, k) =>
     `<a class="proj" href="${p.u}" ${ext} data-in style="--i:${k + 2};--c:${p.c};--cg:${hexA(p.c, .3)}"><span class="scr">${p.img ? `<img src="${p.img}" alt="">` : `<canvas data-fx="${p.fx}" width="320" height="180"></canvas>`}</span>
       <span class="bd"><span class="lcd">${p.n}</span><small>${p.d}</small><span class="go">ABRIR ↗</span></span></a>`).join('');
@@ -541,13 +534,13 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
     chb.forEach((b, j) => b.classList.toggle('on', j === k)); prog.style.width = ((k + 1) / slides.length * 100) + '%';
     history.replaceState(null, '', '#' + s.id);
     if (s.id === 'como-llegar') { const fr = s.querySelector('iframe[data-src]'); if (fr && !fr.src) fr.src = fr.dataset.src; }
+    document.getElementById('bgvid').classList.toggle('on', k === 0);   // vídeo de fondo solo en la portada
     cur = k;
   }
   async function go(k, dir) {
     k = (k + slides.length) % slides.length; if (busy || k === cur) return;
     dir = dir || (k > cur ? 1 : -1); busy = true; puff = 1;
     if (cur >= 0) slides[cur].classList.add('leave');
-    stopVideo();
     await ledWipe(dir, () => show(k, dir));
     setTimeout(() => busy = false, 250);
   }
@@ -573,13 +566,6 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
     if (performance.now() - tt > 900) return; const m = Math.abs(dx) > Math.abs(dy) ? dx : dy;
     if (Math.abs(m) > 45) { const d = m < 0 ? 1 : -1; go(cur + d, d); } }, { passive: true });
 
-  /* ---------- vídeo (se carga al pulsar) ---------- */
-  const tv = document.getElementById('tv');
-  function playVideo() { if (tv.classList.contains('playing')) return; tv.classList.add('playing');
-    tv.innerHTML = '<iframe src="https://www.youtube.com/embed/vKN4AcGz7zs?autoplay=1&rel=0&playsinline=1" title="Vídeo" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>'; }
-  function stopVideo() { if (!tv.classList.contains('playing')) return; tv.classList.remove('playing');
-    tv.innerHTML = '<img src="https://i.ytimg.com/vi/vKN4AcGz7zs/hqdefault.jpg" alt=""><span class="lab"><i></i>PLAY</span><span class="play"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>'; }
-  tv.addEventListener('click', playVideo); tv.addEventListener('keydown', e => { if (e.key === 'Enter') playVideo(); });
 
   /* ---------- código de tiempo ---------- */
   const tc = document.getElementById('tc'), t0 = performance.now();
