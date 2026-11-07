@@ -50,6 +50,14 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 @keyframes pulse{50%{opacity:.25}}
 #tc{min-width:12ch;text-align:right;color:var(--amber);text-shadow:0 0 8px rgba(255,176,0,.5)}
 .langb{position:relative}
+.sndb{display:flex;align-items:center;gap:6px;height:34px;padding:0 10px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(10,9,14,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:#e9e7f2;transition:border-color .25s,color .25s}
+.sndb:hover{border-color:rgba(0,255,4,.6);color:var(--green)}
+.sndb svg{width:20px;height:20px}.sndb .spk{fill:currentColor}
+.sndb .lv{display:flex;gap:2px;align-items:flex-end;height:12px}.sndb .lv i{width:3px;border-radius:1px;background:currentColor;opacity:.25}
+.sndb .lv i:nth-child(1){height:4px}.sndb .lv i:nth-child(2){height:8px}.sndb .lv i:nth-child(3){height:12px}
+.sndb[data-v="0"] .w1,.sndb[data-v="0"] .w2,.sndb[data-v="1"] .w2,.sndb:not([data-v="0"]) .x{display:none}
+.sndb[data-v="1"] .lv i:nth-child(-n+2),.sndb[data-v="2"] .lv i{opacity:1}
+.sndb[data-v="2"]{color:var(--green)}
 .langb>button{display:flex;align-items:center;gap:7px;height:34px;padding:0 10px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(10,9,14,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:#e9e7f2;font:600 11px/1 'Share Tech Mono',monospace;letter-spacing:.16em;transition:border-color .25s,color .25s}
 .langb>button:hover{border-color:rgba(0,255,4,.6);color:var(--green)}
 .ic-lang{width:20px;height:20px;background:currentColor;-webkit-mask:url(assets/img/ic-lang.png) center/contain no-repeat;mask:url(assets/img/ic-lang.png) center/contain no-repeat}
@@ -257,17 +265,19 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 @keyframes hspin{0%,80%{transform:perspective(60px) rotateY(0)}92%,100%{transform:perspective(60px) rotateY(360deg)}}
 
 /* FAVORITOS · cine */
-.cine{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;gap:clamp(6px,1.2vh,12px);padding:4px clamp(14px,5vw,80px) 2px}
+.cine{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;gap:clamp(8px,1.4vh,14px);padding:6px clamp(14px,5vw,80px) 2px}
 .cine .h2{font-size:clamp(18px,2.8vw,36px)}
-.logos{position:relative;width:min(1200px,100%);height:clamp(40px,6.4vh,58px);overflow:hidden;-webkit-mask:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.logos{--g:clamp(44px,5.4vw,62px);position:relative;flex:none;width:min(1200px,100%);height:clamp(40px,6.4vh,56px);overflow:hidden;
+  -webkit-mask:linear-gradient(90deg,transparent,#000 8%,#000 calc(50% - var(--g) - 26px),transparent calc(50% - var(--g) + 8px),transparent calc(50% + var(--g) - 8px),#000 calc(50% + var(--g) + 26px),#000 92%,transparent);
+  mask:linear-gradient(90deg,transparent,#000 8%,#000 calc(50% - var(--g) - 26px),transparent calc(50% - var(--g) + 8px),transparent calc(50% + var(--g) - 8px),#000 calc(50% + var(--g) + 26px),#000 92%,transparent)}
 .ltrack{position:absolute;left:0;top:0;height:100%;display:flex;align-items:center;gap:clamp(30px,4vw,60px);width:max-content;animation:lmove 45s linear infinite}
 .logos:hover .ltrack{animation-play-state:paused}
 @keyframes lmove{to{transform:translateX(-50%)}}
-.ltrack button{flex:none;display:flex;align-items:center;justify-content:center;height:100%;opacity:.6;transition:opacity .3s,transform .3s,filter .3s;filter:drop-shadow(0 0 0 transparent)}
-.ltrack button:hover,.ltrack button.sel{opacity:1;transform:scale(1.08);filter:drop-shadow(0 0 10px rgba(0,180,255,.6))}
-.ltrack img{display:block;width:auto;max-height:100%}
-.scrwrap{position:relative;flex:1;min-height:0;width:100%;display:flex;justify-content:center;align-items:center}
-.screen{position:relative;height:100%;max-width:100%;aspect-ratio:16/9;max-height:100%}
+.ltrack button{flex:none;display:flex;align-items:center;justify-content:center;height:100%;aspect-ratio:2.3/1;border-radius:6px;background:rgba(255,255,255,.92);box-shadow:0 4px 14px rgba(0,0,0,.45);opacity:.78;transition:opacity .3s,transform .3s,box-shadow .3s}
+.ltrack button:hover,.ltrack button.sel{opacity:1;transform:scale(1.06);box-shadow:0 0 0 2px var(--blue),0 0 18px rgba(0,180,255,.6)}
+.ltrack img{display:block;max-width:82%;max-height:72%;object-fit:contain}
+.scrwrap{position:relative;flex:1;min-height:0;width:100%;display:flex;justify-content:center;align-items:center;container-type:size}
+.screen{position:relative;width:min(100cqw,calc(100cqh * 16 / 9));aspect-ratio:16/9}
 .screen .msk{position:absolute;inset:0;overflow:hidden;background:#000;
   -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900' preserveAspectRatio='none'%3E%3Cpath d='M0 0Q800 46 1600 0V900Q800 854 0 900Z'/%3E%3C/svg%3E") center/100% 100% no-repeat;
   mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900' preserveAspectRatio='none'%3E%3Cpath d='M0 0Q800 46 1600 0V900Q800 854 0 900Z'/%3E%3C/svg%3E") center/100% 100% no-repeat}
@@ -296,9 +306,19 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 .sbar{position:absolute;right:4%;bottom:7%;z-index:3;display:flex;gap:8px}
 .sbar button,.sbar a{display:flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:999px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.25);font:600 10px/1 'Share Tech Mono',monospace;letter-spacing:.16em;color:#fff;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .sbar button:hover,.sbar a:hover{border-color:var(--green);color:var(--green)}
-.globe{position:absolute;left:3.5%;bottom:6%;z-index:3;width:clamp(46px,6vw,64px);height:clamp(46px,6vw,64px);border-radius:50%;filter:drop-shadow(0 0 14px rgba(0,180,255,.6));transition:transform .3s}
-.globe:hover{transform:scale(1.1)}
+.globe{position:absolute;left:50%;top:6px;z-index:4;width:clamp(44px,5.4vw,62px);height:clamp(44px,5.4vw,62px);margin-left:calc(clamp(44px,5.4vw,62px) / -2);margin-top:calc((clamp(40px,6.4vh,56px) - clamp(44px,5.4vw,62px)) / 2);border-radius:50%;transition:transform .3s}
+.globe canvas{position:relative;filter:drop-shadow(0 0 14px rgba(0,180,255,.6))}
+.globe .gblur{position:absolute;inset:-34px -46px;border-radius:50%;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);-webkit-mask:radial-gradient(closest-side,#000 55%,transparent);mask:radial-gradient(closest-side,#000 55%,transparent);pointer-events:none}
+.globe.on canvas{filter:drop-shadow(0 0 18px rgba(0,255,4,.8))}
+.globe:hover{transform:scale(1.08)}
 .globe canvas{width:100%;height:100%;display:block}
+.screen{cursor:pointer}
+.film .leader{position:absolute;inset:0;width:100%;height:100%;display:none}
+.film.noimg .leader{display:block}
+.subs{position:absolute;left:8%;right:8%;bottom:9%;z-index:2;text-align:center;pointer-events:none;font:800 clamp(14px,2.2vw,30px)/1.25 Inter,sans-serif;letter-spacing:.03em;color:#fff;
+  text-shadow:0 0 2px #000,0 2px 3px #000,2px 0 2px #000,-2px 0 2px #000,0 -2px 2px #000,0 4px 14px rgba(0,0,0,.8);transition:opacity .4s}
+.subs small{display:block;margin-top:.35em;font:700 clamp(10px,1.2vw,14px)/1.2 'Share Tech Mono',monospace;letter-spacing:.14em;color:#ffd84a}
+.subs.out{opacity:0}
 .crawl{position:relative;flex:none;width:min(820px,100%);height:clamp(80px,17vh,170px);perspective:260px;overflow:hidden;
   -webkit-mask:linear-gradient(0deg,#000 40%,transparent);mask:linear-gradient(0deg,#000 40%,transparent)}
 .crawl .cv{position:absolute;inset:0;transform:rotateX(32deg);transform-origin:50% 100%}
@@ -404,7 +424,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   .hc p{display:none}
 }
 @media (min-width:761px){.tile .tx{display:contents}}
-@media (max-width:760px){.tl{grid-template-columns:1fr}.opt small{display:none}.sbar{bottom:5%;right:3%}.sbar button span,.sbar a span{display:none}.crawl{height:clamp(56px,11vh,110px)}.cine{padding:0 10px;gap:5px}.cine .legal{font-size:8px;line-height:1.4;letter-spacing:.04em}.logos{height:34px}.ctrack button{font-size:14px}}
+@media (max-width:760px){.tl{grid-template-columns:1fr}.opt small{display:none}.crawl{height:clamp(56px,11vh,110px)}.cine{padding:0 10px;gap:5px}.cine .legal{font-size:8px;line-height:1.4;letter-spacing:.04em}.logos{height:38px}.cine{gap:12px}.globe{width:44px;height:44px;margin-left:-22px;margin-top:-3px}.deck{bottom:calc(var(--bot) + 66px)}.ctrack button{font-size:14px}}
 .wa.hide{display:none}
 @media (max-height:520px) and (orientation:landscape){
   :root{--top:calc(52px + var(--safe-t)); --bot:calc(58px + var(--safe-b))}
@@ -422,7 +442,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 <header class="top">
   <div class="badge" id="badge" role="link" tabindex="0" aria-label="mediaservi.com"><img src="assets/logos/mediaservi-badge.svg" alt="MEDIASERVI"></div>
   <div class="hud">
-    <span class="rec"><i></i>ON AIR</span><span id="tc">00:00:00:00</span>
+    <button class="sndb" id="sndBtn" aria-label="Volumen"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="spk" d="M3 9v6h4l5 4V5L7 9z"/><path class="w1" d="M15.5 8.5a5 5 0 0 1 0 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path class="w2" d="M18.5 5.5a9 9 0 0 1 0 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path class="x" d="M16 9l5 6M21 9l-5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="lv"><i></i><i></i><i></i></span></button>
     <div class="langb"><button id="langBtn" aria-haspopup="true" aria-label="Idioma / Language"><span class="ic-lang"></span><span id="langCur">ES</span></button>
       <div class="langm" id="langMenu">
         <button data-l="es"><svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#c60b1e"/><rect y="5" width="30" height="10" fill="#ffc400"/></svg>Español</button>
@@ -458,20 +478,19 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   <!-- FAVORITOS -->
   <section class="slide" id="favoritos" data-es="FAVORITOS" data-en="FAVOURITES">
     <div class="cine">
-      <h2 class="h2" data-in style="--i:0" data-t="Parques temáticos <span>&amp; experiencias</span>|Theme parks <span>&amp; experiences</span>"></h2>
       <div class="logos" data-in style="--i:1"><div class="ltrack" id="ltrack"></div></div>
+      <button class="globe" id="globe" data-in style="--i:1" aria-label="Mapa"><span class="gblur"></span><canvas width="128" height="128"></canvas></button>
       <div class="scrwrap" data-in style="--i:2">
-        <div class="screen" id="screen">
+        <div class="screen" id="screen" role="link" tabindex="0">
           <div class="msk">
-            <div class="film" id="film"><img alt=""><img alt=""></div>
+            <div class="film" id="film"><img alt=""><img alt=""><canvas class="leader" id="leader" width="640" height="360"></canvas></div>
             <div class="show" id="show"></div>
             <canvas class="grain" id="grain" width="320" height="180"></canvas>
             <div class="scratch"></div>
             <div class="flash" id="flash"></div>
+            <p class="subs" id="subs"></p>
           </div>
           <svg class="bezel" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0Q800 46 1600 0V900Q800 854 0 900Z" fill="none" stroke="#050407" stroke-width="30" vector-effect="non-scaling-stroke"/><path d="M0 0Q800 46 1600 0V900Q800 854 0 900Z" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg>
-          <button class="globe" id="globe" aria-label="Mapa"><canvas width="128" height="128"></canvas></button>
-          <div class="sbar"><button id="sBack" hidden>◀ <span data-t="CARRUSEL|CAROUSEL"></span></button><a id="sFull" href="#" target="_blank" rel="noopener">⛶ <span data-t="PANTALLA COMPLETA|FULL SCREEN"></span></a></div>
         </div>
       </div>
       <div class="crawl" data-in style="--i:3"><div class="cv"><div class="ctrack" id="ctrack"></div></div></div>
@@ -547,6 +566,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   <div class="chs" id="chs"></div>
 </nav>
 
+<audio id="bgm" src="assets/audio/keepkalm.mp3" loop preload="auto" autoplay></audio>
 <canvas id="wipe" aria-hidden="true"></canvas>
 <div class="scan"></div>
 
@@ -581,6 +601,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
     if (typeof chb !== 'undefined') chb.forEach((b, k) => b.querySelector('span').textContent = slides[k].dataset[LANG]);
     if (window.__museumLang) window.__museumLang();
     if (holoOpen) fillHolo(holoK);
+    if (typeof setSubs === 'function' && cur >= 0 && slides[cur].id === 'favoritos') setSubs();
     if (typeof termOpen !== 'undefined' && termOpen) renderTerm();
     if (cur >= 0) fit(slides[cur]);
   }
@@ -588,6 +609,17 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   langBtn.addEventListener('click', e => { e.stopPropagation(); langMenu.classList.toggle('open'); });
   langMenu.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LANG = b.dataset.l; store.set('ms-lang', LANG); langMenu.classList.remove('open'); applyLang(); });
   addEventListener('click', () => langMenu.classList.remove('open'));
+
+  /* ---------- música de fondo: suena bajita al abrir; 3 niveles (silencio, normal, alto) ---------- */
+  const bgm = document.getElementById('bgm'), sndBtn = document.getElementById('sndBtn'), VOL = [0, .12, .4];
+  let lvl = +(store.get('ms-vol') ?? 1); if (!(lvl >= 0 && lvl <= 2)) lvl = 1;
+  function applyVol() { sndBtn.dataset.v = lvl; bgm.volume = VOL[lvl]; bgm.muted = lvl === 0; sndBtn.setAttribute('aria-label', ['Silencio / Mute', 'Volumen normal / Normal', 'Volumen alto / Loud'][lvl]); }
+  applyVol();
+  const tryPlay = () => { if (lvl > 0 && bgm.paused) bgm.play().catch(() => {}); };
+  tryPlay();
+  const unlock = () => { tryPlay(); if (!bgm.paused || lvl === 0) ['pointerdown', 'keydown', 'touchstart'].forEach(ev => removeEventListener(ev, unlock, true)); };
+  ['pointerdown', 'keydown', 'touchstart'].forEach(ev => addEventListener(ev, unlock, true));
+  sndBtn.addEventListener('click', e => { e.stopPropagation(); lvl = (lvl + 2) % 3; store.set('ms-vol', lvl); applyVol(); tryPlay(); });
 
   /* ---------- contenidos ---------- */
   const SOCIAL = [
@@ -834,53 +866,63 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   view.addEventListener('click', () => { viewShow((vk + 1) % 2); viewLoop(); });
 
   /* ---------- FAVORITOS: pantalla de cine curva ---------- */
-  const LOGOS = {"disney":[322,180],"universal":[324,180],"tropicalislands":[362,180],"atlantisbahamas":[520,118],"royalcaribbean":[520,126],"hardrock":[308,180],"atlantisthepalm":[520,130],"iaapa":[520,180],"puydufou":[520,136],"xcaret":[474,92]};
-  const COLOR_IN_STRIP = { royalcaribbean: 1, xcaret: 1 };
   const MAP_EMBED = 'https://www.google.com/maps/d/embed?mid=1iQXyjE7wPfG3x0dh5UDneDDDFXr5ogU&hl=es&ehbc=2E312F', MAP_FULL = 'https://www.google.com/maps/d/viewer?mid=1iQXyjE7wPfG3x0dh5UDneDDDFXr5ogU&hl=es';
   const ltrack = document.getElementById('ltrack'), ctrack = document.getElementById('ctrack'), film = document.getElementById('film'), fimgs = [...film.querySelectorAll('img')];
-  const showEl = document.getElementById('show'), flash = document.getElementById('flash'), sFull = document.getElementById('sFull'), sBack = document.getElementById('sBack');
-  const logoBtn = (f, k) => { const [w, h] = LOGOS[f], v = COLOR_IN_STRIP[f] ? 'color' : 'white';
-    return `<button data-k="${k}" aria-label="${FAVS[k][0]}"><img src="assets/fav/w/${f}-${v}.webp" alt="" style="height:${(h / 180 * 100).toFixed(1)}%;aspect-ratio:${w}/${h}"></button>`; };
-  const strip = FAVS.map(([n, u, f], k) => logoBtn(f, k)).join(''); ltrack.innerHTML = strip + strip;
+  const showEl = document.getElementById('show'), flash = document.getElementById('flash'), subs = document.getElementById('subs'), screenEl = document.getElementById('screen'), globeBtn = document.getElementById('globe');
+  const strip = FAVS.map(([n, u, f], k) => `<button data-k="${k}" aria-label="${n}"><img src="assets/fav/${f}.webp" alt=""></button>`).join(''); ltrack.innerHTML = strip + strip;
   const crawlHTML = FAVS.map(([n], k) => `<button data-k="${k}">${n}</button>`).join(''); ctrack.innerHTML = crawlHTML + crawlHTML;
-  let slides2 = [], sk = 0, mode = 'film', ftimer = 0, fa = 0;
+  let slides2 = [], sk = 0, mode = 'film', ftimer = 0, fa = 0, pick = -1, pickTimer = 0;
+  function setSubs() {
+    let h;
+    if (mode === 'map') h = `${T('Sitios que he visitado', 'Places I have visited')}<small>${T('▶ PULSA EL GLOBO PARA VOLVER', '▶ TAP THE GLOBE TO GO BACK')}</small>`;
+    else if (pick >= 0) h = `${FAVS[pick][0]}<small>${T('▶ PULSA LA PANTALLA PARA VISITARLA', '▶ TAP THE SCREEN TO VISIT')}</small>`;
+    else h = T('Parques temáticos &amp; experiencias', 'Theme parks &amp; experiences');
+    subs.classList.add('out'); setTimeout(() => { subs.innerHTML = h; subs.classList.remove('out'); }, 300);
+  }
+  function target() { if (mode === 'map') return MAP_FULL; if (pick >= 0) return FAVS[pick][1]; return slides2.length ? slides2[sk] : null; }
+  screenEl.addEventListener('click', () => { const u = target(); if (u) window.open(u, '_blank', 'noopener'); });
+  screenEl.addEventListener('keydown', e => { if (e.key === 'Enter') { const u = target(); if (u) window.open(u, '_blank', 'noopener'); } });
   function filmTo(src) {
     film.classList.remove('burn'); flash.classList.remove('on'); void film.offsetWidth;
     flash.style.setProperty('--fx', (20 + Math.random() * 60) + '%'); flash.style.setProperty('--fy', (20 + Math.random() * 60) + '%');
     film.classList.add('burn'); flash.classList.add('on');
-    setTimeout(() => { const nx = fimgs[1 - fa]; if (src) { nx.src = src; } nx.classList.add('on'); fimgs[fa].classList.remove('on'); fa = 1 - fa; }, 420);
+    if (src) setTimeout(() => { const nx = fimgs[1 - fa]; nx.src = src; nx.classList.add('on'); fimgs[fa].classList.remove('on'); fa = 1 - fa; }, 420);
   }
   function filmNext() { clearTimeout(ftimer); if (mode !== 'film') return;
-    if (slides2.length) { sk = (sk + 1) % slides2.length; filmTo(slides2[sk]); sFull.href = slides2[sk]; }
-    else { sk = (sk + 1) % FAVS.length; filmTo('assets/fav/w/' + FAVS[sk][2] + '-white.webp'); sFull.href = FAVS[sk][1]; }
+    if (slides2.length > 1) { sk = (sk + 1) % slides2.length; filmTo(slides2[sk]); } else filmTo(null);
     ftimer = setTimeout(filmNext, 6500); }
-  function screenMode(m, html, full, k) {
-    mode = m; filmTo(null);
-    setTimeout(() => { showEl.innerHTML = html || ''; showEl.classList.toggle('on', m !== 'film'); film.style.visibility = m === 'film' ? 'visible' : 'hidden'; }, 420);
-    sBack.hidden = m === 'film'; if (full) sFull.href = full;
-    ltrack.querySelectorAll('button').forEach(b => b.classList.toggle('sel', m === 'fav' && +b.dataset.k === k));
-    if (m === 'film') { clearTimeout(ftimer); ftimer = setTimeout(filmNext, 1200); } else clearTimeout(ftimer);
+  function openFav(k) { pick = k; setSubs(); clearTimeout(pickTimer); pickTimer = setTimeout(() => { pick = -1; setSubs(); }, 15000);
+    ltrack.querySelectorAll('button').forEach(b => b.classList.toggle('sel', +b.dataset.k === k));
+    if (mode === 'map') toggleMap(); else filmTo(null); }
+  function toggleMap() {
+    mode = mode === 'map' ? 'film' : 'map'; filmTo(null); globeBtn.classList.toggle('on', mode === 'map');
+    setTimeout(() => { showEl.innerHTML = mode === 'map' ? `<iframe src="${MAP_EMBED}" title="Mapa" loading="lazy" allowfullscreen></iframe>` : ''; showEl.classList.toggle('on', mode === 'map'); film.style.visibility = mode === 'map' ? 'hidden' : 'visible'; }, 420);
+    setSubs(); clearTimeout(ftimer); if (mode === 'film') ftimer = setTimeout(filmNext, 3000);
   }
-  function openFav(k) { const [n, u, f] = FAVS[k];
-    const html = `<div class="xcard"><span class="pl"><img src="assets/fav/w/${f}-color.webp" alt="${n}"></span><b>${n}</b><small>${u.replace(/^https?:\/\/(www\.)?/, '').replace(/\/.*$/, '')}</small><a class="sbtn" href="${u}" target="_blank" rel="noopener">⛶ ${T('VER A PANTALLA COMPLETA ↗', 'VIEW FULL SCREEN ↗')}</a></div>`;
-    screenMode('fav', html, u, k); }
   ltrack.addEventListener('click', e => { const b = e.target.closest('button'); if (b) openFav(+b.dataset.k); });
   ctrack.addEventListener('click', e => { const b = e.target.closest('button'); if (b) openFav(+b.dataset.k); });
-  document.getElementById('globe').addEventListener('click', () => screenMode('map', `<iframe src="${MAP_EMBED}" title="Mapa" loading="lazy" allowfullscreen></iframe>`, MAP_FULL));
-  sBack.addEventListener('click', () => screenMode('film', '', slides2[sk] || FAVS[sk][1]));
-  // imágenes del carrusel: assets/slide (lista.json o listado del repositorio)
+  globeBtn.addEventListener('click', toggleMap);
+  showEl.addEventListener('click', e => e.stopPropagation());
+  // cola de película (cuenta atrás) mientras no haya imágenes en assets/slide
+  const ld = document.getElementById('leader'), lgc = ld.getContext('2d');
+  function leader(t) { if (!film.classList.contains('noimg') || !slides[cur] || slides[cur].id !== 'favoritos') return; const w = 640, h = 360, n = 3 - Math.floor(t % 3), a = (t % 1) * Math.PI * 2;
+    lgc.fillStyle = '#1b1712'; lgc.fillRect(0, 0, w, h); lgc.fillStyle = '#3a3227'; lgc.beginPath(); lgc.moveTo(w / 2, h / 2); lgc.arc(w / 2, h / 2, 420, -Math.PI / 2, -Math.PI / 2 + a); lgc.fill();
+    lgc.strokeStyle = '#d9cdb6'; lgc.lineWidth = 3; [120, 150].forEach(r => { lgc.beginPath(); lgc.arc(w / 2, h / 2, r, 0, 7); lgc.stroke(); });
+    lgc.beginPath(); lgc.moveTo(0, h / 2); lgc.lineTo(w, h / 2); lgc.moveTo(w / 2, 0); lgc.lineTo(w / 2, h); lgc.stroke();
+    lgc.fillStyle = '#efe6d4'; lgc.font = '900 170px Inter, sans-serif'; lgc.textAlign = 'center'; lgc.textBaseline = 'middle'; lgc.fillText(n, w / 2, h / 2 + 8);
+    requestAnimationFrame(() => leader(t + 1 / 60)); }
+  // imágenes del carrusel: assets/slide (list.json o listado del repositorio)
   (async function loadSlides() {
     const ok = n => /\.(jpe?g|png|webp|gif|avif)$/i.test(n);
     try { const r = await fetch('assets/slide/list.json', { cache: 'no-store' }); if (r.ok) { const j = await r.json(); slides2 = j.filter(ok).map(n => 'assets/slide/' + n); } } catch (e) {}
     if (!slides2.length) try {
       const m = location.pathname.match(/^\/mediaservi\/MEDIASERVI\/([^/]+)\//i), ref = m ? m[1] : 'main';
       const r = await fetch(`https://api.github.com/repos/mediaservi/MEDIASERVI/contents/assets/slide?ref=${encodeURIComponent(ref)}`);
-      if (r.ok) slides2 = (await r.json()).filter(x => x.type === 'file' && ok(x.name)).map(x => 'assets/slide/' + x.name).sort();
+      if (r.ok) slides2 = (await r.json()).filter(x => x.type === 'file' && ok(x.name)).map(x => 'assets/slide/' + encodeURIComponent(x.name));
     } catch (e) {}
     slides2.sort(() => Math.random() - .5);
-    if (slides2.length) { fimgs[0].src = slides2[0]; fimgs[0].classList.add('on'); sFull.href = slides2[0]; sk = 0; }
-    else { fimgs[0].src = 'assets/fav/w/' + FAVS[0][2] + '-white.webp'; fimgs[0].classList.add('on'); sFull.href = FAVS[0][1]; }
-    fimgs.forEach(i => i.style.objectFit = slides2.length ? 'cover' : 'contain'); if (!slides2.length) fimgs.forEach(i => i.style.padding = '18% 22%');
+    if (slides2.length) { fimgs[0].src = slides2[0]; fimgs[0].classList.add('on'); sk = 0; film.classList.remove('noimg'); }
+    else { film.classList.add('noimg'); if (slides[cur] && slides[cur].id === 'favoritos') leader(0); }
   })();
   // grano de película
   const gr = document.getElementById('grain'), grg = gr.getContext('2d'), gid = grg.createImageData(320, 180);
@@ -906,7 +948,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
     for (let j = -2; j <= 2; j++) { const y = c + j * r / 3, w = Math.sqrt(r * r - (j * r / 3) ** 2); gx.beginPath(); gx.moveTo(c - w, y); gx.lineTo(c + w, y); gx.stroke(); }
     gx.strokeStyle = 'rgba(255,255,255,.5)'; gx.lineWidth = 3; gx.beginPath(); gx.arc(c, c, r, 0, 7); gx.stroke();
     requestAnimationFrame(() => globe(t + .016)); }
-  function enterCine() { if (mode === 'film') { clearTimeout(ftimer); ftimer = setTimeout(filmNext, 4500); } grain(); cLast = 0; requestAnimationFrame(crawl); globe(0); }
+  function enterCine() { if (mode === 'film') { clearTimeout(ftimer); ftimer = setTimeout(filmNext, 4500); } setSubs(); grain(); cLast = 0; requestAnimationFrame(crawl); globe(0); if (film.classList.contains('noimg')) leader(0); }
 
   /* ---------- cortinilla LED entre diapositivas ---------- */
   const wc = document.getElementById('wipe'), wg = wc.getContext('2d');
@@ -1060,9 +1102,8 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
     if (Math.abs(m) > 45) { const d = m < 0 ? 1 : -1; go(cur + d, d); } }, { passive: true });
 
   /* ---------- código de tiempo y pantallas generadas ---------- */
-  const tc = document.getElementById('tc'), t0 = performance.now();
-  (function tick() { const s = (performance.now() - t0) / 1000, f = Math.floor((s % 1) * 25), p = n => String(n).padStart(2, '0');
-    tc.textContent = `${p(Math.floor(s / 3600))}:${p(Math.floor(s / 60) % 60)}:${p(Math.floor(s) % 60)}:${p(f)}`;
+  const t0 = performance.now();
+  (function tick() { const s = (performance.now() - t0) / 1000;
     fxc.forEach(cv => drawFxOn(cv, cv.dataset.fx, s)); requestAnimationFrame(tick); })();
 
   /* ---------- arranque ---------- */
