@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="robots" content="noindex, nofollow">
+<title>KLUB</title>
+<link rel="icon" type="image/svg+xml" href="../assets/logos/mediaservi-badge.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#000;color:#eee;font-family:'Share Tech Mono',monospace}
+body{height:100dvh}
+.pano{position:fixed;inset:0;background:url(../assets/img/klub.webp) 0 50%/auto 100% repeat-x;animation:pan 60s ease-in-out infinite alternate;filter:contrast(1.05)}
+@keyframes pan{to{background-position:100% 50%}}
+@media (min-aspect-ratio:247/100){.pano{background-size:100% auto;background-position:50% 50%;animation:zoom 30s ease-in-out infinite alternate}@keyframes zoom{to{transform:scale(1.08)}}}
+.vig{position:fixed;inset:0;background:radial-gradient(ellipse at 50% 50%,transparent 40%,rgba(0,0,0,.75) 100%),repeating-linear-gradient(180deg,rgba(255,255,255,.025) 0 1px,transparent 1px 3px);pointer-events:none}
+.top{position:fixed;left:0;right:0;top:0;display:flex;justify-content:space-between;align-items:center;padding:calc(14px + env(safe-area-inset-top,0px)) 18px 0}
+.top a{display:flex;align-items:center;gap:10px;text-decoration:none;color:#eee}
+.top img{width:48px;height:48px;filter:drop-shadow(0 4px 14px rgba(0,0,0,.7))}
+.back{height:36px;padding:0 14px;border-radius:999px;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);font-size:11px;letter-spacing:.24em;transition:border-color .25s}
+.back:hover{border-color:#fff}
+@media (prefers-reduced-motion:reduce){.pano{animation:none}}
+</style>
+</head>
+<body>
+<div class="pano" role="img" aria-label="KLUB"></div>
+<div class="vig"></div>
+<header class="top">
+  <a href="../"><img src="../assets/logos/mediaservi-badge.svg" alt="mediaservi.com"></a>
+  <a class="back" href="../#conecta" id="back">← VOLVER</a>
+</header>
+<script>
+(() => { let l = null; try { l = localStorage.getItem('ms-lang'); } catch (e) {}
+  if (!l) { let tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {} l = /^(Europe\/Madrid|Atlantic\/Canary|Africa\/Ceuta|America\/(Mexico_City|Cancun|Merida|Monterrey|Bogota|Lima|Santiago|Caracas|Guayaquil|La_Paz|Asuncion|Montevideo|Argentina\/.+|Buenos_Aires|Havana|Santo_Domingo|Panama|Costa_Rica|Managua|Tegucigalpa|El_Salvador|Guatemala|Puerto_Rico))$/.test(tz) ? 'es' : 'en'; }
+  if (l === 'en') { document.documentElement.lang = 'en'; document.getElementById('back').textContent = '← BACK'; } })();
+</script>
+</body>
+</html>
