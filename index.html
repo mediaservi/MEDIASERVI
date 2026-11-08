@@ -156,7 +156,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 .mlogo img{display:block;width:100%;height:auto;filter:drop-shadow(0 10px 24px rgba(0,0,0,.7)) drop-shadow(0 0 18px rgba(96,255,0,.18))}
 .mlogo .shine{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;
   -webkit-mask:url(assets/logos/mediaservi-logo-metacrilato.webp) center/100% 100% no-repeat;mask:url(assets/logos/mediaservi-logo-metacrilato.webp) center/100% 100% no-repeat;
-  background:linear-gradient(105deg,transparent 42%,rgba(255,255,255,0) 45%,rgba(255,255,255,.95) 50%,rgba(220,255,200,0) 55%,transparent 58%) no-repeat;background-size:320% 100%;
+  background:linear-gradient(105deg,transparent 42%,rgba(255,255,255,0) 45%,rgba(255,255,255,.95) 50%,rgba(220,255,200,0) 55%,transparent 58%) no-repeat,linear-gradient(rgba(255,255,255,.025),rgba(255,255,255,.025));background-size:320% 100%,100% 100%;
   animation:shine 4s ease-in-out infinite}
 @keyframes shine{0%{background-position:130% 0}45%,100%{background-position:-30% 0}}
 
@@ -377,7 +377,8 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 .tile .li{font:900 clamp(18px,2vw,24px)/1 Inter,sans-serif;color:#e9e7f2;width:clamp(26px,3vw,36px);height:clamp(26px,3vw,36px);display:flex;align-items:center;justify-content:center;border-radius:5px;border:2.5px solid currentColor;letter-spacing:-.02em;transition:color .25s}
 .tile:hover .li{color:var(--c)}
 .tile.klub{grid-column:span 2;justify-content:flex-end;align-items:flex-end;padding:10px 12px;min-height:100%;background:#000}
-.tile.klub .kimg{position:absolute;inset:0;background:url(assets/img/klub-card.webp) center/cover no-repeat;filter:brightness(.85) saturate(.9);transform:scale(1.02);transition:filter .6s,transform 1.2s}
+.hyd .tile.klub .kimg{background-image:url(assets/img/klub-card.webp)}
+.tile.klub .kimg{position:absolute;inset:0;background:center/cover no-repeat;filter:brightness(.85) saturate(.9);transform:scale(1.02);transition:filter .6s,transform 1.2s}
 .tile.klub:hover .kimg{filter:brightness(1.05) saturate(1.1);transform:scale(1.08)}
 .tile.klub b{position:relative;font:900 clamp(18px,2.2vw,26px)/1 'Doto',monospace;letter-spacing:.3em;color:#fff;text-shadow:0 0 12px rgba(255,255,255,.6)}
 .tile.klub .lock{position:relative;display:flex;align-items:center;gap:6px;font:600 9px/1 'Share Tech Mono',monospace;letter-spacing:.24em;color:#cfcbe0}
@@ -483,6 +484,30 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   :root{--top:calc(52px + var(--safe-t)); --bot:calc(58px + var(--safe-b))}
   .prog{display:none}
 }
+.slide.scrolly{overflow-y:auto;overflow-x:hidden;align-items:flex-start;touch-action:pan-y;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.slide.scrolly::-webkit-scrollbar{display:none}
+@media (max-height:520px) and (orientation:landscape){
+  .deck{bottom:var(--bot)!important}
+  .wa{left:auto!important;right:10px!important;transform:none!important;bottom:calc(var(--bot) + 8px)!important;padding:4px!important;gap:0!important}
+  .wa > span:not(.ico){display:none}
+  .home{display:grid;grid-template-columns:auto auto;grid-template-rows:auto auto;column-gap:24px;align-items:center;justify-items:center}
+  .home .face{grid-row:1 / span 2;width:clamp(120px,52vh,220px)}
+  .home .mlogo{width:clamp(220px,40vw,420px);margin-top:0}
+  .home .avh{margin-top:6px}
+  .cx{flex-direction:row}
+  .where{grid-template-columns:repeat(3,minmax(0,1fr));width:min(1240px,96vw);align-items:stretch}
+  .acc{display:contents}
+  .card .ped{flex-direction:column;flex:1}
+  .card .view{order:-1;width:100%;aspect-ratio:16/10}
+  .card .view .ph{background-size:cover}
+  .map{min-height:auto;height:auto}
+  .cine{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;column-gap:14px;row-gap:6px;padding:4px 70px 2px 14px}
+  .cine .logos{grid-column:1 / -1;height:34px}
+  .globe{width:40px;height:40px;margin-left:-20px;margin-top:-3px;top:4px}
+  .cine .scrwrap{grid-column:1;grid-row:2;height:100%}
+  .cine .crawl{grid-column:2;grid-row:2;height:100%;width:100%}
+  .cine .legal{grid-column:1 / -1;grid-row:3;margin-top:0;font-size:8px;line-height:1.3}
+}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.slide [data-in]{opacity:1}}
 </style>
 </head>
@@ -557,7 +582,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
     <div class="fit">
       <div class="head"><p class="kick" data-in style="--i:0">SOCIAL · LINKS</p><h2 class="h2" data-in style="--i:1" data-t="Conecta con <span>mediaservi</span>|Connect with <span>mediaservi</span>"></h2></div>
       <div class="cx">
-        <div class="mevi" data-in style="--i:2"><img src="assets/img/mevi.webp" alt="MEVI" width="350" height="500"></div>
+        <div class="mevi" data-in style="--i:2"><img data-src="assets/img/mevi.webp" alt="MEVI" width="350" height="500"></div>
         <div class="g4s" id="social"></div>
       </div>
     </div>
@@ -579,8 +604,8 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
                 <div class="btns"><a class="mp" href="https://www.google.com/maps/search/?api=1&query=Carrer+de+l'Agricultura+273+Barcelona" target="_blank" rel="noopener" data-t="ABRIR EN MAPS ↗|OPEN IN MAPS ↗"></a><a class="mp" href="https://www.google.com/maps/dir/?api=1&destination=Carrer+de+l'Agricultura+273+Barcelona" target="_blank" rel="noopener" data-t="RUTA HASTA AQUÍ ↗|DIRECTIONS ↗"></a></div>
               </div>
               <div class="view" id="view">
-                <div class="ph" data-iw="780" data-ih="894" data-box="68.97,40.49,85,58.28" style="background-image:url(assets/img/puerta.webp);background-position:80% 50%;transform-origin:77% 49%;--z:1.55"><span class="hl"></span></div>
-                <div class="ph" data-iw="774" data-ih="1368" data-box="39.28,71.49,50.78,76.39" style="background-image:url(assets/img/timbre.webp);background-position:45% 74%;transform-origin:45% 74%;--z:1.9"><span class="hl"></span></div>
+                <div class="ph" data-iw="780" data-ih="894" data-box="68.97,40.49,85,58.28" data-bg="assets/img/puerta.webp" style="background-position:80% 50%;transform-origin:77% 49%;--z:1.55"><span class="hl"></span></div>
+                <div class="ph" data-iw="774" data-ih="1368" data-box="39.28,71.49,50.78,76.39" data-bg="assets/img/timbre.webp" style="background-position:45% 74%;transform-origin:45% 74%;--z:1.9"><span class="hl"></span></div>
                 <span class="tag" id="viewTag"></span>
                 <span class="dots"><i></i><i></i></span>
               </div>
@@ -591,7 +616,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
             <p class="addr">Carrer Treball, 246</p>
             <ol class="steps"><li><b>!</b><span data-t="Avisa antes de venir: <em>previo aviso</em>|Let us know first: <em>prior notice</em>"></span></li><li><b>⌂</b><span data-t="<em>Reja</em> entre Lidl y la Tienda Scum|<em>Gate</em> between Lidl and the Scum shop"></span></li></ol>
             <div class="btns"><a class="mp" href="https://www.google.com/maps/search/?api=1&query=Carrer+del+Treball+246+Barcelona" target="_blank" rel="noopener" data-t="ABRIR EN MAPS ↗|OPEN IN MAPS ↗"></a><a class="mp" href="https://www.google.com/maps/dir/?api=1&destination=Carrer+del+Treball+246+Barcelona" target="_blank" rel="noopener" data-t="RUTA HASTA AQUÍ ↗|DIRECTIONS ↗"></a></div></div>
-            <div class="view vview" id="vview" hidden><div class="ph on" style="background-image:url(assets/img/accesovehiculos.png);background-position:50% 50%;--z:1.25"></div><span class="tag" style="color:var(--amber)" data-t="ACCESO COCHE|CAR ACCESS"></span></div>
+            <div class="view vview" id="vview" hidden><div class="ph on" data-bg="assets/img/accesovehiculos.png" style="background-position:50% 50%;--z:1.25"></div><span class="tag" style="color:var(--amber)" data-t="ACCESO COCHE|CAR ACCESS"></span></div>
             </div></div>
         </div>
         <div class="map" data-in style="--i:4"><iframe title="Mapa" loading="lazy" referrerpolicy="no-referrer-when-downgrade" data-src="https://maps.google.com/maps?q=Carrer%20de%20l'Agricultura%20273%2C%20Barcelona&z=16&output=embed"></iframe><span class="pin">◉ MEDIASERVI</span></div>
@@ -627,7 +652,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   <div class="chs" id="chs"></div>
 </nav>
 
-<audio id="bgm" src="assets/audio/keepkalm.mp3" loop preload="auto" autoplay></audio>
+<audio id="bgm" loop preload="none"></audio>
 <canvas id="wipe" aria-hidden="true"></canvas>
 <div class="scan"></div>
 
@@ -635,6 +660,14 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 (() => {
   'use strict';
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* carga diferida: las imágenes de las otras pestañas se piden después de mostrar la primera */
+  let hydRes; const HYD = new Promise(r => hydRes = r);
+  function hydrate() { if (hydrate.done) return; hydrate.done = true; document.documentElement.classList.add('hyd');
+    const bg = document.getElementById('bgm'); if (bg && !bg.getAttribute('src')) { bg.preload = 'auto'; bg.autoplay = lvl > 0; bg.src = 'assets/audio/keepkalm.mp3'; }
+    document.querySelectorAll('[data-src]').forEach(e => { e.src = e.dataset.src; e.removeAttribute('data-src'); });
+    document.querySelectorAll('[data-bg]').forEach(e => { e.style.backgroundImage = `url(${e.dataset.bg})`; e.removeAttribute('data-bg'); }); hydRes(); }
+  addEventListener('load', () => setTimeout(hydrate, 1500));
+  ['pointerdown', 'touchstart', 'keydown', 'wheel'].forEach(ev => addEventListener(ev, hydrate, { capture: true, passive: true, once: true }));
   const rnd = (a, b) => a + Math.random() * (b - a);
   const ICON = {"siTiktok": "M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z", "siYoutube": "M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z", "siFacebook": "M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z", "siX": "M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z", "siInstagram": "M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077", "siTelegram": "M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z", "siWhatsapp": "M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z", "siGoogleplay": "M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202a1.49 1.49 0 0 1 0 2.594zM1.337.924a1.486 1.486 0 0 0-.112.568v21.017c0 .217.045.419.124.6l11.155-11.087L1.337.924zm12.207 10.065l3.258-3.238L3.45.195a1.466 1.466 0 0 0-.946-.179l11.04 10.973zm0 2.067l-11 10.933c.298.036.612-.016.906-.183l13.324-7.54-3.23-3.21z"};
   const svg = p => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${p}"/></svg>`;
@@ -725,10 +758,10 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   const VGH = { nn: ['HISTORIA DEL VIDEOJUEGO', 'VIDEO GAME HISTORY'], n: 'HISTORIA DEL VIDEOJUEGO', d: ['Línea del tiempo de los videojuegos a pantalla completa', 'Full-screen video game timeline'], u: 'assets/img/videogamehistory.webp', img: 'assets/img/videogamehistory.webp', c: '#ffb000', view: 'image', frame: false, wide: true };
   OPTS.splice(OPTS.length - 1, 0, VGH);
   const probe = src => new Promise(r => { const i = new Image(); i.onload = () => r(true); i.onerror = () => r(false); i.src = src; });
-  const assetsReady = Promise.race([Promise.all([
+  const assetsReady = HYD.then(() => Promise.race([Promise.all([
     probe('assets/img/vgapp.webp').then(ok => { if (ok) PROJS[3].img = 'assets/img/vgapp.webp'; }),
     probe('assets/img/accesovehiculos.png').then(ok => { if (ok) document.getElementById('vview').hidden = false; })
-  ]), new Promise(r => setTimeout(r, 2500))]).then(() => { if (typeof renderDynamic === 'function') renderDynamic(); });
+  ]), new Promise(r => setTimeout(r, 2500))])).then(() => { if (typeof renderDynamic === 'function') renderDynamic(); });
   const hexA = (h, a) => { const n = parseInt(h.slice(1), 16); return `rgba(${n >> 16},${n >> 8 & 255},${n & 255},${a})`; };
   const ext = 'target="_blank" rel="noopener"';
   document.getElementById('social').innerHTML = SOCIAL.map((s, k) =>
@@ -737,7 +770,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   document.getElementById('social').addEventListener('click', e => { if (e.target.closest('#klubTile')) { e.preventDefault(); openKlub(); } });
   function renderDynamic() {
     document.getElementById('projs').innerHTML = PROJS.map((p, k) =>
-      `<a class="proj" href="${p.u}" data-k="${k}" data-in style="--i:${k + 2};--c:${p.c};--cg:${hexA(p.c, .3)}"><span class="scr">${p.img ? `<img src="${p.img}" alt="">` : `<canvas data-fx="${p.fx}" width="320" height="180"></canvas>`}</span>
+      `<a class="proj" href="${p.u}" data-k="${k}" data-in style="--i:${k + 2};--c:${p.c};--cg:${hexA(p.c, .3)}"><span class="scr">${p.img ? `<img ${hydrate.done ? 'src' : 'data-src'}="${p.img}" alt="">` : `<canvas data-fx="${p.fx}" width="320" height="180"></canvas>`}</span>
         <span class="bd"><span class="lcd">${p.n}</span><small>${T(...p.d)}</small><span class="go">${T('ENTRAR ↗', 'ENTER ↗')}</span></span></a>`).join('');
     fxc = [...document.querySelectorAll('canvas[data-fx]')];
     if (cur >= 0 && slides[cur].id === 'museo') slides[cur].querySelectorAll('[data-in]').forEach(e => e.style.opacity = 1);
@@ -1004,6 +1037,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
     requestAnimationFrame(() => leader(t + 1 / 60)); }
   // imágenes del carrusel: assets/slide (list.json o listado del repositorio)
   (async function loadSlides() {
+    await HYD;
     const ok = n => !/\.(json|md|txt|html?|js|css|db|ini)$/i.test(n) && !n.startsWith('.');
     try {
       const m = location.pathname.match(/^\/mediaservi\/MEDIASERVI\/([^/]+)\//i), ref = m ? m[1] : 'main';
@@ -1067,8 +1101,11 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   /* ---------- ajuste: cada diapositiva cabe siempre en la pantalla ---------- */
   const deck = document.getElementById('deck'), slides = [...document.querySelectorAll('.slide')];
   function fit(sl) {
-    const f = sl.querySelector('.fit'); if (!f || sl.id === 'museo') return; f.style.transform = 'none';
-    const k = Math.min(1.3, deck.clientWidth / f.scrollWidth, deck.clientHeight * .94 / f.scrollHeight);
+    const f = sl.querySelector('.fit'); if (!f || sl.id === 'museo') return; f.style.transform = 'none'; f.style.transformOrigin = ''; f.style.marginBottom = ''; sl.classList.remove('scrolly');
+    const W = deck.clientWidth, H = deck.clientHeight, sw = f.scrollWidth, sh = f.scrollHeight;
+    let k = Math.min(1.3, W / sw, H * .94 / sh);
+    const MIN = (W < 900 || H < 520) ? .78 : 0;   // en móvil nunca por debajo de un tamaño legible
+    if (k < MIN) { k = Math.min(1, W / sw); sl.classList.add('scrolly'); sl.scrollTop = 0; f.style.transformOrigin = '50% 0'; f.style.marginBottom = (sh * k - sh) + 'px'; }
     f.style.transform = Math.abs(k - 1) > .01 ? `scale(${k})` : 'none';
   }
   addEventListener('resize', () => { if (cur >= 0) fit(slides[cur]); });
@@ -1166,7 +1203,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   async function go(k, dir) {
     k = (k + slides.length) % slides.length; if (busy || k === cur) return;
     closeHolo(); closeTerm();
-    dir = dir || (k > cur ? 1 : -1); busy = true; puff = 1;
+    hydrate(); dir = dir || (k > cur ? 1 : -1); busy = true; puff = 1;
     if (cur >= 0) slides[cur].classList.add('leave');
     await ledWipe(dir, () => show(k, dir));
     setTimeout(() => busy = false, 250);
@@ -1183,14 +1220,14 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
     else if (e.key === 'Home') go(0, -1); else if (e.key === 'End') go(slides.length - 1, 1);
   });
   let acc = 0, lastW = 0;
-  addEventListener('wheel', e => { if (e.target.closest && e.target.closest('.tl')) return; e.preventDefault(); if (holoOpen || termOpen) return; const now = performance.now();
+  addEventListener('wheel', e => { if (e.target.closest && (e.target.closest('.tl') || (e.target.closest('.slide.scrolly') && Math.abs(e.deltaY) >= Math.abs(e.deltaX)))) return; e.preventDefault(); if (holoOpen || termOpen) return; const now = performance.now();
     if (now - lastW > 220) acc = 0; lastW = now; if (busy) return;
     acc += Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
     if (Math.abs(acc) > 60) { const d = acc > 0 ? 1 : -1; acc = 0; go(cur + d, d); } }, { passive: false });
   let tx = 0, ty = 0, tt = 0;
   addEventListener('touchstart', e => { const t = e.touches[0]; tx = t.clientX; ty = t.clientY; tt = performance.now(); }, { passive: true });
   addEventListener('touchend', e => { if (holoOpen || termOpen) return; const t = e.changedTouches[0], dx = t.clientX - tx, dy = t.clientY - ty;
-    if (performance.now() - tt > 900) return; const m = Math.abs(dx) > Math.abs(dy) ? dx : dy;
+    if (performance.now() - tt > 900) return; if (Math.abs(dy) >= Math.abs(dx) && e.target.closest && e.target.closest('.slide.scrolly')) return; const m = Math.abs(dx) > Math.abs(dy) ? dx : dy;
     if (Math.abs(m) > 45) { const d = m < 0 ? 1 : -1; go(cur + d, d); } }, { passive: true });
 
   /* ---------- código de tiempo y pantallas generadas ---------- */
@@ -1209,7 +1246,12 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
           if (list && list.length) { started = true; e.target.setShuffle(true); e.target.playVideoAt(Math.floor(Math.random() * list.length)); } }
       } });
   };
-  (() => { const sc = document.createElement('script'); sc.src = 'https://www.youtube.com/iframe_api'; sc.async = true; document.head.appendChild(sc); })();
+  (() => {   // el vídeo de fondo se carga tras la primera interacción (o a los 8 s) para no frenar la carga inicial
+    let done = false; const evs = ['pointerdown', 'pointermove', 'touchstart', 'keydown', 'wheel'];
+    const load = () => { if (done) return; done = true; evs.forEach(ev => removeEventListener(ev, load, true)); const sc = document.createElement('script'); sc.src = 'https://www.youtube.com/iframe_api'; sc.async = true; document.head.appendChild(sc); };
+    evs.forEach(ev => addEventListener(ev, load, { capture: true, passive: true }));
+    addEventListener('load', () => setTimeout(load, 8000));
+  })();
 
   /* ---------- cuenta atrás AVHUB (07.05.2027) ---------- */
   const avB = [...document.querySelectorAll('#avcd b')], avT = new Date('2027-05-07T00:00:00').getTime();
@@ -1219,9 +1261,9 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   /* ---------- arranque ---------- */
   applyLang();
   const start = Math.max(0, slides.findIndex(s => '#' + s.id === location.hash));
-  const boot = () => { if (cur < 0) show(start, 1); };
-  (document.fonts ? document.fonts.ready : Promise.resolve()).then(boot);
-  setTimeout(boot, 1500);
+  if (start) hydrate();
+  show(start, 1);   // se muestra al instante; al llegar las fuentes se reajusta el tamaño
+  if (document.fonts) { document.fonts.ready.then(() => fit(slides[cur])); document.fonts.addEventListener && document.fonts.addEventListener('loadingdone', () => fit(slides[cur])); }
 })();
 </script>
 <script>
