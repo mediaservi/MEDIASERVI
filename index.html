@@ -186,9 +186,9 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   background:linear-gradient(180deg,rgba(0,90,130,.16),rgba(0,30,60,.1));border:1px solid rgba(90,235,255,.6);
   box-shadow:0 0 34px rgba(0,210,255,.28),inset 0 0 50px rgba(0,210,255,.12);backdrop-filter:blur(1.5px);-webkit-backdrop-filter:blur(1.5px);
   clip-path:polygon(18px 0,calc(100% - 18px) 0,100% 18px,100% calc(100% - 18px),calc(100% - 18px) 100%,18px 100%,0 calc(100% - 18px),0 18px)}
-.term.open .tw{animation:termIn .75s cubic-bezier(.2,.9,.2,1) both}
+.term.open .tw{animation:termIn 1.05s cubic-bezier(.2,.9,.2,1) both}
 .term.closing .tw{animation:termOut .3s ease-in both}
-@keyframes termIn{0%{transform:scale(.2,.004);opacity:0;filter:brightness(4)}25%{transform:scale(1,.004);opacity:1;filter:brightness(4)}55%{transform:scale(1,1.04);filter:brightness(1.6) hue-rotate(40deg)}62%{opacity:.4}68%{opacity:1}78%{opacity:.7}100%{transform:none;opacity:1;filter:none}}
+@keyframes termIn{0%{transform:scale(.004,.08);opacity:0;filter:brightness(5) sepia(1) hue-rotate(40deg) saturate(6);box-shadow:0 0 60px #9dff00}18%{transform:scale(.006,.55);opacity:1;filter:brightness(5) sepia(1) hue-rotate(40deg) saturate(6)}40%{transform:scale(.01,1)}68%{transform:scale(1.04,1);filter:brightness(1.6) hue-rotate(40deg)}74%{opacity:.5}80%{opacity:1}88%{opacity:.75}100%{transform:none;opacity:1;filter:none}}
 @keyframes termOut{to{transform:scale(1,.004);opacity:0;filter:brightness(3)}}
 .tw::before{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(180deg,rgba(120,240,255,.06) 0 1px,transparent 1px 3px);animation:hflick 4s steps(1) infinite}
 .tw::after{content:'';position:absolute;left:0;right:0;height:40%;top:-40%;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(120,240,255,.08),transparent);animation:sweep 3.5s linear infinite}
@@ -1098,14 +1098,18 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
     tlist.innerHTML = OPTS.map((o, k) => `<button class="opt${o.wa ? ' wa2' : ''}" data-k="${k}" style="--c:${o.c};animation-delay:${.35 + k * .08}s"><span class="th2"${o.img ? ` style="background-image:url(${o.img})"` : ''}>${o.fx ? '<canvas width="160" height="90"></canvas>' : o.wa ? svg(ICON.siWhatsapp) : ''}</span><span><b>${o.n}</b><small>${T(...o.d)}</small></span></button>`).join('');
     tlist.querySelectorAll('canvas').forEach((cv, i) => { const o = OPTS[+cv.closest('.opt').dataset.k]; (function an(t) { if (!cv.isConnected || !termOpen) return; drawFxOn(cv, o.fx, t / 1000); requestAnimationFrame(an); })(0); });
   }
-  function openTerm() { termOpen = true; term.classList.remove('closing'); term.classList.add('open'); renderTerm(); }
+  function openTerm() { termOpen = true; term.classList.remove('closing'); term.classList.add('open'); renderTerm();
+    const tw = term.querySelector('.tw'), r = tw.getBoundingClientRect(), [sx, sy] = slitXY || [r.left + r.width / 2, r.top + r.height / 2];
+    tw.style.transformOrigin = `${sx - r.left}px ${sy - r.top}px`; tw.style.animation = 'none'; void tw.offsetWidth; tw.style.animation = ''; }
   function closeTerm() { if (!termOpen) return; termOpen = false; term.classList.add('closing'); setTimeout(() => term.classList.remove('open', 'closing'), 300); }
   document.getElementById('termX').addEventListener('click', closeTerm);
   term.addEventListener('click', e => { if (e.target === term) closeTerm(); });
   tlist.addEventListener('click', e => { const b = e.target.closest('.opt'); if (!b) return; const o = OPTS[+b.dataset.k];
     if (o.wa) { window.open(o.u, '_blank', 'noopener'); return; } closeTerm(); setTimeout(() => openHolo(+b.dataset.k, e.clientX, e.clientY), 200); });
   hud.addEventListener('click', openTerm); hud.addEventListener('keydown', e => { if (e.key === 'Enter') openTerm(); });
+  let slitXY = null;
   const api = {
+    slit(x, y) { const r = museum.getBoundingClientRect(); slitXY = [r.left + x, r.top + y]; },
     place(x, y, e) { const port = innerWidth < innerHeight || innerWidth <= 760;
       hud.classList.toggle('below', port);
       const p = port ? `translate(${Math.round(x)}px,${Math.round(y + 46)}px) translateX(-50%)` : `translate(${Math.round(x + 60)}px,${Math.round(y)}px) translateY(-50%)`;
@@ -1357,9 +1361,16 @@ window.__buildMuseum = function (THREE, host, api, PP) {
   const vc = document.createElement('canvas'); vc.width = 1920; vc.height = 720; const vg = vc.getContext('2d');
   const vtex = new THREE.CanvasTexture(vc); vtex.colorSpace = THREE.SRGBColorSpace; vtex.wrapS = THREE.RepeatWrapping; vtex.repeat.x = -1; vtex.offset.x = 1;
   const VA = 96 * Math.PI / 180;
-  const vband = new THREE.Mesh(new THREE.CylinderGeometry(R - .1, R - .1, 5.4, 96, 1, true, Math.PI - VA / 2, VA), new THREE.MeshBasicMaterial({ map: vtex, side: THREE.BackSide, transparent: true, toneMapped: false, depthWrite: false }));
+  const vband = new THREE.Mesh(new THREE.CylinderGeometry(R - .1, R - .1, 5.4, 96, 1, true, Math.PI - VA / 2, VA), new THREE.MeshBasicMaterial({ map: vtex, color: '#c4c4c4', side: THREE.BackSide, transparent: true, toneMapped: false, depthWrite: false }));
   vband.position.y = 1.15 + 5.4 / 2 + .15; vband.renderOrder = 2; scene.add(vband);
   const vfx = document.createElement('canvas'); vfx.width = 640; vfx.height = 360;
+  const vid = document.createElement('video'); vid.src = vid.canPlayType('video/mp4; codecs="avc1.4D401F"') ? 'assets/video/museo.mp4' : 'assets/video/museo.webm'; vid.muted = true; vid.loop = true; vid.playsInline = true; vid.setAttribute('playsinline', ''); vid.preload = 'auto';
+  let useVid = false; const vidTex = new THREE.VideoTexture(vid); vidTex.colorSpace = THREE.SRGBColorSpace; vidTex.wrapS = THREE.RepeatWrapping; vidTex.repeat.x = -1; vidTex.offset.x = 1;
+  vid.addEventListener('playing', () => { if (!useVid) { useVid = true; vband.material.map = vidTex; vband.material.needsUpdate = true; } });
+  // máscara de bordes para fundir el vídeo con la pantalla LED
+  const em = document.createElement('canvas'); em.width = 256; em.height = 4; const eg = em.getContext('2d'); const egx = eg.createLinearGradient(0, 0, 256, 0);
+  egx.addColorStop(0, '#000'); egx.addColorStop(.12, '#fff'); egx.addColorStop(.88, '#fff'); egx.addColorStop(1, '#000'); eg.fillStyle = egx; eg.fillRect(0, 0, 256, 4);
+  const edgeTex = new THREE.CanvasTexture(em); vband.material.alphaMap = edgeTex; vband.material.transparent = true;
   let lastVid = 0;
   function drawVideo(t) {
     t = Math.max(0, t); const W = 1920, H = 720, list = OPTS.map((o, i) => i).filter(i => !OPTS[i].wa), dur = 9, n = Math.floor(t / dur), ph = (t % dur) / dur;
@@ -1419,9 +1430,10 @@ window.__buildMuseum = function (THREE, host, api, PP) {
     mists.forEach((m, i) => { m.material.map.offset.set(t * .01 * (i + 1), t * .006 * (i - 1)); });
     const pa = pgeo.attributes.position; for (let i = 0; i < N; i++) { let y = pa.getY(i) + dt * .12; if (y > 8) y = 0; pa.setY(i, y); } pa.needsUpdate = true;
     if (now - lastWall > 66) { lastWall = now; drawWall(t); }
-    if (now - lastVid > 40) { lastVid = now; drawVideo(t); }
+    if (!useVid && now - lastVid > 40) { lastVid = now; drawVideo(t); }
     if (composer) composer.render(); else renderer.render(scene, cam);
     // posición en pantalla del botón para el texto HUD
+    slit.getWorldPosition(v3); v3.project(cam); api.slit && api.slit((v3.x * .5 + .5) * host.clientWidth, (-v3.y * .5 + .5) * host.clientHeight);
     btn.getWorldPosition(v3); v3.project(cam);
     api.place((v3.x * .5 + .5) * host.clientWidth, (-v3.y * .5 + .5) * host.clientHeight, e);
   }
@@ -1430,8 +1442,8 @@ window.__buildMuseum = function (THREE, host, api, PP) {
     overBtn = overButton(e.clientX, e.clientY); renderer.domElement.style.cursor = overBtn ? 'pointer' : 'default'; });
   renderer.domElement.addEventListener('click', e => { if (overButton(e.clientX, e.clientY)) api.press(e.clientX, e.clientY); });
   return {
-    start(lang) { LANG = lang; resize(); running = true; tStart = last = performance.now(); SLOTS.forEach((s, i) => { s.k = -1; s.next = i * .4; }); cancelAnimationFrame(raf); raf = requestAnimationFrame(frame); },
-    stop() { running = false; cancelAnimationFrame(raf); },
+    start(lang) { LANG = lang; resize(); running = true; vid.play().catch(() => {}); tStart = last = performance.now(); SLOTS.forEach((s, i) => { s.k = -1; s.next = i * .4; }); cancelAnimationFrame(raf); raf = requestAnimationFrame(frame); },
+    stop() { running = false; cancelAnimationFrame(raf); vid.pause(); },
     lang(l) { LANG = l; }
   };
 };
