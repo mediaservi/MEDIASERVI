@@ -17,8 +17,6 @@ body{height:100dvh}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 /* fondo fijo: panorámica en blanco y negro centrada en el logo */
 .pano{position:fixed;inset:0;background:#2a2a2d url(../assets/img/klub.webp) 50% 50%/auto 100% no-repeat;filter:grayscale(1) brightness(.62) contrast(1.05)}
-/* textura chesterfield muy sutil */
-.sofa{position:fixed;left:50%;bottom:-4vh;width:min(1500px,120vw);aspect-ratio:529/220;transform:translateX(-50%);background:url(../assets/img/chesterfield.webp) center/contain no-repeat;opacity:.16;filter:grayscale(.4) blur(1.2px) sepia(.4);mix-blend-mode:luminosity;pointer-events:none}
 .vig{position:fixed;inset:0;background:radial-gradient(ellipse at 50% 45%,transparent 35%,rgba(0,0,0,.7) 100%);pointer-events:none}
 /* posters con marco dorado */
 .apps{position:fixed;left:0;right:0;top:calc(76px + env(safe-area-inset-top,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-between;align-items:center;padding:0 clamp(10px,2vw,30px);pointer-events:none;container-type:size}
@@ -33,7 +31,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .frame span{position:absolute;left:50%;bottom:-26px;transform:translateX(-50%);white-space:nowrap;font-size:10px;letter-spacing:.24em;color:#cfc6b0;text-shadow:0 1px 2px #000}
 @media (orientation:portrait){
   .apps{flex-direction:column;justify-content:center;gap:14px;top:calc(74px + env(safe-area-inset-top,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px))}
-  .frame .mat{height:min(calc(50cqh - 7px - 2 * var(--P)),calc((100cqw - 2 * var(--P)) * 16 / 9))}
+  .frame.cine{display:none}
+  .frame .mat{height:min(calc(100cqh - 2 * var(--P)),calc((100cqw - 2 * var(--P)) * 16 / 9))}
   .frame span{display:none}
   .pano{background-size:auto 60%;background-position:50% 45%;filter:grayscale(1) brightness(.28)}
   .vig{background:radial-gradient(ellipse 55% 60% at 50% 50%,transparent 20%,rgba(0,0,0,.92) 85%)}
@@ -77,10 +76,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 </head>
 <body>
 <div class="pano" role="img" aria-label="KLUB"></div>
-<div class="sofa"></div>
 <div class="vig"></div>
 <main class="apps">
-  <div class="frame"><div class="mat"><iframe src="https://msp-theater.netlify.app/" title="POSTERS CINE" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span>POSTERS CINE</span></div>
+  <div class="frame cine"><div class="mat"><iframe src="https://msp-theater.netlify.app/" title="POSTERS CINE" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span>POSTERS CINE</span></div>
   <div class="frame"><div class="mat"><iframe src="https://msp-klub.netlify.app/" title="POSTERS KLUB" allow="autoplay; fullscreen" allowfullscreen></iframe></div><span>POSTERS KLUB</span></div>
 </main>
 <header class="top">
@@ -108,12 +106,17 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 (() => {
   const bgm = document.getElementById('bgm'), sndBtn = document.getElementById('sndBtn'), VOL = [0, .12, .4];
   let lvl = 1; try { const v = localStorage.getItem('ms-vol'); if (v !== null) lvl = +v; } catch (e) {} if (!(lvl >= 0 && lvl <= 2)) lvl = 1;
-  const applyVol = () => { sndBtn.dataset.v = lvl; bgm.volume = VOL[lvl]; bgm.muted = lvl === 0; };
-  const tryPlay = () => { if (lvl > 0 && bgm.paused) bgm.play().catch(() => {}); };
+  const EMB = window.parent !== window && /[?&]in=1/.test(location.search);
+  if (EMB) { bgm.removeAttribute('autoplay'); bgm.pause(); bgm.src = '';
+    addEventListener('message', e => { if (e.origin === location.origin && e.data && e.data.klub === 'lvl') { lvl = e.data.lvl; sndBtn.dataset.v = lvl; } });
+    parent.postMessage({ klub: 'hello' }, location.origin);
+    document.getElementById('back').addEventListener('click', ev => { ev.preventDefault(); parent.postMessage({ klub: 'close' }, location.origin); }); }
+  const applyVol = () => { sndBtn.dataset.v = lvl; if (EMB) return; bgm.volume = VOL[lvl]; bgm.muted = lvl === 0; };
+  const tryPlay = () => { if (!EMB && lvl > 0 && bgm.paused) bgm.play().catch(() => {}); };
   applyVol(); tryPlay();
   const unlock = () => { tryPlay(); if (!bgm.paused || lvl === 0) ['pointerdown', 'keydown', 'touchstart'].forEach(ev => removeEventListener(ev, unlock, true)); };
   ['pointerdown', 'keydown', 'touchstart'].forEach(ev => addEventListener(ev, unlock, true));
-  sndBtn.addEventListener('click', () => { lvl = (lvl + 2) % 3; try { localStorage.setItem('ms-vol', lvl); } catch (e) {} applyVol(); tryPlay(); });
+  sndBtn.addEventListener('click', () => { lvl = (lvl + 2) % 3; try { localStorage.setItem('ms-vol', lvl); } catch (e) {} applyVol(); tryPlay(); if (EMB) parent.postMessage({ klub: 'vol', lvl }, location.origin); });
 })();
 (() => {
   let l = null; try { l = localStorage.getItem('ms-lang'); } catch (e) {}
