@@ -234,6 +234,8 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 .hv .ld i{width:44px;height:44px;border-radius:50%;border:3px solid rgba(0,220,255,.2);border-top-color:#2ff;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .hv iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:transparent}
+.hv .imgv{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#05040a;cursor:zoom-in}
+.hv .imgv img{max-width:100%;max-height:100%;object-fit:contain}
 .hv .ext{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;text-align:center;background:radial-gradient(circle at 50% 40%,rgba(0,120,200,.25),transparent 60%)}
 .hv .ext canvas{width:min(420px,80%);aspect-ratio:16/9;border-radius:6px;border:1px solid rgba(0,220,255,.35)}
 .hv .ext p{font:600 13px/1.5 'Share Tech Mono',monospace;letter-spacing:.12em;color:#bfe}
@@ -273,9 +275,12 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 .ltrack{position:absolute;left:0;top:0;height:100%;display:flex;align-items:center;gap:clamp(30px,4vw,60px);width:max-content;animation:lmove 45s linear infinite}
 .logos:hover .ltrack{animation-play-state:paused}
 @keyframes lmove{to{transform:translateX(-50%)}}
-.ltrack button{flex:none;display:flex;align-items:center;justify-content:center;height:100%;aspect-ratio:2.3/1;border-radius:6px;background:rgba(255,255,255,.92);box-shadow:0 4px 14px rgba(0,0,0,.45);opacity:.78;transition:opacity .3s,transform .3s,box-shadow .3s}
-.ltrack button:hover,.ltrack button.sel{opacity:1;transform:scale(1.06);box-shadow:0 0 0 2px var(--blue),0 0 18px rgba(0,180,255,.6)}
-.ltrack img{display:block;max-width:82%;max-height:72%;object-fit:contain}
+.ltrack button{flex:none;display:flex;align-items:center;justify-content:center;height:100%;width:clamp(96px,10vw,150px);opacity:.82;transition:opacity .3s,transform .3s,filter .3s}
+.ltrack button:hover,.ltrack button.sel{opacity:1;transform:scale(1.08);filter:drop-shadow(0 0 10px rgba(0,180,255,.7))}
+.ltrack img{display:block;max-width:100%;max-height:70%;object-fit:contain}
+.ltrack img.lm-inv{filter:invert(1) hue-rotate(180deg) brightness(1.15)}
+.ltrack img.lm-invkey{filter:invert(1) url(#keyBlack)}
+.ltrack img.lm-key{filter:url(#keyBlack)}
 .scrwrap{position:relative;flex:1;min-height:0;width:100%;display:flex;justify-content:center;align-items:center;container-type:size}
 .screen{position:relative;width:min(100cqw,calc(100cqh * 16 / 9));aspect-ratio:16/9}
 .screen .msk{position:absolute;inset:0;overflow:hidden;background:#000;
@@ -376,6 +381,9 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 @keyframes kb{0%{transform:scale(1)}100%{transform:scale(var(--z,1.6))}}
 .view .ph .hl{position:absolute;border-radius:3px;border:2px solid var(--green);box-shadow:0 0 0 2px rgba(0,0,0,.35),0 0 16px var(--green),inset 0 0 12px rgba(0,255,4,.45);animation:hl 1.2s ease-in-out infinite}
 @keyframes hl{50%{box-shadow:0 0 0 2px rgba(0,0,0,.35),0 0 28px var(--green),inset 0 0 18px rgba(0,255,4,.7);opacity:.75}}
+.vview{border-color:rgba(255,176,0,.45);box-shadow:0 0 18px rgba(255,176,0,.15)}
+.view[hidden]{display:none}
+.vview .ph.on{animation:kb 9s ease-in-out infinite alternate}
 .view .tag{position:absolute;left:8px;top:8px;z-index:2;padding:5px 8px;border-radius:3px;background:rgba(0,0,0,.72);font:700 10px/1 'Share Tech Mono',monospace;letter-spacing:.18em;color:var(--green)}
 .view .dots{position:absolute;left:0;right:0;bottom:8px;z-index:2;display:flex;justify-content:center;gap:6px}
 .view .dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.35)}
@@ -434,6 +442,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="keyBlack" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  .3 .6 .1 0 0"/></filter></svg>
 <canvas id="fx" aria-hidden="true"></canvas>
 <div class="bgvid" id="bgvid" aria-hidden="true"><iframe title="" tabindex="-1" allow="autoplay; encrypted-media" src="https://www.youtube-nocookie.com/embed/vKN4AcGz7zs?autoplay=1&mute=1&controls=0&loop=1&playlist=vKN4AcGz7zs&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&fs=0&playsinline=1&cc_load_policy=0"></iframe></div>
 <div class="vign"></div>
@@ -530,8 +539,11 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
               </div>
             </div></div>
           <div class="card" data-in style="--i:3;--c:var(--amber)"><span class="t"><i></i><span data-t="ACCESO VEHÍCULOS (PREVIO AVISO)|VEHICLE ACCESS (PRIOR NOTICE)"></span></span>
+            <div class="ped"><div class="txt">
             <p><span data-t="Pasaje en|Passage at"></span><br><strong>Carrer Treball, 246</strong><br><span data-t="(Reja entre Lidl y la Tienda Scum)|(Gate between Lidl and the Scum shop)"></span></p>
             <a class="mp" href="https://www.google.com/maps/search/?api=1&query=Carrer+del+Treball+246+Barcelona" target="_blank" rel="noopener" data-t="ABRIR EN MAPS ↗|OPEN IN MAPS ↗"></a></div>
+            <div class="view vview" id="vview" hidden><div class="ph on" style="background-image:url(assets/img/accesovehiculos.png);background-position:50% 50%;--z:1.25"></div><span class="tag" style="color:var(--amber)" data-t="ACCESO COCHE|CAR ACCESS"></span></div>
+            </div></div>
         </div>
         <div class="map" data-in style="--i:4"><iframe title="Mapa" loading="lazy" referrerpolicy="no-referrer-when-downgrade" data-src="https://maps.google.com/maps?q=Carrer%20de%20l'Agricultura%20273%2C%20Barcelona&z=16&output=embed"></iframe><span class="pin">◉ MEDIASERVI</span></div>
       </div>
@@ -597,6 +609,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
     document.querySelectorAll('[data-t]').forEach(el => { const [es, en] = el.dataset.t.split('|'); el.innerHTML = (LANG === 'es' ? es : en).replace('{H}', HEART); });
     document.getElementById('langCur').textContent = LANG.toUpperCase();
     document.querySelectorAll('#langMenu button').forEach(b => b.classList.toggle('sel', b.dataset.l === LANG));
+    OPTS.forEach(o => { if (o.nn) o.n = T(...o.nn); });
     renderDynamic();
     if (typeof chb !== 'undefined') chb.forEach((b, k) => b.querySelector('span').textContent = slides[k].dataset[LANG]);
     if (window.__museumLang) window.__museumLang();
@@ -651,6 +664,13 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   window.__PROJS = PROJS;
   const OPTS = PROJS.concat([{ n: 'WHATSAPP', d: ['Contacta x WhatsApp', 'Contact via WhatsApp'], u: 'https://wa.me/JosepTarroja', c: '#25d366', wa: true }]);
   window.__OPTS = OPTS;
+  const VGH = { nn: ['HISTORIA DEL VIDEOJUEGO', 'VIDEO GAME HISTORY'], n: 'HISTORIA DEL VIDEOJUEGO', d: ['Línea del tiempo de los videojuegos a pantalla completa', 'Full-screen video game timeline'], u: 'assets/img/videogamehistory.png', img: 'assets/img/videogamehistory.png', c: '#ffb000', view: 'image', frame: false };
+  const probe = src => new Promise(r => { const i = new Image(); i.onload = () => r(true); i.onerror = () => r(false); i.src = src; });
+  const assetsReady = Promise.race([Promise.all([
+    probe('assets/img/vgapp.png').then(ok => { if (ok) PROJS[3].img = 'assets/img/vgapp.png'; }),
+    probe(VGH.img).then(ok => { if (ok) OPTS.splice(OPTS.length - 1, 0, VGH); }),
+    probe('assets/img/accesovehiculos.png').then(ok => { if (ok) document.getElementById('vview').hidden = false; })
+  ]), new Promise(r => setTimeout(r, 2500))]).then(() => { if (typeof renderDynamic === 'function') renderDynamic(); });
   const hexA = (h, a) => { const n = parseInt(h.slice(1), 16); return `rgba(${n >> 16},${n >> 8 & 255},${n & 255},${a})`; };
   const ext = 'target="_blank" rel="noopener"';
   document.getElementById('social').innerHTML = SOCIAL.map((s, k) =>
@@ -869,7 +889,8 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   const MAP_EMBED = 'https://www.google.com/maps/d/embed?mid=1iQXyjE7wPfG3x0dh5UDneDDDFXr5ogU&hl=es&ehbc=2E312F', MAP_FULL = 'https://www.google.com/maps/d/viewer?mid=1iQXyjE7wPfG3x0dh5UDneDDDFXr5ogU&hl=es';
   const ltrack = document.getElementById('ltrack'), ctrack = document.getElementById('ctrack'), film = document.getElementById('film'), fimgs = [...film.querySelectorAll('img')];
   const showEl = document.getElementById('show'), flash = document.getElementById('flash'), subs = document.getElementById('subs'), screenEl = document.getElementById('screen'), globeBtn = document.getElementById('globe');
-  const strip = FAVS.map(([n, u, f], k) => `<button data-k="${k}" aria-label="${n}"><img src="assets/fav/${f}.webp" alt=""></button>`).join(''); ltrack.innerHTML = strip + strip;
+  const LMODE = { atlantisbahamas: 'inv', atlantisthepalm: 'inv', hardrock: 'inv', iaapa: 'inv', universal: 'inv', disney: 'invkey', puydufou: 'key' };
+  const strip = FAVS.map(([n, u, f], k) => `<button data-k="${k}" aria-label="${n}"><img class="lm-${LMODE[f] || 'n'}" src="assets/fav/${f}.webp" alt=""></button>`).join(''); ltrack.innerHTML = strip + strip;
   const crawlHTML = FAVS.map(([n], k) => `<button data-k="${k}">${n}</button>`).join(''); ctrack.innerHTML = crawlHTML + crawlHTML;
   let slides2 = [], sk = 0, mode = 'film', ftimer = 0, fa = 0, pick = -1, pickTimer = 0;
   function setSubs() {
@@ -913,13 +934,13 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
     requestAnimationFrame(() => leader(t + 1 / 60)); }
   // imágenes del carrusel: assets/slide (list.json o listado del repositorio)
   (async function loadSlides() {
-    const ok = n => /\.(jpe?g|png|webp|gif|avif)$/i.test(n);
-    try { const r = await fetch('assets/slide/list.json', { cache: 'no-store' }); if (r.ok) { const j = await r.json(); slides2 = j.filter(ok).map(n => 'assets/slide/' + n); } } catch (e) {}
-    if (!slides2.length) try {
+    const ok = n => !/\.(json|md|txt|html?|js|css|db|ini)$/i.test(n) && !n.startsWith('.');
+    try {
       const m = location.pathname.match(/^\/mediaservi\/MEDIASERVI\/([^/]+)\//i), ref = m ? m[1] : 'main';
       const r = await fetch(`https://api.github.com/repos/mediaservi/MEDIASERVI/contents/assets/slide?ref=${encodeURIComponent(ref)}`);
       if (r.ok) slides2 = (await r.json()).filter(x => x.type === 'file' && ok(x.name)).map(x => 'assets/slide/' + encodeURIComponent(x.name));
     } catch (e) {}
+    if (!slides2.length) try { const r = await fetch('assets/slide/list.json', { cache: 'no-store' }); if (r.ok) { const j = await r.json(); slides2 = j.filter(ok).map(n => 'assets/slide/' + encodeURIComponent(n)); } } catch (e) {}
     slides2.sort(() => Math.random() - .5);
     if (slides2.length) { fimgs[0].src = slides2[0]; fimgs[0].classList.add('on'); sk = 0; film.classList.remove('noimg'); }
     else { film.classList.add('noimg'); if (slides[cur] && slides[cur].id === 'favoritos') leader(0); }
@@ -994,14 +1015,16 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   const holo = document.getElementById('holo'), holoW = document.getElementById('holoW'), holoV = document.getElementById('holoV'), holoList = document.getElementById('holoList');
   let holoOpen = false, holoK = 0;
   function fillHolo(k) {
-    holoK = k; const p = PROJS[k];
+    holoK = k; const p = OPTS[k];
     document.getElementById('holoT').textContent = p.n + ' · ' + T(...p.d);
     document.getElementById('holoExt').href = document.getElementById('holoExt2').href = p.u;
-    holoList.innerHTML = PROJS.map((q, j) => `<li><button data-k="${j}" class="${j === k ? 'sel' : ''}" style="--c:${q.c}"><i></i>${q.n}</button></li>`).join('');
+    holoList.innerHTML = OPTS.map((q, j) => q.wa ? '' : `<li><button data-k="${j}" class="${j === k ? 'sel' : ''}" style="--c:${q.c}"><i></i>${q.n}</button></li>`).join('');
   }
   function loadHolo(k) {
-    const p = PROJS[k]; fillHolo(k);
-    if (p.frame) {
+    const p = OPTS[k]; fillHolo(k);
+    if (p.view === 'image') {
+      holoV.innerHTML = `<a class="imgv" href="${p.img}" target="_blank" rel="noopener"><img src="${p.img}" alt="${p.n}"></a>`;
+    } else if (p.frame) {
       holoV.innerHTML = `<div class="ld"><i></i>${T('ESTABLECIENDO CONEXIÓN…', 'ESTABLISHING LINK…')}</div><iframe src="${p.u}" title="${p.n}" allow="autoplay; fullscreen; microphone; camera" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
     } else {
       holoV.innerHTML = `<div class="ext"><canvas width="640" height="360"></canvas><p>${T('Esta app se abre en Google Play', 'This app opens on Google Play')}</p><a href="${p.u}" target="_blank" rel="noopener">${T('ABRIR EN GOOGLE PLAY ↗', 'OPEN IN GOOGLE PLAY ↗')}</a></div>`;
@@ -1047,7 +1070,10 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   };
   function glitchLoop() { clearTimeout(hudTimer); hudTimer = setTimeout(() => { hud.classList.remove('glitch'); void hud.offsetWidth; hud.classList.add('glitch'); setTimeout(() => hud.classList.remove('glitch'), 340); glitchLoop(); }, 900 + Math.random() * 2600); }
   function enterMuseum() {
-    if (!museumMod) museumMod = import('three').then(THREE => window.__buildMuseum(THREE, museum, api)).catch(e => { console.warn('museo', e); return null; });
+    if (!museumMod) museumMod = import('three').then(async THREE => {
+      const pp = {}; await Promise.all([['EffectComposer', 'EffectComposer'], ['RenderPass', 'RenderPass'], ['UnrealBloomPass', 'UnrealBloomPass'], ['OutputPass', 'OutputPass']].map(([f, n]) =>
+        import(`three/addons/postprocessing/${f}.js`).then(m => pp[n] = m[n]).catch(() => {})));
+      await assetsReady; return window.__buildMuseum(THREE, museum, api, pp); }).catch(e => { console.warn('museo', e); return null; });
     museumMod.then(m => { if (slides[cur].id !== 'museo') return; if (!m) { museoSlide.classList.add('nomuseum'); fit(museoSlide); return; } museum.classList.add('on'); m.start(LANG); glitchLoop(); });
   }
   function leaveMuseum() { museum.classList.remove('on'); hud.classList.remove('vis'); clearTimeout(hudTimer); closeTerm(); if (museumMod) museumMod.then(m => m && m.stop()); }
@@ -1119,14 +1145,14 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
    MUSEO DIGITAL 3D: sala circular cuyo muro curvo es una pantalla LED de píxel grande,
    con un tótem-obelisco en el centro (franja verde lima y botón magenta).
    =================================================================== */
-window.__buildMuseum = function (THREE, host, api) {
+window.__buildMuseum = function (THREE, host, api, PP) {
   const OPTS = window.__OPTS, drawFx = window.__drawFxOn;
   let LANG = 'es'; const T = (es, en) => LANG === 'es' ? es : en;
   const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(innerWidth <= 760 ? 1.5 : 2, devicePixelRatio || 1));
   renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.1;
   host.prepend(renderer.domElement); renderer.domElement.tabIndex = -1;
-  const scene = new THREE.Scene(); scene.background = new THREE.Color('#020106'); scene.fog = new THREE.FogExp2('#04020a', .03);
+  const scene = new THREE.Scene(); scene.background = new THREE.Color('#03020a'); scene.fog = new THREE.FogExp2('#060318', .028);
   const cam = new THREE.PerspectiveCamera(55, 1, .1, 160);
   scene.add(new THREE.AmbientLight('#6f7fa8', .5)); scene.add(new THREE.HemisphereLight('#7b8cff', '#040208', .45));
   const R = 12.5, TZ = -2.2;
@@ -1137,11 +1163,11 @@ window.__buildMuseum = function (THREE, host, api) {
   gg.fillStyle = '#06050b'; gg.fillRect(0, 0, 1024, 1024);
   for (let i = 0; i <= 32; i++) { const p = i * 32; gg.fillStyle = i % 8 ? 'rgba(110,90,255,.08)' : 'rgba(0,200,255,.16)'; gg.fillRect(p, 0, 2, 1024); gg.fillRect(0, p, 1024, 2); }
   const gt = new THREE.CanvasTexture(gc); gt.wrapS = gt.wrapT = THREE.RepeatWrapping; gt.repeat.set(4, 4); gt.colorSpace = THREE.SRGBColorSpace; gt.anisotropy = 8;
-  const floor = new THREE.Mesh(new THREE.CircleGeometry(R + 1, 96), new THREE.MeshStandardMaterial({ map: gt, color: '#1c1928', metalness: .85, roughness: .28, emissive: '#100820', emissiveMap: gt, emissiveIntensity: .5 }));
+  const floor = new THREE.Mesh(new THREE.CircleGeometry(R + 1, 96), new THREE.MeshStandardMaterial({ map: gt, color: '#120f1c', metalness: .9, roughness: .3, emissive: '#0a0518', emissiveMap: gt, emissiveIntensity: .35 }));
   floor.rotation.x = -Math.PI / 2; scene.add(floor);
   const ring = (r, y, c, t) => { const m = new THREE.Mesh(new THREE.TorusGeometry(r, t, 8, 180), basic(c)); m.rotation.x = Math.PI / 2; m.position.y = y; scene.add(m); return m; };
-  ring(R - .2, .03, '#3a1a80', .05); ring(R - .2, 8.1, '#3a1a80', .06);
-  const baseRing = ring(2.1, .02, '#9dff00', .025); baseRing.position.z = TZ;
+  ring(R - .2, .03, '#e100ff', .04); ring(R - .2, 8.1, '#00b4ff', .05); ring(R - .2, .72, '#9900ff', .03);
+  const baseRing = ring(4.6, .015, '#9dff00', .02); baseRing.position.z = TZ;
 
   // ---------- muro: pantalla LED curva de píxel grande ----------
   const LW = 1152, LH = 128, lc = document.createElement('canvas'); lc.width = LW; lc.height = LH; const lg = lc.getContext('2d');
@@ -1166,6 +1192,7 @@ window.__buildMuseum = function (THREE, host, api) {
   const SLOTS = [-74, -40, 40, 74].map(d => ({ x: ang2x(d), k: -1, next: 0, from: -1, t: 0, seed: [] }));
   const PW = 92, PH = 60, PY = 30;
   const imgs = {}; OPTS.forEach((o, i) => { if (o.img) { const im = new Image(); im.onload = () => imgs[i] = im; im.src = o.img; } });
+  let composer = null;
   const tmp = document.createElement('canvas'); tmp.width = PW; tmp.height = PH; const tg = tmp.getContext('2d');
   function drawOpt(i, t) {
     const o = OPTS[i]; tg.fillStyle = '#000'; tg.fillRect(0, 0, PW, PH);
@@ -1206,64 +1233,93 @@ window.__buildMuseum = function (THREE, host, api) {
     ltex.needsUpdate = true;
   }
 
-  // ---------- tótem: obelisco de piedra tallada ----------
+  // ---------- tótem: monolito de neón sobre plataforma escalonada (colores corporativos) ----------
   const totem = new THREE.Group(); totem.position.set(0, 0, TZ); scene.add(totem);
-  const sc = document.createElement('canvas'); sc.width = 512; sc.height = 1536; const sg = sc.getContext('2d');
-  (function stone() {
-    const id = sg.createImageData(512, 1536);
-    for (let i = 0; i < 512 * 1536; i++) { const n = Math.random() * 40 + 120; id.data[i * 4] = n * .78; id.data[i * 4 + 1] = n * .84; id.data[i * 4 + 2] = n; id.data[i * 4 + 3] = 255; }
-    sg.putImageData(id, 0, 0);
-    for (let k = 0; k < 900; k++) { sg.fillStyle = `rgba(${Math.random() < .5 ? '20,24,34' : '210,220,240'},${Math.random() * .08})`; const w = Math.random() * 60; sg.fillRect(Math.random() * 512, Math.random() * 1536, w, w * Math.random()); }
-    // grabados tipo laberinto en cada cara (4 franjas de 128 px)
-    for (let f = 0; f < 4; f++) {
-      const x0 = f * 128 + 18, w = 92; let y = 60;
-      const groove = (x1, y1, x2, y2) => { sg.strokeStyle = 'rgba(15,18,28,.85)'; sg.lineWidth = 5; sg.beginPath(); sg.moveTo(x1, y1); sg.lineTo(x2, y2); sg.stroke();
-        sg.strokeStyle = 'rgba(230,236,255,.35)'; sg.lineWidth = 1.5; sg.beginPath(); sg.moveTo(x1 + 2, y1 + 2); sg.lineTo(x2 + 2, y2 + 2); sg.stroke(); };
-      // marcos concéntricos
-      for (let r = 0; r < 4; r++) { const m = r * 9; groove(x0 + m, y + m, x0 + w - m, y + m); groove(x0 + w - m, y + m, x0 + w - m, y + 140 - m); groove(x0 + w - m, y + 140 - m, x0 + m, y + 140 - m); groove(x0 + m, y + 140 - m, x0 + m, y + m + 9); }
-      y += 170;
-      // laberinto
-      const cs = 11.5, cols = 8, rows = 52; for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) { const px = x0 + i * cs, py = y + j * cs;
-        if (Math.random() < .55) groove(px, py, px + cs, py); if (Math.random() < .55) groove(px, py, px, py + cs); }
-      y += rows * cs + 30;
-      for (let r = 0; r < 3; r++) { const m = r * 10; groove(x0 + m, y + m, x0 + w - m, y + m); groove(x0 + w - m, y + m, x0 + w - m, y + 120 - m); groove(x0 + w - m, y + 120 - m, x0 + m, y + 120 - m); groove(x0 + m, y + 120 - m, x0 + m, y + m); }
-    }
-  })();
-  const stoneTex = new THREE.CanvasTexture(sc); stoneTex.colorSpace = THREE.SRGBColorSpace; stoneTex.anisotropy = 8;
-  const bumpTex = new THREE.CanvasTexture(sc);
-  const OH = 7.2, RB = 1.25, RT = .82;
-  const ob = new THREE.Mesh(new THREE.CylinderGeometry(RT, RB, OH, 4, 1), new THREE.MeshStandardMaterial({ map: stoneTex, bumpMap: bumpTex, bumpScale: 3, roughness: .88, metalness: .05, color: '#aab4cc' }));
-  ob.rotation.y = Math.PI / 4; ob.position.y = OH / 2; totem.add(ob);
-  const capM = new THREE.Mesh(new THREE.CylinderGeometry(.05, RT, .45, 4, 1), ob.material); capM.rotation.y = Math.PI / 4; capM.position.y = OH + .225; totem.add(capM);
-  const faceZ = y => (RB + (RT - RB) * y / OH) * Math.SQRT1_2 + .012, tilt = Math.atan((RB - RT) * Math.SQRT1_2 / OH);
+  const dark = new THREE.MeshStandardMaterial({ color: '#0a0912', metalness: .85, roughness: .22 });
+  const neon = (w, h, d, c, x, y, z, grp = totem) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), basic(c)); m.position.set(x, y, z); grp.add(m); return m; };
+  // plataforma de 4 escalones con cantos de neón
+  const TIERS = [[6.6, '#e100ff'], [5.4, '#00b4ff'], [4.2, '#9900ff'], [3.1, '#e100ff']]; let ty = 0;
+  TIERS.forEach(([w, c]) => { const h = .3; const st = new THREE.Mesh(new THREE.BoxGeometry(w, h, w), dark); st.position.y = ty + h / 2; totem.add(st);
+    const e = w / 2 + .005, y = ty + h - .01; neon(w, .025, .025, c, 0, y, e); neon(w, .025, .025, c, 0, y, -e); neon(.025, .025, w, c, e, y, 0); neon(.025, .025, w, c, -e, y, 0); ty += h; });
+  const BASE = ty;
+  // circuito en la piel del monolito
+  const cc = document.createElement('canvas'); cc.width = 1024; cc.height = 2048; const cg = cc.getContext('2d');
+  cg.fillStyle = '#000'; cg.fillRect(0, 0, 1024, 2048);
+  const CC = ['#e100ff', '#9900ff', '#00b4ff', '#e100ff', '#9dff00'];
+  for (let k = 0; k < 70; k++) { let x = Math.random() * 1024, y = Math.random() * 2048; const col = CC[k % CC.length]; cg.strokeStyle = col; cg.lineWidth = Math.random() < .2 ? 5 : 2.5; cg.shadowColor = col; cg.shadowBlur = 10; cg.beginPath(); cg.moveTo(x, y);
+    for (let s2 = 0; s2 < 6; s2++) { const L = 40 + Math.random() * 220, dir = Math.floor(Math.random() * 4); if (dir === 0) x += L; else if (dir === 1) y += L; else if (dir === 2) { x += L * .7; y += L * .7; } else y -= L; cg.lineTo(x, y); }
+    cg.stroke(); cg.shadowBlur = 0; cg.fillStyle = col; cg.beginPath(); cg.arc(x, y, 6, 0, 7); cg.fill(); }
+  for (let k = 0; k < 14; k++) { const x0 = Math.random() * 900, y0 = Math.random() * 1900, col = CC[k % 4]; cg.fillStyle = col; for (let i = 0; i < 8; i++) for (let j = 0; j < 14; j++) if (Math.random() < .7) cg.fillRect(x0 + i * 12, y0 + j * 12, 4, 4); }
+  const circ = new THREE.CanvasTexture(cc); circ.colorSpace = THREE.SRGBColorSpace; circ.anisotropy = 8;
+  const MH = 6.2, MR = 1.1;
+  const ob = new THREE.Mesh(new THREE.CylinderGeometry(MR * .94, MR, MH, 8, 1), new THREE.MeshStandardMaterial({ color: '#0b0a15', metalness: .9, roughness: .2, emissive: '#ffffff', emissiveMap: circ, emissiveIntensity: 1.25 }));
+  ob.rotation.y = Math.PI / 8; ob.scale.z = .78; ob.position.y = BASE + MH / 2; totem.add(ob);
+  const cap = new THREE.Mesh(new THREE.CylinderGeometry(MR * .6, MR * .94, .5, 8, 1), dark); cap.rotation.y = Math.PI / 8; cap.scale.z = .78; cap.position.y = BASE + MH + .25; totem.add(cap);
+  const FZ = MR * .97 * Math.cos(Math.PI / 8) * .78 + .02;
+  for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2 + Math.PI / 4; const x = Math.sin(a) * MR * .97, z = Math.cos(a) * MR * .97 * .78;
+    neon(.03, MH, .03, i % 2 ? '#00b4ff' : '#9900ff', x, BASE + MH / 2, z); }
+  neon(MR * 1.5, .03, .03, '#e100ff', 0, BASE + MH, FZ); neon(MR * 1.5, .03, .03, '#00b4ff', 0, BASE + .02, FZ);
+  const glass = (x, w, h, y, c) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: .22, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })); m.position.set(x, y, FZ + .01); totem.add(m); return m; };
+  glass(-.55, .3, 3.4, BASE + 3.6, '#00b4ff'); glass(.52, .24, 2.2, BASE + 2.4, '#e100ff');
   // franja de halo verde lima (parpadea)
   const slitM = basic('#9dff00'); slitM.transparent = true;
-  const slit = new THREE.Mesh(new THREE.PlaneGeometry(.09, 2.6), slitM); slit.position.set(0, 1.95 + 1.3 + .2, faceZ(3.45)); slit.rotation.x = -tilt; totem.add(slit);
-  const slit2 = new THREE.Mesh(new THREE.PlaneGeometry(.09, .9), slitM); slit2.position.set(0, .55, faceZ(.55)); slit2.rotation.x = -tilt; totem.add(slit2);
+  const slit = new THREE.Mesh(new THREE.PlaneGeometry(.1, 3.3), slitM); slit.position.set(0, BASE + 3.15, FZ + .015); totem.add(slit);
+  const slit2 = new THREE.Mesh(new THREE.PlaneGeometry(.1, .32), slitM); slit2.position.set(0, BASE + .25, FZ + .015); totem.add(slit2);
   const hc = document.createElement('canvas'); hc.width = 64; hc.height = 256; const hg = hc.getContext('2d'); const lgx = hg.createLinearGradient(0, 0, 64, 0);
   lgx.addColorStop(0, 'rgba(157,255,0,0)'); lgx.addColorStop(.5, 'rgba(157,255,0,1)'); lgx.addColorStop(1, 'rgba(157,255,0,0)'); hg.fillStyle = lgx; hg.fillRect(0, 0, 64, 256);
   const fade = hg.createLinearGradient(0, 0, 0, 256); fade.addColorStop(0, 'rgba(0,0,0,1)'); fade.addColorStop(.15, 'rgba(0,0,0,0)'); fade.addColorStop(.85, 'rgba(0,0,0,0)'); fade.addColorStop(1, 'rgba(0,0,0,1)');
   hg.globalCompositeOperation = 'destination-out'; hg.fillStyle = fade; hg.fillRect(0, 0, 64, 256);
   const haloM = new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(hc), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false });
-  const halo = new THREE.Mesh(new THREE.PlaneGeometry(.9, 4.6), haloM); halo.position.set(0, 2.6, faceZ(2.6) + .02); halo.rotation.x = -tilt; totem.add(halo);
-  const lime = new THREE.PointLight('#9dff00', 6, 7, 1.6); lime.position.set(0, 1.6, faceZ(1.6) + .6); totem.add(lime);
+  const halo = new THREE.Mesh(new THREE.PlaneGeometry(.55, 5.2), haloM); halo.position.set(0, BASE + 3, FZ + .03); totem.add(halo);
+  const lime = new THREE.PointLight('#9dff00', 6, 7, 1.6); lime.position.set(0, BASE + 1.2, FZ + .7); totem.add(lime);
   // botón magenta a la altura de los ojos
-  const BY = 1.62;
-  const btn = new THREE.Mesh(new THREE.CylinderGeometry(.17, .17, .06, 48), basic('#ff1fd8')); btn.rotation.x = Math.PI / 2 - tilt; btn.position.set(0, BY, faceZ(BY) + .03); totem.add(btn);
-  const bring = new THREE.Mesh(new THREE.TorusGeometry(.25, .02, 8, 64), basic('#ff1fd8')); bring.position.copy(btn.position); bring.rotation.x = -tilt; totem.add(bring);
+  const BY = BASE + .62;
+  const btn = new THREE.Mesh(new THREE.CylinderGeometry(.17, .17, .06, 48), basic('#ff1fd8')); btn.rotation.x = Math.PI / 2; btn.position.set(0, BY, FZ + .03); totem.add(btn);
+  const bring = new THREE.Mesh(new THREE.TorusGeometry(.25, .02, 8, 64), basic('#ff1fd8')); bring.position.copy(btn.position); totem.add(bring);
   const bc = document.createElement('canvas'); bc.width = bc.height = 128; const bg2 = bc.getContext('2d'); const rg = bg2.createRadialGradient(64, 64, 4, 64, 64, 64); rg.addColorStop(0, 'rgba(255,40,220,1)'); rg.addColorStop(1, 'rgba(255,40,220,0)'); bg2.fillStyle = rg; bg2.fillRect(0, 0, 128, 128);
   const bglowM = new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(bc), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false });
-  const bglow = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 1.4), bglowM); bglow.position.set(0, BY, faceZ(BY) + .05); totem.add(bglow);
-  const hit = new THREE.Mesh(new THREE.PlaneGeometry(1.1, 1.1), new THREE.MeshBasicMaterial({ visible: false })); hit.position.set(0, BY, faceZ(BY) + .1); totem.add(hit);
-  const key = new THREE.SpotLight('#cfd8ff', 60, 20, .42, .7, 1.4); key.position.set(3.5, 9, TZ + 7); key.target = ob; scene.add(key);
-  const rim = new THREE.SpotLight('#7a5cff', 40, 18, .5, .8, 1.4); rim.position.set(-5, 7, TZ - 5); rim.target = ob; scene.add(rim);
-  const mag = new THREE.PointLight('#ff1fd8', 3, 4, 2); mag.position.set(0, BY, faceZ(BY) + .5); totem.add(mag);
+  const bglow = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 1.4), bglowM); bglow.position.set(0, BY, FZ + .05); totem.add(bglow);
+  const hit = new THREE.Mesh(new THREE.PlaneGeometry(1.1, 1.1), new THREE.MeshBasicMaterial({ visible: false })); hit.position.set(0, BY, FZ + .1); totem.add(hit);
+  const key = new THREE.SpotLight('#cfd8ff', 22, 22, .3, .7, 1.4); key.position.set(3.5, 10, TZ + 7); key.target = ob; scene.add(key);
+  const pm1 = new THREE.PointLight('#e100ff', 9, 9, 1.6); pm1.position.set(-3.5, 1.4, TZ + 3); scene.add(pm1);
+  const pb1 = new THREE.PointLight('#00b4ff', 9, 9, 1.6); pb1.position.set(3.5, 1.4, TZ + 3); scene.add(pb1);
+  const mag = new THREE.PointLight('#ff1fd8', 3, 4, 2); mag.position.set(0, BY, FZ + .5); totem.add(mag);
+  // líneas de neón en el suelo que salen de la plataforma
+  for (let k = 0; k < 18; k++) { const a = k / 18 * Math.PI * 2 + Math.random() * .2, r0 = 3.6, L = 2 + Math.random() * 6, c = ['#e100ff', '#9900ff', '#00b4ff'][k % 3];
+    const m = new THREE.Mesh(new THREE.BoxGeometry(.03, .01, L), basic(c)); m.position.set(Math.sin(a) * (r0 + L / 2), .012, TZ + Math.cos(a) * (r0 + L / 2)); m.rotation.y = a; scene.add(m);
+    if (Math.random() < .6) { const L2 = 1 + Math.random() * 2.5, b2 = a + (Math.random() < .5 ? .6 : -.6), ex = Math.sin(a) * (r0 + L), ez = TZ + Math.cos(a) * (r0 + L);
+      const m2 = new THREE.Mesh(new THREE.BoxGeometry(.03, .01, L2), basic(c)); m2.position.set(ex + Math.sin(b2) * L2 / 2, .012, ez + Math.cos(b2) * L2 / 2); m2.rotation.y = b2; scene.add(m2); } }
+
+  // ---------- capa de vídeo: secuencia en movimiento de los contenidos, detrás del tótem ----------
+  const vc = document.createElement('canvas'); vc.width = 1280; vc.height = 480; const vg = vc.getContext('2d');
+  const vtex = new THREE.CanvasTexture(vc); vtex.colorSpace = THREE.SRGBColorSpace; vtex.wrapS = THREE.RepeatWrapping; vtex.repeat.x = -1; vtex.offset.x = 1;
+  const VA = 64 * Math.PI / 180;
+  const vband = new THREE.Mesh(new THREE.CylinderGeometry(R - .08, R - .08, 4.6, 64, 1, true, Math.PI - VA / 2, VA), new THREE.MeshBasicMaterial({ map: vtex, side: THREE.BackSide, transparent: true, toneMapped: false, depthWrite: false }));
+  vband.position.y = 1.2 + 4.6 / 2 + .3; scene.add(vband);
+  const vfx = document.createElement('canvas'); vfx.width = 640; vfx.height = 360;
+  let lastVid = 0;
+  function drawVideo(t) {
+    t = Math.max(0, t); const W = 1280, H = 480, list = OPTS.map((o, i) => i).filter(i => !OPTS[i].wa), dur = 6, n = Math.floor(t / dur), ph = (t % dur) / dur;
+    const c2 = list[n % list.length], nx = list[(n + 1) % list.length];
+    const frame = (k, a, p) => { const o = OPTS[k]; vg.globalAlpha = a; const sc = 1.08 + .14 * p, dx = (n % 2 ? -1 : 1) * 40 * p;
+      if (imgs[k]) { const im = imgs[k], s = Math.max(W / im.width, H / im.height) * sc; vg.drawImage(im, (W - im.width * s) / 2 + dx, (H - im.height * s) / 2, im.width * s, im.height * s); }
+      else if (o.fx) { drawFx(vfx, o.fx, t); const s = Math.max(W / 640, H / 360) * sc; vg.drawImage(vfx, (W - 640 * s) / 2 + dx, (H - 360 * s) / 2, 640 * s, 360 * s); }
+      vg.globalAlpha = 1; };
+    vg.fillStyle = '#000'; vg.fillRect(0, 0, W, H);
+    frame(c2, 1, ph); if (ph > .85) frame(nx, (ph - .85) / .15, 0);
+    for (let y = 0; y < H; y += 3) { vg.fillStyle = 'rgba(0,0,0,.18)'; vg.fillRect(0, y, W, 1); }
+    const o = OPTS[ph > .92 ? nx : c2]; vg.fillStyle = 'rgba(0,0,0,.55)'; vg.fillRect(0, H - 54, W, 54);
+    vg.fillStyle = o.c; vg.font = '900 30px Doto, monospace'; vg.textAlign = 'center'; vg.fillText(o.n, W / 2, H - 18);
+    vg.globalCompositeOperation = 'destination-in'; const gx = vg.createLinearGradient(0, 0, W, 0); gx.addColorStop(0, 'rgba(0,0,0,0)'); gx.addColorStop(.18, 'rgba(0,0,0,.85)'); gx.addColorStop(.82, 'rgba(0,0,0,.85)'); gx.addColorStop(1, 'rgba(0,0,0,0)');
+    vg.fillStyle = gx; vg.fillRect(0, 0, W, H); vg.globalCompositeOperation = 'source-over';
+    vtex.needsUpdate = true;
+  }
 
   // ---------- niebla a ras de suelo y partículas ----------
   const mc = document.createElement('canvas'); mc.width = mc.height = 256; const mg = mc.getContext('2d');
   for (let i = 0; i < 40; i++) { const x = Math.random() * 256, y = Math.random() * 256, r = 30 + Math.random() * 60, g = mg.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, 'rgba(140,170,255,.09)'); g.addColorStop(1, 'rgba(140,170,255,0)'); mg.fillStyle = g; mg.fillRect(0, 0, 256, 256); }
   const mistT = new THREE.CanvasTexture(mc); mistT.wrapS = mistT.wrapT = THREE.RepeatWrapping;
-  const mists = [0, 1, 2].map(i => { const m = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), new THREE.MeshBasicMaterial({ map: mistT, transparent: true, opacity: .55, depthWrite: false, blending: THREE.AdditiveBlending }));
+  const mists = [0, 1, 2].map(i => { const m = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), new THREE.MeshBasicMaterial({ map: mistT, transparent: true, opacity: .22, depthWrite: false, blending: THREE.AdditiveBlending }));
     m.rotation.x = -Math.PI / 2; m.position.y = .15 + i * .22; scene.add(m); return m; });
   const N = 420, pos = new Float32Array(N * 3); for (let i = 0; i < N; i++) { const r = Math.sqrt(Math.random()) * (R - 1), a = Math.random() * 6.283; pos.set([Math.cos(a) * r, Math.random() * 8, Math.sin(a) * r], i * 3); }
   const pgeo = new THREE.BufferGeometry(); pgeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
@@ -1272,7 +1328,11 @@ window.__buildMuseum = function (THREE, host, api) {
   // ---------- cámara ----------
   let running = false, raf = 0, tStart = 0, last = 0, mx = 0, my = 0, overBtn = false;
   const ray = new THREE.Raycaster(), ptr = new THREE.Vector2(), v3 = new THREE.Vector3();
-  function resize() { const w = host.clientWidth, h = host.clientHeight; renderer.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); }
+  if (PP && PP.EffectComposer) { try {
+    composer = new PP.EffectComposer(renderer); composer.addPass(new PP.RenderPass(scene, cam));
+    composer.addPass(new PP.UnrealBloomPass(new THREE.Vector2(512, 512), .5, .4, .45)); if (PP.OutputPass) composer.addPass(new PP.OutputPass());
+  } catch (e) { composer = null; } }
+  function resize() { const w = host.clientWidth, h = host.clientHeight; renderer.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); if (composer) { composer.setPixelRatio(Math.min(innerWidth <= 760 ? 1 : 1.5, devicePixelRatio || 1)); composer.setSize(w, h); } }
   addEventListener('resize', () => running && resize());
   const ease = t => 1 - Math.pow(1 - t, 3);
   function frame(now) {
@@ -1286,16 +1346,17 @@ window.__buildMuseum = function (THREE, host, api) {
     if (portrait) { ax = Math.sin(t * .18) * .22; cy = 1.75 + Math.sin(t * .25) * .12; }           // órbita suave: el tótem siempre centrado
     else { ax = Math.sin(t * .1) * .1 + mx * .18; cy = 1.85 + my * .3; }
     cam.position.set(Math.sin(ax) * dist, cy + 1.6 * (1 - e), TZ + Math.cos(ax) * dist);
-    const lookY = portrait ? 3.3 : 3.5;
+    const lookY = portrait ? 3.7 : 3.8;
     cam.lookAt(portrait ? 0 : mx * .5 * e, lookY, TZ);
     // efectos del tótem
     const blink = (Math.sin(t * 9) > .2 ? 1 : .35) * (.75 + .25 * Math.sin(t * 2.3)) * (Math.random() < .02 ? .2 : 1);
-    slitM.opacity = blink; haloM.opacity = .55 * blink; lime.intensity = 5 * blink;
+    slitM.opacity = blink; haloM.opacity = .32 * blink; lime.intensity = 5 * blink;
     const pulse = .6 + .4 * Math.sin(t * 3.2); bglowM.opacity = (.55 + .45 * pulse) * (overBtn ? 1.4 : 1); bring.scale.setScalar(1 + .12 * pulse + (overBtn ? .15 : 0));
     mists.forEach((m, i) => { m.material.map.offset.set(t * .01 * (i + 1), t * .006 * (i - 1)); });
     const pa = pgeo.attributes.position; for (let i = 0; i < N; i++) { let y = pa.getY(i) + dt * .12; if (y > 8) y = 0; pa.setY(i, y); } pa.needsUpdate = true;
     if (now - lastWall > 66) { lastWall = now; drawWall(t); }
-    renderer.render(scene, cam);
+    if (now - lastVid > 40) { lastVid = now; drawVideo(t); }
+    if (composer) composer.render(); else renderer.render(scene, cam);
     // posición en pantalla del botón para el texto HUD
     btn.getWorldPosition(v3); v3.project(cam);
     api.place((v3.x * .5 + .5) * host.clientWidth, (-v3.y * .5 + .5) * host.clientHeight, e);
