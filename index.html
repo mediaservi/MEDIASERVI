@@ -25,7 +25,8 @@
 <link rel="apple-touch-icon" href="assets/logos/mediaservi-apple-touch.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Doto:wght@600;800;900&family=Inter:wght@400;600;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Doto:wght@600;800;900&family=Inter:wght@400;600;800;900&family=Share+Tech+Mono&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Doto:wght@600;800;900&family=Inter:wght@400;600;800;900&family=Share+Tech+Mono&display=swap"></noscript>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <style>
 :root{
@@ -154,7 +155,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 .avh .cd i{font:600 9px/1 'Share Tech Mono',monospace;font-style:normal;letter-spacing:.24em;color:#9c8f7a}
 .mlogo img{display:block;width:100%;height:auto;filter:drop-shadow(0 10px 24px rgba(0,0,0,.7)) drop-shadow(0 0 18px rgba(96,255,0,.18))}
 .mlogo .shine{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;
-  -webkit-mask:url(assets/logos/mediaservi-logo-metacrilato.png) center/100% 100% no-repeat;mask:url(assets/logos/mediaservi-logo-metacrilato.png) center/100% 100% no-repeat;
+  -webkit-mask:url(assets/logos/mediaservi-logo-metacrilato.webp) center/100% 100% no-repeat;mask:url(assets/logos/mediaservi-logo-metacrilato.webp) center/100% 100% no-repeat;
   background:linear-gradient(105deg,transparent 42%,rgba(255,255,255,0) 45%,rgba(255,255,255,.95) 50%,rgba(220,255,200,0) 55%,transparent 58%) no-repeat;background-size:320% 100%;
   animation:shine 4s ease-in-out infinite}
 @keyframes shine{0%{background-position:130% 0}45%,100%{background-position:-30% 0}}
@@ -296,7 +297,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 @keyframes lmove{to{transform:translateX(-50%)}}
 .ltrack button{flex:none;display:flex;align-items:center;justify-content:center;height:100%;width:clamp(96px,10vw,150px);opacity:.82;transition:opacity .3s,transform .3s,filter .3s}
 .ltrack button:hover,.ltrack button.sel{opacity:1;transform:scale(1.08);filter:drop-shadow(0 0 10px rgba(0,180,255,.7))}
-.ltrack img{display:block;max-width:100%;max-height:70%;object-fit:contain}
+.ltrack img{display:block;width:auto;height:auto;max-width:100%;max-height:70%;object-fit:contain}
 .ltrack img.lm-inv{filter:invert(1) hue-rotate(180deg) brightness(1.15)}
 .ltrack img.lm-invkey{filter:invert(1) url(#keyBlack)}
 .ltrack img.lm-key{filter:url(#keyBlack)}
@@ -497,7 +498,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   <div class="badge" id="badge" role="link" tabindex="0" aria-label="mediaservi.com"><img src="assets/logos/mediaservi-badge.svg" alt="MEDIASERVI"></div>
   <div class="hud">
     <button class="sndb" id="sndBtn" aria-label="Volumen"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="spk" d="M3 9v6h4l5 4V5L7 9z"/><path class="w1" d="M15.5 8.5a5 5 0 0 1 0 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path class="w2" d="M18.5 5.5a9 9 0 0 1 0 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path class="x" d="M16 9l5 6M21 9l-5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="lv"><i></i><i></i><i></i></span></button>
-    <div class="langb"><button id="langBtn" aria-haspopup="true" aria-label="Idioma / Language"><span class="ic-lang"></span><span id="langCur">ES</span></button>
+    <div class="langb"><button id="langBtn" aria-haspopup="true" title="Idioma / Language"><span class="ic-lang"></span><span id="langCur">ES</span></button>
       <div class="langm" id="langMenu">
         <button data-l="es"><svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#c60b1e"/><rect y="5" width="30" height="10" fill="#ffc400"/></svg>Español</button>
         <button data-l="en"><svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#012169"/><path d="M0 0L30 20M30 0L0 20" stroke="#fff" stroke-width="4"/><path d="M0 0L30 20M30 0L0 20" stroke="#c8102e" stroke-width="1.6"/><path d="M15 0V20M0 10H30" stroke="#fff" stroke-width="6"/><path d="M15 0V20M0 10H30" stroke="#c8102e" stroke-width="3.4"/></svg>English</button>
@@ -513,8 +514,8 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
     <div class="fit">
       <div class="home">
         <a class="face" data-in style="--i:0" href="https://www.linkedin.com/in/joseptarroja/" target="_blank" rel="noopener" aria-label="LinkedIn"><img src="assets/img/josep.webp" alt="" width="1049" height="1000"><span class="li">in</span></a>
-        <div class="mlogo" data-in style="--i:1"><img src="assets/logos/mediaservi-logo-metacrilato.png" alt="MEDIASERVI.com" width="1977" height="255"><span class="shine" aria-hidden="true"></span></div>
-        <a class="avh" data-in style="--i:2" href="https://avhub.mediaservi.com/" aria-label="AVHUB"><img src="assets/logos/avhub-logo.svg" alt="AVHUB" width="2978" height="1817">
+        <div class="mlogo" data-in style="--i:1"><img src="assets/logos/mediaservi-logo-metacrilato.webp" alt="MEDIASERVI.com" width="1300" height="168"><span class="shine" aria-hidden="true"></span></div>
+        <a class="avh" data-in style="--i:2" href="https://avhub.mediaservi.com/"><img src="assets/logos/avhub-logo.svg" alt="AVHUB" width="2978" height="1817">
           <span class="cd" id="avcd"><span><b>000</b><i data-t="DÍAS|DAYS"></i></span><span><b>00</b><i data-t="HORAS|HOURS"></i></span><span><b>00</b><i>MIN</i></span><span><b>00</b><i data-t="SEG|SEC"></i></span></span></a>
       </div>
     </div>
@@ -616,7 +617,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   </div>
 </div>
 
-<a class="wa" id="wa" href="https://wa.me/JosepTarroja" target="_blank" rel="noopener" aria-label="WhatsApp"><span class="ico"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></span><span data-t="Contacta x WhatsApp|Contact via WhatsApp"></span></a>
+<a class="wa" id="wa" href="https://wa.me/JosepTarroja" target="_blank" rel="noopener"><span class="ico"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></span><span data-t="Contacta x WhatsApp|Contact via WhatsApp"></span></a>
 
 <button class="arrow prev" id="prev" aria-label="&lt;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></button>
 <button class="arrow next" id="next" aria-label="&gt;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg></button>
@@ -797,6 +798,8 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
     if (!gl) return false;
     const ext = gl.getExtension('EXT_color_buffer_float') || gl.getExtension('EXT_color_buffer_half_float');
     if (!ext) return false;
+    const dbg = gl.getExtension('WEBGL_debug_renderer_info'), rn = dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)) : '';
+    if (/swiftshader|llvmpipe|software/i.test(rn)) return false;   // sin GPU: fondo estático, evita bloquear el equipo
     gl.getExtension('OES_texture_float_linear');
     const VS = `#version 300 es
       in vec2 aPos; out vec2 vUv, vL, vR, vT, vB; uniform vec2 texel;
@@ -955,7 +958,8 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   const ltrack = document.getElementById('ltrack'), ctrack = document.getElementById('ctrack'), film = document.getElementById('film'), fimgs = [...film.querySelectorAll('img')];
   const showEl = document.getElementById('show'), screenEl = document.getElementById('screen'), globeBtn = document.getElementById('globe');
   const LMODE = { atlantisbahamas: 'inv', atlantisthepalm: 'inv', hardrock: 'inv', iaapa: 'inv', universal: 'inv', disney: 'invkey', puydufou: 'key' };
-  const strip = FAVS.map(([n, u, f], k) => `<button data-k="${k}" aria-label="${n}"><img class="lm-${LMODE[f] || 'n'}" src="assets/fav/${f}.webp" alt=""></button>`).join(''); ltrack.innerHTML = strip + strip;
+  const LDIM = { atlantisbahamas: [900, 205], atlantisthepalm: [900, 255], disney: [386, 212], hardrock: [423, 249], iaapa: [360, 107], puydufou: [640, 640], royalcaribbean: [424, 102], tropicalislands: [320, 120], universal: [700, 385], xcaret: [799, 164] };
+  const strip = FAVS.map(([n, u, f], k) => `<button data-k="${k}" aria-label="${n}"><img class="lm-${LMODE[f] || 'n'}" src="assets/fav/${f}.webp" alt="" width="${(LDIM[f] || [300, 100])[0]}" height="${(LDIM[f] || [300, 100])[1]}" loading="lazy"></button>`).join(''); ltrack.innerHTML = strip + strip;
   let slides2 = [], sk = 0, mode = 'film', ftimer = 0, fa = 0, pick = -1, pickTimer = 0;
   function setSubs() {
     const px = document.getElementById('pickx');
