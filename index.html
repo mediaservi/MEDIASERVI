@@ -726,7 +726,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   OPTS.splice(OPTS.length - 1, 0, VGH);
   const probe = src => new Promise(r => { const i = new Image(); i.onload = () => r(true); i.onerror = () => r(false); i.src = src; });
   const assetsReady = Promise.race([Promise.all([
-    probe('assets/img/vgapp.png').then(ok => { if (ok) PROJS[3].img = 'assets/img/vgapp.png'; }),
+    probe('assets/img/vgapp.webp').then(ok => { if (ok) PROJS[3].img = 'assets/img/vgapp.webp'; }),
     probe('assets/img/accesovehiculos.png').then(ok => { if (ok) document.getElementById('vview').hidden = false; })
   ]), new Promise(r => setTimeout(r, 2500))]).then(() => { if (typeof renderDynamic === 'function') renderDynamic(); });
   const hexA = (h, a) => { const n = parseInt(h.slice(1), 16); return `rgba(${n >> 16},${n >> 8 & 255},${n & 255},${a})`; };
