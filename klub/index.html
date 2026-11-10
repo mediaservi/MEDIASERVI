@@ -72,6 +72,39 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .priv .ph b{font:900 16px/1 Inter,sans-serif;letter-spacing:.3em;color:#e9c967}
 .priv .grid{flex:1;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;padding:20px;align-content:start;overflow:auto}
 .priv .card{display:flex;align-items:center;justify-content:center;min-height:140px;border-radius:8px;border:1px dashed rgba(233,201,103,.35);color:#8d8676;font-size:11px;letter-spacing:.2em;text-align:center;padding:10px}
+/* cine secreto: 4 s pulsando el logo del fondo y, al soltar, cae el telón rojo y se abre ante la pantalla */
+.pano{touch-action:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;transition:filter .6s}
+.pano.hold{filter:grayscale(0) brightness(.92) contrast(1.05);transition:filter 4s linear}
+.teatro{--cw:clamp(26px,9vw,150px);--bh:clamp(34px,9vh,96px);--sh:clamp(40px,13vh,120px);position:fixed;inset:0;z-index:20;display:none;overflow:hidden}
+.teatro.on{display:block}
+.sala{position:absolute;inset:0;visibility:hidden;background:radial-gradient(ellipse 80% 62% at 50% 42%,#231318 0%,#0c0709 58%,#000 100%)}
+.teatro.set .sala{visibility:visible}
+.zona{position:absolute;left:var(--cw);right:var(--cw);top:var(--bh);bottom:var(--sh);display:flex;align-items:center;justify-content:center;container-type:size}
+.pant{position:relative;aspect-ratio:16/9;width:min(100cqw - 20px,(100cqh - 20px) * 16 / 9);background:#000;box-shadow:0 0 0 2px #2b2b2e,0 0 0 5px #0a0a0b,0 0 70px rgba(170,195,255,.26),0 50px 110px rgba(130,160,255,.14)}
+.pant iframe{display:block;width:100%;height:100%;border:0;background:#000}
+.butacas{position:absolute;left:0;right:0;bottom:0;height:var(--sh);pointer-events:none}
+.butacas::before,.butacas::after{content:'';position:absolute;left:0;right:0;bottom:0}
+.butacas::before{height:100%;background:radial-gradient(ellipse 46% 100% at 50% 100%,#1b0e11 97%,transparent 100%) calc(var(--sh) * -.35) 0/calc(var(--sh) * .78) 100% repeat-x;opacity:.85}
+.butacas::after{height:66%;background:radial-gradient(ellipse 46% 100% at 50% 100%,#070405 97%,transparent 100%) 0 0/calc(var(--sh) * 1.02) 100% repeat-x}
+.telon{position:absolute;inset:0;pointer-events:none;transform:translateY(-104%)}
+.teatro.cae .telon{animation:telonCae .95s cubic-bezier(.45,0,.85,.55) forwards}
+.teatro.sube .telon{animation:telonSube .9s cubic-bezier(.5,0,.8,.45) forwards}
+@keyframes telonCae{0%{transform:translateY(-104%)}72%{transform:translateY(0)}85%{transform:translateY(-1.5%)}100%{transform:translateY(0)}}
+@keyframes telonSube{0%{transform:translateY(0)}100%{transform:translateY(-104%)}}
+.telon i{position:absolute;top:0;bottom:0;width:50.5%;transition:width 2.3s cubic-bezier(.62,.04,.28,1);
+  background:linear-gradient(180deg,rgba(0,0,0,.5),transparent 20%,transparent 78%,rgba(0,0,0,.55)),
+    repeating-linear-gradient(90deg,#43030a 0,#8a0c17 2.4%,#d3202d 4.3%,#a8131e 5.8%,#5d060d 8.4%,#43030a 10%);
+  box-shadow:inset 0 -3px 0 #6b4d14,inset 0 -11px 0 #d9b758,inset 0 -14px 0 #6b4d14}
+.telon .tl{left:0}.telon .tr{right:0}
+.teatro.abre .telon i{width:var(--cw)}
+.telon b{position:absolute;left:0;right:0;top:0;height:var(--bh);
+  background:linear-gradient(180deg,rgba(0,0,0,.55),transparent 55%),repeating-linear-gradient(90deg,#3a0208 0,#7d0a14 14px,#b91724 24px,#8f0e19 32px,#4d040a 46px,#3a0208 54px);
+  box-shadow:inset 0 -3px 0 #6b4d14,inset 0 -9px 0 #d9b758,inset 0 -12px 0 #6b4d14,0 14px 30px rgba(0,0,0,.6)}
+.telon b::after{content:'';position:absolute;left:0;right:0;top:100%;height:calc(var(--bh) * .34);background:radial-gradient(ellipse 50% 100% at 50% 0,#6e0811 96%,transparent 100%) 0 0/calc(var(--bh) * 1.5) 100% repeat-x;filter:drop-shadow(0 3px 0 #c9a548) drop-shadow(0 8px 10px rgba(0,0,0,.5))}
+.tacts{position:absolute;z-index:3;top:calc(10px + env(safe-area-inset-top,0px));right:14px;display:flex;gap:8px;opacity:0;pointer-events:none;transition:opacity .5s}
+.teatro.abre .tacts{opacity:1;pointer-events:auto}
+.tacts .pill{height:32px;padding:0 12px;font-size:10px;text-decoration:none;color:#eee;background:rgba(0,0,0,.62)}
+@media (prefers-reduced-motion:reduce){.telon i{transition-duration:.01s}.teatro.cae .telon,.teatro.sube .telon{animation-duration:.01s}.pano.hold{transition:none}}
 </style>
 </head>
 <body>
@@ -101,6 +134,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   <div class="ph"><b>KLUB · PRIVATE</b><button class="pill" id="out">✕</button></div>
   <div class="grid"><div class="card" id="soon">ÁLBUMES DE FOTOS · PRÓXIMAMENTE</div></div>
 </section>
+<div class="teatro" id="teatro" aria-hidden="true">
+  <div class="sala"><div class="zona"><div class="pant" id="scr"></div></div><div class="butacas"></div></div>
+  <div class="telon"><i class="tl"></i><i class="tr"></i><b></b></div>
+  <div class="tacts"><a class="pill" id="cineYt" href="https://youtu.be/b7gHZ-fuMFg?list=PL5R9SjE9WlgxOl9KRdjj3SM0FN7ZOT9iZ" target="_blank" rel="noopener">YOUTUBE ↗</a><button class="pill" id="cineX">✕ CERRAR</button></div>
+</div>
 <audio id="bgm" src="../assets/audio/jazzklub.mp3" loop preload="auto" autoplay></audio>
 <script>
 (() => {
@@ -112,7 +150,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     parent.postMessage({ klub: 'hello' }, location.origin);
     document.getElementById('back').addEventListener('click', ev => { ev.preventDefault(); parent.postMessage({ klub: 'close' }, location.origin); }); }
   const applyVol = () => { sndBtn.dataset.v = lvl; if (EMB) return; bgm.volume = VOL[lvl]; bgm.muted = lvl === 0; };
-  const tryPlay = () => { if (!EMB && lvl > 0 && bgm.paused) bgm.play().catch(() => {}); };
+  let hush = false;   // con la película en pantalla, la música de fondo calla
+  const tryPlay = () => { if (!EMB && !hush && lvl > 0 && bgm.paused) bgm.play().catch(() => {}); };
+  window.__klubHush = on => { hush = !!on; if (EMB) parent.postMessage({ klub: 'cine', on: hush }, location.origin); else if (hush) bgm.pause(); else tryPlay(); };
   applyVol(); tryPlay();
   const unlock = () => { tryPlay(); if (!bgm.paused || lvl === 0) ['pointerdown', 'keydown', 'touchstart'].forEach(ev => removeEventListener(ev, unlock, true)); };
   ['pointerdown', 'keydown', 'touchstart'].forEach(ev => addEventListener(ev, unlock, true));
@@ -123,7 +163,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   if (!l) { let tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
     l = /^(Europe\/Madrid|Atlantic\/Canary|Africa\/Ceuta|America\/(Mexico_City|Cancun|Merida|Monterrey|Bogota|Lima|Santiago|Caracas|Guayaquil|La_Paz|Asuncion|Montevideo|Argentina\/.+|Buenos_Aires|Havana|Santo_Domingo|Panama|Costa_Rica|Managua|Tegucigalpa|El_Salvador|Guatemala|Puerto_Rico))$/.test(tz) ? 'es' : 'en'; }
   const en = l === 'en';
-  if (en) { document.documentElement.lang = 'en'; document.getElementById('back').textContent = '← BACK'; document.getElementById('okb').textContent = 'ENTER'; document.getElementById('soon').textContent = 'PHOTO ALBUMS · COMING SOON'; }
+  if (en) { document.documentElement.lang = 'en'; document.getElementById('back').textContent = '← BACK'; document.getElementById('okb').textContent = 'ENTER'; document.getElementById('soon').textContent = 'PHOTO ALBUMS · COMING SOON'; document.getElementById('cineX').textContent = '✕ CLOSE'; }
   const modal = document.getElementById('modal'), box = document.getElementById('box'), pw = document.getElementById('pw'), err = document.getElementById('err'), priv = document.getElementById('priv');
   const H = '2d8f894b33e630ddd07416938bcb8d9875677daf3bd7f04af6c700f7b62b1a3c';
   const sha = async t => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)))].map(b => b.toString(16).padStart(2, '0')).join('');
@@ -135,6 +175,32 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     else { err.textContent = en ? 'WRONG KEY' : 'CLAVE INCORRECTA'; box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake'); pw.select(); } });
   document.getElementById('out').addEventListener('click', () => priv.classList.remove('open'));
   addEventListener('keydown', e => { if (e.key === 'Escape') { modal.classList.remove('open'); } });
+})();
+/* ---------- zonas secretas: mantener pulsado 4 segundos y soltar ---------- */
+(() => {
+  const HOLD = 4000;
+  // zona(el, dentro, hacer): «dentro» dice si el punto pulsado cuenta; «hacer» se ejecuta al soltar tras 4 s sin mover el dedo
+  function zona(el, dentro, hacer) { let t0 = 0, x0 = 0, y0 = 0;
+    const fin = ok => { if (!t0) return; const dt = performance.now() - t0; t0 = 0; el.classList.remove('hold'); if (ok && dt >= HOLD) hacer(); };
+    el.addEventListener('pointerdown', e => { if (e.button > 0 || e.isPrimary === false || !dentro(e)) return; t0 = performance.now(); x0 = e.clientX; y0 = e.clientY; el.classList.add('hold'); try { el.setPointerCapture(e.pointerId); } catch (x) {} });
+    el.addEventListener('pointermove', e => { if (t0 && Math.hypot(e.clientX - x0, e.clientY - y0) > 40) fin(false); });
+    el.addEventListener('pointerup', () => fin(true)); el.addEventListener('pointercancel', () => fin(false));
+    el.addEventListener('contextmenu', e => e.preventDefault()); }
+  // cine: cae el telón rojo, se abre y la pantalla proyecta la lista de YouTube
+  const teatro = document.getElementById('teatro'), scr = document.getElementById('scr'), cerrar = document.getElementById('cineX');
+  const LISTA = 'https://www.youtube-nocookie.com/embed/b7gHZ-fuMFg?list=PL5R9SjE9WlgxOl9KRdjj3SM0FN7ZOT9iZ&autoplay=1&rel=0&playsinline=1';
+  let abierto = false, ocupado = false;
+  function abrirCine() { if (abierto || ocupado) return; abierto = ocupado = true; teatro.classList.add('on'); teatro.setAttribute('aria-hidden', 'false'); void teatro.offsetWidth; teatro.classList.add('cae');
+    setTimeout(() => { teatro.classList.add('set'); try { window.__klubHush(true); } catch (e) {} scr.innerHTML = '<iframe src="' + LISTA + '" title="MEDIASERVI THEATER" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>'; }, 1000);
+    setTimeout(() => { teatro.classList.add('abre'); ocupado = false; try { cerrar.focus({ preventScroll: true }); } catch (e) {} }, 1550); }
+  function cerrarCine() { if (!abierto || ocupado) return; ocupado = true; teatro.classList.remove('abre');
+    setTimeout(() => { scr.innerHTML = ''; teatro.classList.remove('set', 'cae'); teatro.classList.add('sube'); try { window.__klubHush(false); } catch (e) {} }, 2350);
+    setTimeout(() => { teatro.classList.remove('on', 'sube'); teatro.setAttribute('aria-hidden', 'true'); abierto = ocupado = false; }, 3300); }
+  cerrar.addEventListener('click', cerrarCine);
+  addEventListener('keydown', e => { if (e.key === 'Escape' && abierto) cerrarCine(); });
+  // el logo del fondo (cara de Mevi y letras KLUB), centrado en horizontal; en vertical lo tapa el póster y vale cualquier punto libre del fondo
+  const pano = document.querySelector('.pano');
+  zona(pano, e => matchMedia('(orientation:portrait)').matches || Math.hypot(e.clientX - innerWidth / 2, e.clientY - innerHeight * .53) <= innerHeight * .31, abrirCine);
 })();
 </script>
 </body>

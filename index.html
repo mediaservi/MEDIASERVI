@@ -710,7 +710,8 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   let lvl = +(store.get('ms-vol') ?? 1); if (!(lvl >= 0 && lvl <= 2)) lvl = 1;
   function applyVol() { sndBtn.dataset.v = lvl; bgm.volume = VOL[lvl]; bgm.muted = lvl === 0; sndBtn.setAttribute('aria-label', ['Silencio / Mute', 'Volumen normal / Normal', 'Volumen alto / Loud'][lvl]); }
   applyVol();
-  const tryPlay = () => { if (lvl > 0 && bgm.paused) bgm.play().catch(() => {}); };
+  let hush = false;   // el cine del KLUB calla la música mientras hay película
+  const tryPlay = () => { if (!hush && lvl > 0 && bgm.paused) bgm.play().catch(() => {}); };
   tryPlay();
   const unlock = () => { tryPlay(); if (!bgm.paused || lvl === 0) ['pointerdown', 'keydown', 'touchstart'].forEach(ev => removeEventListener(ev, unlock, true)); };
   ['pointerdown', 'keydown', 'touchstart'].forEach(ev => addEventListener(ev, unlock, true));
@@ -719,9 +720,10 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   function track(src) { const abs = new URL(src, location.href).href; if (bgm.src !== abs) { bgm.src = abs; bgm.load(); } applyVol(); tryPlay(); }
   const klubOv = document.createElement('div'); klubOv.className = 'klubov'; document.body.appendChild(klubOv);
   function openKlub() { klubOv.innerHTML = '<iframe src="klub/?in=1" title="KLUB" allow="autoplay; fullscreen"></iframe>'; klubOv.classList.add('open'); track(KLUB_TRACK); }
-  function closeKlub() { klubOv.classList.remove('open'); setTimeout(() => klubOv.innerHTML = '', 400); track(MAIN_TRACK); }
+  function closeKlub() { hush = false; klubOv.classList.remove('open'); setTimeout(() => klubOv.innerHTML = '', 400); track(MAIN_TRACK); }
   addEventListener('message', e => { if (e.origin !== location.origin || !e.data) return;
     if (e.data.klub === 'close') closeKlub();
+    if (e.data.klub === 'cine') { hush = !!e.data.on; if (hush) bgm.pause(); else tryPlay(); }
     if (e.data.klub === 'vol') { lvl = e.data.lvl; store.set('ms-vol', lvl); applyVol(); tryPlay(); }
     if (e.data.klub === 'hello' && e.source) e.source.postMessage({ klub: 'lvl', lvl }, location.origin); });
 
