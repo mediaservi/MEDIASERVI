@@ -100,7 +100,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     repeating-linear-gradient(90deg,#43030a 0,#8a0c17 2.4%,#d3202d 4.3%,#a8131e 5.8%,#5d060d 8.4%,#43030a 10%);
   box-shadow:inset 0 -3px 0 #6b4d14,inset 0 -11px 0 #d9b758,inset 0 -14px 0 #6b4d14}
 .telon .tl{left:0}.telon .tr{right:0}
-.teatro.abre .telon i{width:var(--cw)}
+.teatro.abre .telon i{width:var(--co,var(--cw))}
 .telon b{position:absolute;left:0;right:0;top:0;height:var(--bh);
   background:linear-gradient(180deg,rgba(0,0,0,.55),transparent 55%),repeating-linear-gradient(90deg,#3a0208 0,#7d0a14 14px,#b91724 24px,#8f0e19 32px,#4d040a 46px,#3a0208 54px);
   box-shadow:inset 0 -3px 0 #6b4d14,inset 0 -9px 0 #d9b758,inset 0 -12px 0 #6b4d14,0 14px 30px rgba(0,0,0,.6)}
@@ -146,7 +146,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   <div class="sala"><div class="zona"><div class="pant" id="scr"></div></div><div class="butacas"></div></div>
   <div class="telon"><i class="tl"></i><i class="tr"></i><b></b></div>
   <canvas class="tgl" id="telonGL" aria-hidden="true"></canvas>
-  <div class="tacts"><a class="pill" id="cineYt" href="https://youtu.be/b7gHZ-fuMFg?list=PL5R9SjE9WlgxOl9KRdjj3SM0FN7ZOT9iZ" target="_blank" rel="noopener">YOUTUBE ↗</a><button class="pill" id="cineSnd" hidden>🔊 SONIDO</button><button class="pill" id="cineX">✕ CERRAR</button></div>
+  <div class="tacts"><a class="pill" id="cineYt" href="https://youtu.be/IO-6MYnFmw0" target="_blank" rel="noopener">YOUTUBE ↗</a><button class="pill" id="cineSnd" hidden>🔊 SONIDO</button><button class="pill" id="cineX">✕ CERRAR</button></div>
 </div>
 <script id="telonFS" type="x-shader/x-fragment">
 #ifdef GL_FRAGMENT_PRECISION_HIGH
@@ -275,7 +275,7 @@ void main(){
     el.addEventListener('contextmenu', e => e.preventDefault()); }
   // cine: cae el telón rojo, se abre y la pantalla proyecta la lista de YouTube
   const teatro = document.getElementById('teatro'), scr = document.getElementById('scr'), cerrar = document.getElementById('cineX');
-  const VID = 'b7gHZ-fuMFg', LISTA = 'PL5R9SjE9WlgxOl9KRdjj3SM0FN7ZOT9iZ', CUENTA = 5, sonido = document.getElementById('cineSnd');
+  const VID = 'IO-6MYnFmw0', CUENTA = 5, sonido = document.getElementById('cineSnd');
   let abierto = false, ocupado = false;
   const calla = on => { try { window.__klubHush(on); } catch (e) {} };
   /* telón de terciopelo: la tela se dibuja con un sombreado (pliegues, brillo del pelo, galón, flecos y borlas de hilo de oro) y se mueve con física sencilla:
@@ -291,7 +291,7 @@ void main(){
     let raf = 0, last = 0, cwF = .08, bhF = .09, nF = 10;
     const ease = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2, clamp = (v, a, b) => Math.max(a, Math.min(b, v));
     function size() { const k = Math.min(devicePixelRatio || 1, 1.5), W = cv.clientWidth || innerWidth, H = cv.clientHeight || innerHeight, w = Math.round(W * k), h = Math.round(H * k); if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; } gl.viewport(0, 0, w, h);
-      cwF = clamp(.09 * W, 26, 150) / W; bhF = clamp(.09 * H, 34, 96) / H; nF = Math.max(3, Math.round(.5 * W / H / .075)); }
+      const pr = scr.getBoundingClientRect(), cr = cv.getBoundingClientRect(); cwF = Math.max(clamp(.09 * W, 26, 150), pr.width ? pr.left - cr.left + pr.width * .012 : 0) / W; teatro.style.setProperty('--co', Math.round(cwF * W) + 'px'); bhF = clamp(.09 * H, 34, 96) / H; nF = Math.max(3, Math.round(.5 * W / H / .075)); }
     function done() { const f = st.fin; st.fin = null; if (f) f(); }
     function frame(now) { raf = requestAnimationFrame(frame); if (st.fase === 'abierto' && st.E < .03 && now - last < 46) return;   // en reposo basta con unas 20 imágenes por segundo
       const dt = clamp((now - last) / 1000, .001, .12); last = now; const top0 = st.top;
@@ -315,10 +315,10 @@ void main(){
     window.onYouTubeIframeAPIReady = () => fin(true); const sc = document.createElement('script'); sc.src = 'https://www.youtube.com/iframe_api'; sc.async = true; sc.onerror = () => fin(false); document.head.appendChild(sc); setTimeout(() => fin(true), 7000); }));
   function montaVideo() { Object.assign(V, { p: null, listo: false, suena: false, quiere: false, simple: false }); sonido.hidden = true; const d = document.createElement('div'); d.id = 'ytCine'; scr.insertBefore(d, scr.firstChild);
     ytApi().then(ok => { if (!abierto || !document.getElementById('ytCine') || V.p) return; if (!ok) { V.simple = true; if (V.quiere) arranca(); return; }
-      V.p = new YT.Player('ytCine', { host: 'https://www.youtube-nocookie.com', videoId: VID, playerVars: { listType: 'playlist', list: LISTA, autoplay: 0, controls: 0, rel: 0, modestbranding: 1, iv_load_policy: 3, disablekb: 1, fs: 0, playsinline: 1, cc_load_policy: 0, origin: location.origin },
-        events: { onReady: () => { V.listo = true; if (V.quiere) arranca(); }, onStateChange: e => { if (e.data === 1) V.suena = true; } } }); }); }
+      V.p = new YT.Player('ytCine', { host: 'https://www.youtube-nocookie.com', videoId: VID, playerVars: { autoplay: 0, controls: 0, rel: 0, modestbranding: 1, iv_load_policy: 3, disablekb: 1, fs: 0, playsinline: 1, cc_load_policy: 0, origin: location.origin },
+        events: { onReady: () => { V.listo = true; if (V.quiere) arranca(); }, onStateChange: e => { if (e.data === 1) V.suena = true; if (e.data === 0) { LID.negro(); cerrarCine(); } } } }); }); }   // al acabar la película, pantalla en negro y se cierra el telón
   function arranca() { V.quiere = true;
-    if (V.simple) { const d = document.getElementById('ytCine'); if (d && d.tagName !== 'IFRAME') d.outerHTML = '<iframe id="ytCine" src="https://www.youtube-nocookie.com/embed/' + VID + '?list=' + LISTA + '&autoplay=1&controls=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&fs=0&playsinline=1" title="MEDIASERVI THEATER" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe>'; V.suena = true; return; }
+    if (V.simple) { const d = document.getElementById('ytCine'); if (d && d.tagName !== 'IFRAME') d.outerHTML = '<iframe id="ytCine" src="https://www.youtube-nocookie.com/embed/' + VID + '?autoplay=1&controls=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&fs=0&playsinline=1" title="MEDIASERVI THEATER" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe>'; V.suena = true; return; }
     if (V.listo) { try { V.p.playVideo(); } catch (e) {} clearTimeout(V.tm); V.tm = setTimeout(sinSonido, 2600); } }
   // si el navegador no deja empezar con sonido, empieza en silencio y aparece el botón de sonido
   function sinSonido() { if (!abierto || V.suena || !V.listo) return; try { V.p.mute(); V.p.playVideo(); sonido.hidden = false; } catch (e) {} }
@@ -380,6 +380,7 @@ void main(){
       if (fase === 'quema') { const k = (now - tq) / 2100; quema(Math.min(1, k), .6 + .4 * Math.min(1, k * 3)); if (k >= 1) para(true); } }
     function para(fin) { cancelAnimationFrame(raf); raf = 0; fase = ''; if (fin) cv.style.display = 'none'; }
     return { pon() { para(); campo(); rayas = []; pedido = false; cv.style.display = ''; x.setTransform(1, 0, 0, 1, 0, 0); x.globalCompositeOperation = 'source-over'; x.globalAlpha = 1; x.fillStyle = '#0b0a08'; x.fillRect(0, 0, W, H); scr.appendChild(cv); },
+      negro() { para(); x.setTransform(1, 0, 0, 1, 0, 0); x.globalCompositeOperation = 'source-over'; x.globalAlpha = 1; x.fillStyle = '#000'; x.fillRect(0, 0, W, H); cv.style.display = ''; },
       empieza() { fase = 'cuenta'; t0 = performance.now(); ult = 0; if (!raf) raf = requestAnimationFrame(tic); }, para, get fase() { return fase; } }; })();
   function abrirCine() { if (abierto || ocupado) return; abierto = ocupado = true; teatro.classList.add('on'); teatro.setAttribute('aria-hidden', 'false');
     const lista = () => { teatro.classList.add('set'); calla(true); scr.innerHTML = ''; montaVideo(); LID.pon();
