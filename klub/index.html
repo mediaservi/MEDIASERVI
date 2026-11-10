@@ -101,6 +101,10 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   background:linear-gradient(180deg,rgba(0,0,0,.55),transparent 55%),repeating-linear-gradient(90deg,#3a0208 0,#7d0a14 14px,#b91724 24px,#8f0e19 32px,#4d040a 46px,#3a0208 54px);
   box-shadow:inset 0 -3px 0 #6b4d14,inset 0 -9px 0 #d9b758,inset 0 -12px 0 #6b4d14,0 14px 30px rgba(0,0,0,.6)}
 .telon b::after{content:'';position:absolute;left:0;right:0;top:100%;height:calc(var(--bh) * .34);background:radial-gradient(ellipse 50% 100% at 50% 0,#6e0811 96%,transparent 100%) 0 0/calc(var(--bh) * 1.5) 100% repeat-x;filter:drop-shadow(0 3px 0 #c9a548) drop-shadow(0 8px 10px rgba(0,0,0,.5))}
+/* telón de terciopelo con caída y vaivén (WebGL); si el dispositivo no puede, queda el telón sencillo de arriba */
+.tgl{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;display:none}
+.teatro.gl .tgl{display:block}.teatro.gl .telon{display:none}
+.teatro.gl .zona{top:calc(var(--bh) * 1.3)}
 .tacts{position:absolute;z-index:3;top:calc(10px + env(safe-area-inset-top,0px));right:14px;display:flex;gap:8px;opacity:0;pointer-events:none;transition:opacity .5s}
 .teatro.abre .tacts{opacity:1;pointer-events:auto}
 .tacts .pill{height:32px;padding:0 12px;font-size:10px;text-decoration:none;color:#eee;background:rgba(0,0,0,.62)}
@@ -137,8 +141,87 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 <div class="teatro" id="teatro" aria-hidden="true">
   <div class="sala"><div class="zona"><div class="pant" id="scr"></div></div><div class="butacas"></div></div>
   <div class="telon"><i class="tl"></i><i class="tr"></i><b></b></div>
+  <canvas class="tgl" id="telonGL" aria-hidden="true"></canvas>
   <div class="tacts"><a class="pill" id="cineYt" href="https://youtu.be/b7gHZ-fuMFg?list=PL5R9SjE9WlgxOl9KRdjj3SM0FN7ZOT9iZ" target="_blank" rel="noopener">YOUTUBE ↗</a><button class="pill" id="cineX">✕ CERRAR</button></div>
 </div>
+<script id="telonFS" type="x-shader/x-fragment">
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+uniform vec2 uRes; uniform float uT,uD,uTop,uBotL,uBotR,uE,uN,uBh;
+float gYb;
+float hash(vec2 p){ p=fract(p*vec2(123.34,456.21)); p+=dot(p,p+45.32); return fract(p.x*p.y); }
+float vn(vec2 p){ vec2 i=floor(p),f=fract(p); f=f*f*(3.-2.*f); return mix(mix(hash(i),hash(i+vec2(1.,0.)),f.x),mix(hash(i+vec2(0.,1.)),hash(i+vec2(1.,1.)),f.x),f.y); }
+vec3 oro(float l,float sp){ return mix(vec3(.26,.16,.03),vec3(1.,.82,.40),clamp(l,0.,1.))+vec3(1.,.96,.8)*sp; }
+float chispa(vec2 q){ vec2 c=floor(q); float r=hash(c+floor(uT*4.+hash(c)*7.)*.173); return step(.965,r)*smoothstep(.5,.1,length(fract(q)-.5)); }
+vec3 terciopelo(float n,float h,float lx,float g){
+  float nz=sqrt(max(0.,1.-n*n)),dif=clamp(n*lx+nz*.9,0.,1.),rim=pow(1.-nz,1.7);
+  vec3 c=vec3(.52,.015,.045)*(.07+1.1*pow(dif,2.3));
+  c+=vec3(1.,.20,.22)*rim*.20*clamp(.55+n*lx*2.,0.,1.);
+  c*=mix(.30,1.,smoothstep(0.,.6,h));
+  return c*(.84+.32*g); }
+vec4 hoja(float x,float Y,float eb,float sg,float asp){
+  if(Y>1.04) return vec4(0.);
+  float t=uT+sg*1.7,s=pow(clamp(Y,0.,1.),1.6);
+  float wave=uE*(.016*sin(Y*6.5-t*5.2)+.007*sin(Y*12.-t*8.3+1.3))*(.25+Y);
+  float e=max(mix(uTop,eb,s)+wave+.0022*sin(t*.8+Y*2.4)*Y,.012);
+  float u=x/e;
+  if(u>1.){ float d=(x-e)*asp; return vec4(0.,0.,0.,.5*exp(-d/.028)*step(Y,.985)); }
+  float gath=clamp(1.-e/.505,0.,1.),gu=u*.505*asp;
+  float ph=u*uN*6.2832+.5*sin(u*uN*1.9+1.3+sg)+.22*sin(Y*4.3+u*7.+sg*2.)+uE*.9*sin(Y*8.-t*6.+u*6.)*(.3+Y);
+  float h=.5+.5*cos(ph),sl=-sin(ph)*(.9+2.3*gath),n=-sl/sqrt(1.+sl*sl)*sg;
+  float g=vn(vec2(gu*1100.,Y*150.))*.6+vn(vec2(gu*3000.,Y*1100.))*.4;
+  vec3 c=terciopelo(n,h,-.32,g)*(.6+.52*exp(-pow((Y-.55)/.5,2.)));
+  float nz=sqrt(max(0.,1.-n*n)),lit=clamp(n*-.32+nz*.9,0.,1.)*mix(.4,1.,smoothstep(0.,.6,h));
+  float Yh=Y+.004*(1.-h);
+  float b=smoothstep(.900,.902,Yh)*(1.-smoothstep(.938,.940,Yh));
+  float wv=.5+.5*sin(gu*560.+Yh*560.)*sin(gu*560.-Yh*560.);
+  c=mix(c,oro(pow(lit,1.5)*(.3+.85*wv),chispa(vec2(gu,Yh)*330.)*.9),b);
+  float cd=clamp((1.-smoothstep(.0028,.0042,abs(Yh-.894)))+(1.-smoothstep(.0028,.0042,abs(Yh-.946))),0.,1.);
+  c=mix(c,oro(lit*(.4+.7*(.5+.5*sin(gu*1000.+Yh*700.))),0.),cd);
+  float a=1.,hem=.966;
+  if(Yh>hem){ float len=.034*(.8+.2*hash(vec2(floor(gu*260.),7.))),fy=(Yh-hem)/len,st=.5+.5*sin(gu*1634.+uE*6.*fy*sin(t*7.+gu*30.));
+    a=step(fy,1.)*mix(.8,1.,st); c=oro(lit*(.25+.8*st)*(1.-.35*fy),chispa(vec2(gu*400.,Yh*120.))*.7);
+    c=mix(c,oro(lit*1.1,0.),1.-smoothstep(.003,.005,Yh-hem)); }
+  return vec4(c*a,a); }
+vec4 bamba(float xh,float vy,float asp){
+  float bh=uBh,nw=max(1.,floor(asp/(bh*2.6)+.5)),sw=asp/nw,sx=fract(xh/sw)*2.-1.,ax=abs(sx);
+  float dep=bh*(.44+.56*(1.-sx*sx)); gYb=dep; vec4 o=vec4(0.);
+  float g=vn(vec2(xh*1100.,vy*300.))*.6+vn(vec2(xh*3000.,vy*1100.))*.4;
+  if(vy<=dep){
+    float fy=vy/dep,ph=pow(fy,1.2)*4.5*6.2832+.6*sin(sx*3.+floor(xh/sw)*2.1);
+    float h=.5+.5*cos(ph),sl=-sin(ph)*1.5,nn=-sl/sqrt(1.+sl*sl);
+    vec3 c=terciopelo(nn,h,-.5,g)*mix(.5,1.05,smoothstep(1.,.6,ax))*.95;
+    c*=1.-.22*smoothstep(.7,1.,ax)*(.5+.5*sin(xh*900.));
+    if(vy<bh*.14){ c=terciopelo(0.,.8,0.,g)*.62;
+      vec2 q=vec2(fract(xh/(bh*.2))-.5,(vy-bh*.062)/(bh*.2)); float dm=abs(q.x)+abs(q.y);
+      float em=max(1.-smoothstep(.03,.05,abs(dm-.21)),1.-smoothstep(.04,.07,dm));
+      c=mix(c,oro(.55+.4*sin(xh*900.+vy*900.),chispa(vec2(xh,vy)*360.)*.8),em); }
+    float ln=max(1.-smoothstep(.006,.011,abs(vy-bh*.006)/bh),1.-smoothstep(.006,.011,abs(vy-bh*.132)/bh));
+    c=mix(c,oro(.5+.4*sin(xh*1200.),0.),ln);
+    float d=(dep-vy)/bh,br=1.-smoothstep(.045,.052,d);
+    c=mix(c,oro(.35+.6*(.5+.5*sin(xh*700.+vy*700.)*sin(xh*700.-vy*700.)),chispa(vec2(xh,vy)*330.)*.9),br);
+    o=vec4(c,1.);
+  } else {
+    float len=bh*.19*(.82+.18*hash(vec2(floor(xh*260.),3.))),fy=(vy-dep)/len;
+    if(fy<1.){ float st=.5+.5*sin(xh*1634.+uE*5.*fy*sin(uT*7.+xh*30.)),a=mix(.8,1.,st); o=vec4(oro((.3+.7*st)*(1.-.4*fy)*.9,chispa(vec2(xh*400.,vy*120.))*.7)*a,a); }
+  }
+  float r=(1.-ax)*sw*.5/bh,ty=(vy-bh*.40)/bh;
+  if(ty>0.&&ty<.64){
+    float hw=ty<.07?.012:(ty<.2?sqrt(max(0.,.065*.065-(ty-.135)*(ty-.135))):mix(.038,.07,(ty-.2)/.44));
+    if(r<hw){ float cyl=sqrt(max(0.,1.-(r/hw)*(r/hw))),fl=step(.235,ty),st=mix(1.,.5+.5*sin(xh*1900.),fl);
+      o=vec4(oro(cyl*(.35+.65*st)*mix(1.,1.-.35*(ty-.2)/.44,fl)*(ty>.2&&ty<.235?1.25:1.),chispa(vec2(xh,vy)*380.)*.8),1.); } }
+  return o; }
+void main(){
+  vec2 p=gl_FragCoord.xy/uRes; float x=p.x,y=1.-p.y,asp=uRes.x/uRes.y,Y=y+uD;
+  vec4 L=hoja(x,Y,uBotL,1.,asp),R=hoja(1.-x,Y,uBotR,-1.,asp);
+  vec4 c=R+L*(1.-R.a);
+  float vy=y+uD*uBh*1.75; vec4 V=bamba(x*asp,vy,asp);
+  c.rgb*=mix(.3,1.,smoothstep(0.,uBh*.8,vy-gYb));
+  gl_FragColor=V+c*(1.-V.a); }
+</script>
 <audio id="bgm" src="../assets/audio/jazzklub.mp3" loop preload="auto" autoplay></audio>
 <script>
 (() => {
@@ -190,12 +273,45 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   const teatro = document.getElementById('teatro'), scr = document.getElementById('scr'), cerrar = document.getElementById('cineX');
   const LISTA = 'https://www.youtube-nocookie.com/embed/b7gHZ-fuMFg?list=PL5R9SjE9WlgxOl9KRdjj3SM0FN7ZOT9iZ&autoplay=1&rel=0&playsinline=1';
   let abierto = false, ocupado = false;
-  function abrirCine() { if (abierto || ocupado) return; abierto = ocupado = true; teatro.classList.add('on'); teatro.setAttribute('aria-hidden', 'false'); void teatro.offsetWidth; teatro.classList.add('cae');
-    setTimeout(() => { teatro.classList.add('set'); try { window.__klubHush(true); } catch (e) {} scr.innerHTML = '<iframe src="' + LISTA + '" title="MEDIASERVI THEATER" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>'; }, 1000);
-    setTimeout(() => { teatro.classList.add('abre'); ocupado = false; try { cerrar.focus({ preventScroll: true }); } catch (e) {} }, 1550); }
+  const iframe = () => '<iframe src="' + LISTA + '" title="MEDIASERVI THEATER" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>';
+  const calla = on => { try { window.__klubHush(on); } catch (e) {} };
+  /* telón de terciopelo: la tela se dibuja con un sombreado (pliegues, brillo del pelo, galón, flecos y borlas de hilo de oro) y se mueve con física sencilla:
+     cae por gravedad y rebota al llegar, y al correrse el borde de abajo va con retraso respecto al riel, se pasa y se asienta balanceándose */
+  const GL = (() => { const cv = document.getElementById('telonGL'); let gl = null; try { gl = cv.getContext('webgl', { alpha: true, premultipliedAlpha: true, antialias: false }); } catch (e) {} if (!gl) return null;
+    const sh = (t, src) => { const o = gl.createShader(t); gl.shaderSource(o, src); gl.compileShader(o); return gl.getShaderParameter(o, gl.COMPILE_STATUS) ? o : null; };
+    const vs = sh(gl.VERTEX_SHADER, 'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}'), fs = sh(gl.FRAGMENT_SHADER, document.getElementById('telonFS').textContent); if (!vs || !fs) return null;
+    const pr = gl.createProgram(); gl.attachShader(pr, vs); gl.attachShader(pr, fs); gl.linkProgram(pr); if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return null; gl.useProgram(pr);
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW); const la = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(la); gl.vertexAttribPointer(la, 2, gl.FLOAT, false, 0, 0);
+    const U = {}; ['uRes', 'uT', 'uD', 'uTop', 'uBotL', 'uBotR', 'uE', 'uN', 'uBh'].forEach(n => { U[n] = gl.getUniformLocation(pr, n); });
+    const CERR = .52, st = { D: 1, vD: 0, top: CERR, bL: CERR, vL: 0, bR: CERR, vR: 0, E: 0, fase: 'off', t0: 0, de: CERR, fin: null };
+    let raf = 0, last = 0, cwF = .08, bhF = .09, nF = 10;
+    const ease = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2, clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+    function size() { const k = Math.min(devicePixelRatio || 1, 1.5), W = cv.clientWidth || innerWidth, H = cv.clientHeight || innerHeight, w = Math.round(W * k), h = Math.round(H * k); if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; } gl.viewport(0, 0, w, h);
+      cwF = clamp(.09 * W, 26, 150) / W; bhF = clamp(.09 * H, 34, 96) / H; nF = Math.max(3, Math.round(.5 * W / H / .075)); }
+    function done() { const f = st.fin; st.fin = null; if (f) f(); }
+    function frame(now) { raf = requestAnimationFrame(frame); if (st.fase === 'abierto' && st.E < .03 && now - last < 46) return;   // en reposo basta con unas 20 imágenes por segundo
+      const dt = clamp((now - last) / 1000, .001, .12); last = now; const top0 = st.top;
+      if (st.fase === 'cae') { st.vD -= 5.2 * dt; st.D += st.vD * dt; if (st.D <= 0) { st.D = 0; if (st.vD < -.5) { st.E = Math.max(st.E, Math.min(1, -st.vD * .45)); st.vD = -st.vD * .17; } else { st.vD = 0; st.fase = 'abajo'; done(); } } }
+      else if (st.fase === 'abre') { const k = (now - st.t0) / 2700; st.top = st.de + (cwF - st.de) * ease(Math.min(1, k)); if (k >= 1) st.fase = 'abierto'; }
+      else if (st.fase === 'cierra') { const k = (now - st.t0) / 2400; st.top = st.de + (CERR - st.de) * ease(Math.min(1, k)); if (k >= 1.3) { st.fase = 'abajo'; done(); } }
+      else if (st.fase === 'sube') { st.vD += 4.4 * dt; st.D += st.vD * dt; if (st.D >= 1.06) { st.fase = 'off'; cancelAnimationFrame(raf); raf = 0; done(); return; } }
+      // el borde de abajo sigue al riel como un péndulo amortiguado (cada hoja, a su aire)
+      for (let n = Math.ceil(dt / .016), h = dt / n, i = 0; i < n; i++) { let a = -30 * (st.bL - st.top) - 3.4 * st.vL; st.vL += a * h; st.bL += st.vL * h; a = -26 * (st.bR - st.top) - 3.1 * st.vR; st.vR += a * h; st.bR += st.vR * h; }   // pasos cortos: el vaivén no se desboca aunque el equipo vaya lento
+      st.bL = Math.max(st.bL, st.top * .6); st.bR = Math.max(st.bR, st.top * .6);
+      st.E = Math.max(st.E * Math.exp(-1.5 * dt), Math.min(1, Math.abs(st.top - top0) / dt * 1.7));
+      gl.uniform2f(U.uRes, cv.width, cv.height); gl.uniform1f(U.uT, now / 1000 % 600); gl.uniform1f(U.uD, st.D); gl.uniform1f(U.uTop, st.top); gl.uniform1f(U.uBotL, st.bL); gl.uniform1f(U.uBotR, st.bR); gl.uniform1f(U.uE, st.E); gl.uniform1f(U.uN, nF); gl.uniform1f(U.uBh, bhF);
+      gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.TRIANGLES, 0, 3); }
+    const go = (fase, fin) => { st.fase = fase; st.fin = fin || null; st.t0 = performance.now(); st.de = st.top; if (!raf) { last = performance.now() - 16; raf = requestAnimationFrame(frame); } };
+    addEventListener('resize', () => { if (st.fase !== 'off') size(); });
+    return { cae(fin) { size(); Object.assign(st, { D: 1, vD: 0, top: CERR, bL: CERR, vL: 0, bR: CERR, vR: 0, E: 0 }); go('cae', fin); }, abre() { go('abre'); }, cierra(fin) { go('cierra', fin); }, sube(fin) { st.vD = 0; go('sube', fin); }, get st() { return st; } }; })();
+  if (GL) teatro.classList.add('gl');
+  function abrirCine() { if (abierto || ocupado) return; abierto = ocupado = true; teatro.classList.add('on'); teatro.setAttribute('aria-hidden', 'false');
+    const lista = () => { teatro.classList.add('set'); calla(true); scr.innerHTML = iframe(); setTimeout(() => { teatro.classList.add('abre'); if (GL) GL.abre(); ocupado = false; try { cerrar.focus({ preventScroll: true }); } catch (e) {} }, 550); };
+    if (GL) GL.cae(lista); else { void teatro.offsetWidth; teatro.classList.add('cae'); setTimeout(lista, 1000); } }
   function cerrarCine() { if (!abierto || ocupado) return; ocupado = true; teatro.classList.remove('abre');
-    setTimeout(() => { scr.innerHTML = ''; teatro.classList.remove('set', 'cae'); teatro.classList.add('sube'); try { window.__klubHush(false); } catch (e) {} }, 2350);
-    setTimeout(() => { teatro.classList.remove('on', 'sube'); teatro.setAttribute('aria-hidden', 'true'); abierto = ocupado = false; }, 3300); }
+    const fuera = () => { teatro.classList.remove('on', 'sube'); teatro.setAttribute('aria-hidden', 'true'); abierto = ocupado = false; };
+    const cerrado = () => { scr.innerHTML = ''; teatro.classList.remove('set', 'cae'); calla(false); if (GL) GL.sube(fuera); else { teatro.classList.add('sube'); setTimeout(fuera, 950); } };
+    if (GL) GL.cierra(cerrado); else setTimeout(cerrado, 2350); }
   cerrar.addEventListener('click', cerrarCine);
   addEventListener('keydown', e => { if (e.key === 'Escape' && abierto) cerrarCine(); });
   // el logo del fondo (cara de Mevi y letras KLUB), centrado en horizontal; en vertical lo tapa el póster y vale cualquier punto libre del fondo
