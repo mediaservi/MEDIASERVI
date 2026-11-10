@@ -80,16 +80,14 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .teatro.on{display:block}
 .sala{position:absolute;inset:0;z-index:0;isolation:isolate;visibility:hidden;background:radial-gradient(ellipse 80% 62% at 50% 42%,#231318 0%,#0c0709 58%,#000 100%)}
 .teatro.set .sala{visibility:visible}
-.zona{position:absolute;left:var(--cw);right:var(--cw);top:var(--bh);bottom:var(--sh);display:flex;align-items:center;justify-content:center;container-type:size}
-.pant{position:relative;aspect-ratio:16/9;width:min(100cqw - 20px,(100cqh - 20px) * 16 / 9);background:#000;box-shadow:0 0 0 2px #2b2b2e,0 0 0 5px #0a0a0b,0 0 70px rgba(170,195,255,.26),0 50px 110px rgba(130,160,255,.14)}
+.zona{position:absolute;left:var(--cw);right:var(--cw);top:calc(var(--bh) * .92);bottom:calc(var(--sh) * .74);display:flex;align-items:center;justify-content:center;container-type:size}
+.pant{position:relative;aspect-ratio:16/9;width:min(100cqw - 20px,100cqh * 16 / 9);background:#000;box-shadow:0 0 0 2px #2b2b2e,0 0 0 5px #0a0a0b,0 0 70px rgba(170,195,255,.26),0 50px 110px rgba(130,160,255,.14)}
 .pant{overflow:hidden}
 /* el reproductor es más alto que la pantalla y no recibe el ratón: su título, su barra y su logo quedan fuera de la vista */
 .pant iframe,.pant #ytCine{position:absolute;left:0;top:-64px;width:100%;height:calc(100% + 128px);border:0;background:#000;pointer-events:none}
 .pant .lider{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}   /* sin fondo propio: lo que se quema deja ver el vídeo */
-.butacas{position:absolute;left:0;right:0;bottom:0;height:var(--sh);pointer-events:none}
-.butacas::before,.butacas::after{content:'';position:absolute;left:0;right:0;bottom:0}
-.butacas::before{height:100%;background:radial-gradient(ellipse 46% 100% at 50% 100%,#1b0e11 97%,transparent 100%) calc(var(--sh) * -.35) 0/calc(var(--sh) * .78) 100% repeat-x;opacity:.85}
-.butacas::after{height:66%;background:radial-gradient(ellipse 46% 100% at 50% 100%,#070405 97%,transparent 100%) 0 0/calc(var(--sh) * 1.02) 100% repeat-x}
+.butacas{position:absolute;left:0;right:0;bottom:0;z-index:3;width:100%;height:calc(var(--sh) * 1.12);pointer-events:none;transform:translateY(104%);transition:transform .7s cubic-bezier(.2,.8,.3,1)}
+.teatro.set .butacas{transform:none}   /* dos filas de butacas vistas desde atrás, dibujadas por código, por delante de la pantalla */
 .telon{position:absolute;inset:0;z-index:2;pointer-events:none;transform:translateY(-104%)}
 .teatro.cae .telon{animation:telonCae .95s cubic-bezier(.45,0,.85,.55) forwards}
 .teatro.sube .telon{animation:telonSube .9s cubic-bezier(.5,0,.8,.45) forwards}
@@ -108,7 +106,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 /* telón de terciopelo con caída y vaivén (WebGL); si el dispositivo no puede, queda el telón sencillo de arriba */
 .tgl{position:absolute;inset:0;z-index:2;width:100%;height:100%;pointer-events:none;display:none}
 .teatro.gl .tgl{display:block}.teatro.gl .telon{display:none}
-.teatro.gl .zona{top:calc(var(--bh) * 1.3)}
+.teatro.gl .zona{top:calc(var(--bh) * .36)}
 .ticket{position:fixed;inset:0;z-index:15;display:grid;place-items:center;pointer-events:none;visibility:hidden}
 .ticket.on{visibility:visible}
 .ticket canvas{position:absolute;inset:0;width:100%;height:100%}
@@ -131,7 +129,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .tk .m{flex:none;width:19%;display:flex;align-items:center;justify-content:center;border-left:.45cqw dashed #6b4a08;margin:3.2cqw 7cqw 3.2cqw 0;padding-left:1cqw}
 .tk .m span{writing-mode:vertical-rl;transform:rotate(180deg);font:900 3.6cqw/1.25 "Share Tech Mono",monospace;letter-spacing:.24em;text-align:center}
 @media (prefers-reduced-motion:reduce){.ticket.on .tk{animation-duration:.01s}.tk::after{animation:none}}
-.tacts{position:absolute;z-index:3;top:calc(10px + env(safe-area-inset-top,0px));right:14px;display:flex;gap:8px;opacity:0;pointer-events:none;transition:opacity .5s}
+.tacts{position:absolute;z-index:4;top:calc(10px + env(safe-area-inset-top,0px));right:14px;display:flex;gap:8px;opacity:0;pointer-events:none;transition:opacity .5s}
 .teatro.abre .tacts{opacity:1;pointer-events:auto}
 .tacts .pill{height:32px;padding:0 12px;font-size:10px;text-decoration:none;color:#eee;background:rgba(0,0,0,.62)}
 @media (prefers-reduced-motion:reduce){.telon i{transition-duration:.01s}.teatro.cae .telon,.teatro.sube .telon{animation-duration:.01s}.pano.hold{transition:none}}
@@ -166,9 +164,10 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 </section>
 <div class="ticket" id="ticket" aria-hidden="true"><canvas id="polvo"></canvas><div class="tk"><div class="c"><small>MEDIASERVI THEATER</small><b id="tkT"><em>CONSEGUISTE UN</em>PASE VIP</b><i id="tkS">SUELTA PARA ENTRAR</i></div><div class="m"><span>KLUB · Nº 0424</span></div></div></div>
 <div class="teatro" id="teatro" aria-hidden="true">
-  <div class="sala"><div class="zona"><div class="pant" id="scr"></div></div><div class="butacas"></div></div>
+  <div class="sala"><div class="zona"><div class="pant" id="scr"></div></div></div>
   <div class="telon"><i class="tl"></i><i class="tr"></i><b></b></div>
   <canvas class="tgl" id="telonGL" aria-hidden="true"></canvas>
+  <canvas class="butacas" id="butacas" aria-hidden="true"></canvas>
   <div class="tacts"><a class="pill" id="cineYt" href="https://youtu.be/IO-6MYnFmw0" target="_blank" rel="noopener">YOUTUBE ↗</a><button class="pill" id="cineSnd" hidden>🔊 SONIDO</button><button class="pill" id="cineX">✕ CERRAR</button></div>
 </div>
 <script id="telonFS" type="x-shader/x-fragment">
@@ -247,6 +246,7 @@ void main(){
   vec4 c=R+L*(1.-R.a);
   float vy=y+uD*uBh*1.75; vec4 V=bamba(x*asp,vy,asp);
   c.rgb*=mix(.3,1.,smoothstep(0.,uBh*.8,vy-gYb));
+  float sv=.55*(1.-smoothstep(0.,uBh*.5,vy-gYb))*step(gYb,vy); c=c+vec4(0.,0.,0.,sv)*(1.-c.a);
   gl_FragColor=V+c*(1.-V.a); }
 </script>
 <audio id="bgm" src="../assets/audio/jazzklub.mp3" loop preload="auto" autoplay></audio>
@@ -342,11 +342,11 @@ void main(){
       V.p = new YT.Player('ytCine', { host: 'https://www.youtube-nocookie.com', videoId: VID, playerVars: { autoplay: 0, controls: 0, rel: 0, modestbranding: 1, iv_load_policy: 3, disablekb: 1, fs: 0, playsinline: 1, cc_load_policy: 0, origin: location.origin },
         events: { onReady: () => { V.listo = true; if (V.quiere) arranca(); else if (V.fase === 'pre') prepara(); },
           onStateChange: e => { const st = e.data; V.st = st; if (st === 1) { if (V.fase === 'pre') { V.fase = 'lista'; V.pre = true; try { V.p.pauseVideo(); V.p.seekTo(0, true); } catch (x) {} } else if (V.fase === 'proy') V.suena = true; }
-            else if (st === 2 && V.fase === 'proy' && !V.suena) sinSonido(); else if (st === 0 && V.fase === 'proy') { LID.negro(); cerrarCine(); } } } }); }); }   // al acabar la película, pantalla en negro y se cierra el telón
+            else if (st === 2 && V.fase === 'proy' && !V.suena && performance.now() - V.tArr > 900) sinSonido(); else if (st === 0 && V.fase === 'proy') { LID.negro(); cerrarCine(); } } } }); }); }   // al acabar la película, pantalla en negro y se cierra el telón
   function prepara() { V.fase = 'pre'; if (V.listo && !V.simple) try { V.p.mute(); V.p.playVideo(); } catch (e) {} }   // en silencio: así el vídeo ya está cargado cuando toca
   function arranca() { V.quiere = true;
     if (V.simple) { const d = document.getElementById('ytCine'); if (d && d.tagName !== 'IFRAME') { d.outerHTML = '<iframe id="ytCine" src="https://www.youtube-nocookie.com/embed/' + VID + '?autoplay=1&controls=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&fs=0&playsinline=1" title="MEDIASERVI THEATER" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe>'; setTimeout(() => { V.suena = true; }, 1800); } return; }
-    if (V.listo) { V.fase = 'proy'; try { V.p.unMute(); V.p.setVolume(100); V.p.playVideo(); } catch (e) {} clearTimeout(V.tm); const mira = () => { if (V.st === 3) V.tm = setTimeout(mira, 1500); else sinSonido(); }; V.tm = setTimeout(mira, 3000); } }   // si sigue cargando, espera; si el navegador no lo deja sonar, arranca en silencio
+    if (V.listo) { V.fase = 'proy'; V.tArr = performance.now(); try { V.p.unMute(); V.p.setVolume(100); V.p.playVideo(); } catch (e) {} clearTimeout(V.tm); const mira = () => { if (V.st === 3) V.tm = setTimeout(mira, 1500); else sinSonido(); }; V.tm = setTimeout(mira, 3000); } }   // si sigue cargando, espera; si el navegador no lo deja sonar, arranca en silencio
   // si el navegador no deja empezar con sonido, empieza en silencio y aparece el botón de sonido
   function sinSonido() { if (!abierto || V.suena || !V.listo || V.fase !== 'proy') return; try { V.p.mute(); V.p.playVideo(); sonido.hidden = false; } catch (e) {} }
   sonido.addEventListener('click', () => { try { V.p.unMute(); V.p.setVolume(100); V.p.playVideo(); } catch (e) {} sonido.hidden = true; });
@@ -409,7 +409,22 @@ void main(){
     return { pon() { para(); campo(); rayas = []; pedido = false; pre = false; cv.style.display = ''; x.setTransform(1, 0, 0, 1, 0, 0); x.globalCompositeOperation = 'source-over'; x.globalAlpha = 1; x.fillStyle = '#0b0a08'; x.fillRect(0, 0, W, H); scr.appendChild(cv); },
       negro() { para(); x.setTransform(1, 0, 0, 1, 0, 0); x.globalCompositeOperation = 'source-over'; x.globalAlpha = 1; x.fillStyle = '#000'; x.fillRect(0, 0, W, H); cv.style.display = ''; },
       empieza() { fase = 'cuenta'; t0 = performance.now(); ult = 0; if (!raf) raf = requestAnimationFrame(tic); }, para, get fase() { return fase; } }; })();
-  function abrirCine() { if (abierto || ocupado) return; abierto = ocupado = true; teatro.classList.add('on'); teatro.setAttribute('aria-hidden', 'false');
+  /* butacas: dos filas de terciopelo vistas desde atrás, con el canto de arriba iluminado por la pantalla, costuras, reposabrazos y sombra sobre la imagen */
+  function butacas() { const cv = document.getElementById('butacas'), k = Math.min(devicePixelRatio || 1, 2), W = cv.clientWidth, H = cv.clientHeight; if (!W || !H) return; cv.width = Math.round(W * k); cv.height = Math.round(H * k);
+    const x = cv.getContext('2d'); x.setTransform(k, 0, 0, k, 0, 0); x.clearRect(0, 0, W, H); const sh = H / 1.12;
+    const fila = (w, top, des, luz, osc) => { const r = w * .3, hueco = w * .09, paso = w + hueco, n = Math.ceil(W / paso) + 2, x0 = (W - n * paso) / 2 + des * paso;
+      const sg = x.createLinearGradient(0, top - sh * .16, 0, top + r); sg.addColorStop(0, 'rgba(0,0,0,0)'); sg.addColorStop(1, 'rgba(0,0,0,.5)'); x.fillStyle = sg; x.fillRect(0, top - sh * .16, W, sh * .16 + r);   // sombra sobre la pantalla
+      x.fillStyle = osc; x.fillRect(0, top + r * .55, W, H);                                                                                                       // cuerpo de la fila: sin huecos
+      for (let i = 0; i < n; i++) { const X = x0 + i * paso, g = x.createLinearGradient(0, top, 0, top + w * 1.1); g.addColorStop(0, luz); g.addColorStop(.16, '#4a0c15'); g.addColorStop(.55, '#2a060c'); g.addColorStop(1, osc);
+        x.beginPath(); x.moveTo(X, H); x.lineTo(X + w * .03, top + r); x.quadraticCurveTo(X + w * .05, top, X + r, top); x.lineTo(X + w - r, top); x.quadraticCurveTo(X + w * .95, top, X + w * .97, top + r); x.lineTo(X + w, H); x.closePath(); x.fillStyle = g; x.fill();
+        const lg = x.createLinearGradient(X, 0, X + w, 0); lg.addColorStop(0, 'rgba(0,0,0,.4)'); lg.addColorStop(.2, 'rgba(255,255,255,.05)'); lg.addColorStop(.5, 'rgba(255,255,255,.1)'); lg.addColorStop(.8, 'rgba(255,255,255,.03)'); lg.addColorStop(1, 'rgba(0,0,0,.5)'); x.fillStyle = lg; x.fill();   // volumen
+        x.strokeStyle = 'rgba(196,214,255,.5)'; x.lineWidth = Math.max(1, w * .022); x.beginPath(); x.moveTo(X + w * .07, top + r * .8); x.quadraticCurveTo(X + w * .07, top + w * .012, X + r, top + w * .012); x.lineTo(X + w - r, top + w * .012); x.quadraticCurveTo(X + w * .93, top + w * .012, X + w * .93, top + r * .8); x.stroke();   // canto iluminado por la pantalla
+        x.strokeStyle = 'rgba(0,0,0,.45)'; x.lineWidth = Math.max(1, w * .014); [.33, .67].forEach(u => { x.beginPath(); x.moveTo(X + w * u, top + w * .16); x.lineTo(X + w * (u + (u - .5) * .08), top + w * .95); x.stroke(); });   // costuras
+        x.beginPath(); x.moveTo(X + w * .16, top + w * .2); x.quadraticCurveTo(X + w * .5, top + w * .13, X + w * .84, top + w * .2); x.stroke();
+        const ax = X + w - hueco * .1, ay = top + w * .58, aw = hueco * 1.2, ah = w * .13; x.fillStyle = '#0d0507'; x.beginPath(); x.roundRect ? x.roundRect(ax, ay, aw, ah, ah * .4) : x.rect(ax, ay, aw, ah); x.fill(); x.fillStyle = 'rgba(196,214,255,.22)'; x.fillRect(ax + aw * .12, ay + 1, aw * .76, Math.max(1, ah * .14)); } };   // reposabrazos
+    fila(sh * .58, H - sh * 1.04, 0, '#7c1826', '#150406'); fila(sh * .86, H - sh * .64, .5, '#8e1c2b', '#0a0203'); }
+  addEventListener('resize', () => { if (abierto) butacas(); });
+  function abrirCine() { if (abierto || ocupado) return; abierto = ocupado = true; teatro.classList.add('on'); teatro.setAttribute('aria-hidden', 'false'); butacas();
     const lista = () => { teatro.classList.add('set'); calla(true); scr.innerHTML = ''; montaVideo(); LID.pon();
       setTimeout(() => { teatro.classList.add('abre'); if (GL) GL.abre(); LID.empieza(); ocupado = false; try { cerrar.focus({ preventScroll: true }); } catch (e) {} }, 550); };   // el telón empieza a correrse y arranca la cuenta atrás
     if (GL) GL.cae(lista); else { void teatro.offsetWidth; teatro.classList.add('cae'); setTimeout(lista, 1000); } }
