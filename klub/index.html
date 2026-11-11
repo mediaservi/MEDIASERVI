@@ -32,13 +32,16 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .frame iframe{display:block;width:100%;height:100%;border:0;background:#111}
 .frame span{position:absolute;left:50%;bottom:-26px;transform:translateX(-50%);white-space:nowrap;font-size:10px;letter-spacing:.24em;color:#cfc6b0;text-shadow:0 1px 2px #000}
 @media (orientation:portrait){
-  .apps{flex-direction:column;justify-content:center;gap:14px;top:calc(74px + env(safe-area-inset-top,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+  .apps{flex-direction:column;justify-content:center;gap:14px;top:calc(74px + env(safe-area-inset-top,0px));bottom:calc(20px + env(safe-area-inset-bottom,0px))}
   .frame.cine{display:none}
   .frame .mat{height:min(calc(100cqh - 2 * var(--P)),calc((100cqw - 2 * var(--P)) * 16 / 9))}
   .frame span{display:none}
   .pano{background-size:auto 60%;background-position:50% 45%;filter:grayscale(1) brightness(.28)}
   .vig{background:radial-gradient(ellipse 55% 60% at 50% 50%,transparent 20%,rgba(0,0,0,.92) 85%)}
 }
+/* pie de página: el aviso legal */
+.pie{position:fixed;left:0;right:0;bottom:calc(3px + env(safe-area-inset-bottom,0px));z-index:9;height:10px;text-align:center;font:600 9px/10px "Share Tech Mono",monospace;letter-spacing:.18em;color:#8a8794;white-space:nowrap;pointer-events:none;text-shadow:0 1px 2px #000}
+.pie a{pointer-events:auto;color:#b9b6c6;text-decoration:none;padding:6px 4px;margin:-6px -4px}.pie a:hover,.pie a:focus-visible{color:#e9c967;outline:none}
 /* cabecera */
 .top{position:fixed;left:0;right:0;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:calc(14px + env(safe-area-inset-top,0px)) 18px 0}
 .top a{display:flex;align-items:center;text-decoration:none;color:#eee}
@@ -152,6 +155,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     <a class="pill" href="../#conecta" id="back">← VOLVER</a>
   </div>
 </header>
+<footer class="pie">mediaservi.com · <a href="https://github.com/mediaservi/MEDIASERVI/blob/main/LEGAL.md" target="_blank" rel="noopener" data-aviso="" id="avisoL">AVISO LEGAL</a></footer>
 <div class="modal" id="modal">
   <form class="box" id="box" autocomplete="off">
     <h2><svg viewBox="0 0 24 24"><path d="M12 1a5 5 0 0 0-5 5v4H5v13h14V10h-2V6a5 5 0 0 0-5-5zm-3 9V6a3 3 0 1 1 6 0v4z"/></svg>KLUB</h2>
@@ -252,6 +256,7 @@ void main(){
   gl_FragColor=V+c*(1.-V.a); }
 </script>
 <audio id="bgm" src="../assets/audio/jazzklub.mp3" loop preload="auto" autoplay></audio>
+<script src="../assets/aviso.js?v=1"></script>
 <script>
 (() => {
   const bgm = document.getElementById('bgm'), sndBtn = document.getElementById('sndBtn'), VOL = [0, .12, .4];
@@ -275,7 +280,7 @@ void main(){
   if (!l) { let tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
     l = /^(Europe\/Madrid|Atlantic\/Canary|Africa\/Ceuta|America\/(Mexico_City|Cancun|Merida|Monterrey|Bogota|Lima|Santiago|Caracas|Guayaquil|La_Paz|Asuncion|Montevideo|Argentina\/.+|Buenos_Aires|Havana|Santo_Domingo|Panama|Costa_Rica|Managua|Tegucigalpa|El_Salvador|Guatemala|Puerto_Rico))$/.test(tz) ? 'es' : 'en'; }
   const en = l === 'en';
-  if (en) { document.documentElement.lang = 'en'; document.getElementById('back').textContent = '← BACK'; document.getElementById('okb').textContent = 'ENTER'; document.getElementById('soon').textContent = 'PHOTO ALBUMS · COMING SOON'; document.getElementById('cineX').textContent = '✕ CLOSE'; document.getElementById('cineSnd').textContent = '🔊 SOUND'; document.getElementById('tkT').innerHTML = '<em>YOU GOT A</em>VIP PASS'; document.getElementById('tkS').textContent = 'RELEASE TO ENTER'; }
+  if (en) { document.documentElement.lang = 'en'; document.getElementById('avisoL').textContent = 'LEGAL NOTICE'; document.getElementById('back').textContent = '← BACK'; document.getElementById('okb').textContent = 'ENTER'; document.getElementById('soon').textContent = 'PHOTO ALBUMS · COMING SOON'; document.getElementById('cineX').textContent = '✕ CLOSE'; document.getElementById('cineSnd').textContent = '🔊 SOUND'; document.getElementById('tkT').innerHTML = '<em>YOU GOT A</em>VIP PASS'; document.getElementById('tkS').textContent = 'RELEASE TO ENTER'; }
   const modal = document.getElementById('modal'), box = document.getElementById('box'), pw = document.getElementById('pw'), err = document.getElementById('err'), priv = document.getElementById('priv');
   const H = '2d8f894b33e630ddd07416938bcb8d9875677daf3bd7f04af6c700f7b62b1a3c';
   const sha = async t => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)))].map(b => b.toString(16).padStart(2, '0')).join('');

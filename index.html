@@ -92,10 +92,13 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 .c3{left:12px;bottom:calc(var(--bot) - 4px);border-left-width:2px;border-bottom-width:2px}.c4{right:12px;bottom:calc(var(--bot) - 4px);border-right-width:2px;border-bottom-width:2px}
 
 /* ============ NAVEGACIÓN ============ */
-.nav{position:fixed;left:0;right:0;bottom:0;z-index:30;height:var(--bot);padding:0 clamp(12px,3vw,34px) calc(14px + var(--safe-b));display:flex;flex-direction:column;justify-content:flex-end;gap:10px}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:30;height:var(--bot);padding:0 clamp(12px,3vw,34px) calc(6px + var(--safe-b));display:flex;flex-direction:column;justify-content:flex-end;gap:10px}
 .prog{height:3px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden}
 .prog b{display:block;height:100%;width:20%;border-radius:3px;background:linear-gradient(90deg,var(--violet),var(--blue),var(--green));box-shadow:0 0 12px rgba(0,180,255,.6);transition:width .9s cubic-bezier(.7,0,.2,1)}
 .chs{display:flex;justify-content:space-between;gap:6px}
+/* pie de página: el aviso legal, a la vista en todas las secciones */
+.pie{flex:none;height:10px;text-align:center;font:600 9px/10px 'Share Tech Mono',monospace;letter-spacing:.18em;color:#8a879c;white-space:nowrap;text-shadow:0 1px 2px #000,0 0 6px #000}
+.pie a{color:#c9c6da;text-decoration:none;padding:6px 4px;margin:-6px -4px}.pie a:hover,.pie a:focus-visible{color:var(--green);outline:none}
 .ch{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:8px;height:34px;border-radius:4px;cursor:pointer;border:1px solid #000;color:#77748a;
   background:linear-gradient(180deg,rgba(255,255,255,.05),transparent 30%),#121116;box-shadow:0 2px 0 #000,inset 0 1px 0 rgba(255,255,255,.06);
   font:600 11px/1 'Share Tech Mono',monospace;letter-spacing:.18em;transition:color .3s,box-shadow .3s,background .3s;white-space:nowrap;overflow:hidden}
@@ -184,6 +187,11 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 .proj .go{margin-top:2px;font:600 10px/1 'Share Tech Mono',monospace;letter-spacing:.24em;color:var(--c)}
 .slide#museo .fit{display:none}
 .slide#museo.nomuseum .fit{display:block}
+/* sin 3D: las once opciones en tarjetas compactas, con el nombre entero */
+.nomuseum .g4{grid-template-columns:repeat(6,minmax(0,1fr));width:min(1320px,92vw)}
+.nomuseum .proj .bd{gap:6px;padding:10px 10px 12px}
+.nomuseum .proj .lcd{height:auto;min-height:34px;padding:6px 8px;font-size:13px;line-height:1.15;letter-spacing:.06em;white-space:normal;overflow-wrap:anywhere}
+.nomuseum .proj small{font-size:10px}
 .museum{position:absolute;inset:calc(-1 * var(--top)) 0 calc(-1 * var(--bot)) 0;z-index:3;opacity:0;pointer-events:none;transition:opacity .9s ease}
 .museum.on{opacity:1;pointer-events:auto}
 .museum canvas{display:block;width:100%;height:100%;outline:none}
@@ -219,16 +227,17 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 .th button:hover{background:rgba(90,235,255,.15)}
 .ts{font:600 10px/1.5 'Share Tech Mono',monospace;letter-spacing:.2em;color:#5fd9ee}
 .tl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;overflow:auto}
-.opt{position:relative;display:flex;align-items:center;gap:12px;padding:10px;text-align:left;border:1px solid rgba(90,235,255,.3);background:rgba(0,40,60,.18);color:#dffbff;transition:background .2s,border-color .2s,transform .2s;opacity:0;animation:optIn .5s ease both}
+.opt{position:relative;display:flex;align-items:center;gap:12px;padding:10px;text-align:left;border:1px solid rgba(90,235,255,.3);background:rgba(2,16,26,.74);color:#dffbff;transition:background .2s,border-color .2s,transform .2s;opacity:0;animation:optIn .5s ease both}
 @keyframes optIn{from{opacity:0;transform:translateX(-14px);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
-.opt:hover{background:rgba(90,235,255,.16);border-color:#5ef;transform:translateX(3px)}
-.opt .th2{flex:none;width:76px;height:43px;background:#000 center/cover no-repeat;border:1px solid var(--c);box-shadow:0 0 10px var(--c);display:flex;align-items:center;justify-content:center}
+.opt:hover{background:rgba(10,60,80,.82);border-color:#5ef;transform:translateX(3px)}
+.opt .th2{flex:none;width:76px;height:43px;background:#05040a center/cover no-repeat;border:1px solid var(--c);box-shadow:0 0 10px var(--c);display:flex;align-items:center;justify-content:center}
 .opt .th2 canvas{width:100%;height:100%}
 .opt .th2 svg{width:24px;height:24px;fill:#fff}
 .opt b{display:block;font:900 15px/1.1 'Doto',monospace;letter-spacing:.12em;color:var(--c);text-shadow:0 0 8px var(--c)}
 .opt small{display:block;margin-top:4px;font:600 10px/1.35 'Share Tech Mono',monospace;letter-spacing:.06em;color:#9fd8e6}
-.opt.wa2{grid-column:1/-1;--c:#25d366}
+.opt.wa2{--c:#25d366}
 .opt.wa2 .th2{background:#25d366}
+@media (min-width:900px){.tw{width:min(1140px,100%)}.tl{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
 /* Pantalla holográfica */
 .holo{position:fixed;z-index:40;left:0;right:0;top:var(--top);bottom:var(--bot);display:none;align-items:center;justify-content:center;padding:clamp(8px,2vw,26px)}
@@ -249,13 +258,14 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 .hh a,.hh button{display:flex;align-items:center;justify-content:center;height:30px;min-width:30px;padding:0 10px;border-radius:4px;border:1px solid rgba(0,220,255,.4);font:600 11px/1 'Share Tech Mono',monospace;letter-spacing:.14em;color:#cff;transition:background .2s}
 .hh a:hover,.hh button:hover{background:rgba(0,220,255,.15)}
 .hb{flex:1;min-height:0;display:flex}
-.hc{flex:none;width:220px;display:flex;flex-direction:column;gap:8px;padding:12px;border-right:1px solid rgba(0,220,255,.25);background:rgba(0,30,45,.35)}
+.hc{flex:none;width:220px;min-height:0;display:flex;flex-direction:column;gap:8px;padding:12px;border-right:1px solid rgba(0,220,255,.25);background:rgba(0,30,45,.35)}
 .hc p{font:600 10px/1 'Share Tech Mono',monospace;letter-spacing:.3em;color:#6cc}
-.hc ul{list-style:none;display:flex;flex-direction:column;gap:6px}
-.hc li button{width:100%;display:flex;align-items:center;gap:10px;padding:10px;border-radius:4px;text-align:left;border:1px solid rgba(0,220,255,.18);background:rgba(0,0,0,.25);font:800 13px/1 'Doto',monospace;letter-spacing:.1em;color:#bfe;transition:background .2s,border-color .2s}
+.hc ul{list-style:none;display:flex;flex-direction:column;gap:5px;flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(0,220,255,.4) transparent}
+.hc li button{width:100%;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:4px;text-align:left;border:1px solid rgba(0,220,255,.18);background:rgba(0,0,0,.25);font:800 13px/1 'Doto',monospace;letter-spacing:.1em;color:#bfe;transition:background .2s,border-color .2s}
 .hc li button i{width:8px;height:8px;border-radius:50%;flex:none;background:var(--c);box-shadow:0 0 8px var(--c)}
 .hc li button:hover{background:rgba(0,220,255,.1)}
 .hc li button.sel{border-color:#2ff;background:rgba(0,220,255,.16);color:#fff}
+@media (max-height:760px){.hc li button{padding:6px 10px}}
 .hv{position:relative;flex:1;min-width:0;background:#000}
 .hv .ld{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;font:700 12px/1 'Share Tech Mono',monospace;letter-spacing:.3em;color:#7ff;text-align:center;padding:20px}
 .hv .ld i{width:44px;height:44px;border-radius:50%;border:3px solid rgba(0,220,255,.2);border-top-color:#2ff;animation:spin 1s linear infinite}
@@ -447,6 +457,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   .hud .rec,#tc{display:none}
   .arrow{display:none}
   .ch span{display:none}
+  .nav{gap:6px}
   .ch em{font-size:14px}
   .fit{padding:8px 16px}
   .wa{left:50%;right:auto;transform:translateX(-50%);bottom:calc(var(--bot) + 10px)}
@@ -454,6 +465,8 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   .face{width:min(76vw,330px)}
   .mlogo{width:min(86vw,420px)}
   .g4{grid-template-columns:repeat(2,minmax(0,1fr));width:min(88vw,460px)}
+  .nomuseum .g4{grid-template-columns:repeat(3,minmax(0,1fr));width:min(94vw,560px);gap:6px}
+  .nomuseum .proj .bd{padding:6px}.nomuseum .proj .lcd{min-height:0;padding:4px 5px;font-size:10px;letter-spacing:.02em}.nomuseum .proj .go{display:none}
   .proj small{display:none}
   .g5{grid-template-columns:repeat(2,minmax(0,1fr));width:min(88vw,440px)}
   .fav .tx b{display:none}
@@ -470,7 +483,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   .map{min-height:140px;height:140px}
   .hc{width:auto;border-right:0;border-bottom:1px solid rgba(0,220,255,.25);padding:8px}
   .hb{flex-direction:column}
-  .hc ul{flex-direction:row;overflow-x:auto}
+  .hc ul{flex-direction:row;overflow-x:auto;overflow-y:hidden}
   .hc li button{white-space:nowrap;font-size:12px;padding:8px}
   .hc p{display:none}
 }
@@ -483,14 +496,20 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   .card .view .ph{background-size:cover}
   .map{min-height:auto}
 }
-@media (max-width:760px){.tl{grid-template-columns:1fr}.opt small{display:none}.crawl{height:clamp(56px,11vh,110px)}.cine{padding:0 10px;gap:5px}.cine .legal{font-size:8px;line-height:1.4;letter-spacing:.04em}.logos{height:38px}.cine{gap:12px}.globe{width:44px;height:44px;margin-left:-22px;margin-top:-3px}.deck{bottom:calc(var(--bot) + 66px)}.ctrack button{font-size:14px}}
+@media (max-width:760px){.tl{gap:7px}.opt{flex-direction:column;align-items:center;justify-content:flex-start;gap:6px;padding:8px 6px;text-align:center}.opt .th2{width:64px;height:36px}.opt b{font-size:12px;letter-spacing:.08em;overflow-wrap:anywhere}.opt small{display:none}.tw{gap:10px;padding-top:16px;padding-bottom:16px}.hh{height:auto;min-height:44px;padding-top:6px;padding-bottom:6px}.hh b{white-space:normal;overflow:visible;font-size:13px;line-height:1.15}.hh .live span{display:none}.crawl{height:clamp(56px,11vh,110px)}.cine{padding:0 10px;gap:5px}.cine .legal{font-size:8px;line-height:1.4;letter-spacing:.04em}.logos{height:38px}.cine{gap:12px}.globe{width:44px;height:44px;margin-left:-22px;margin-top:-3px}.deck{bottom:calc(var(--bot) + 66px)}.ctrack button{font-size:14px}}
 .wa.hide{display:none}
 .klubov{position:fixed;inset:0;z-index:70;opacity:0;pointer-events:none;transition:opacity .4s;background:#000}
 .klubov.open{opacity:1;pointer-events:auto}
 .klubov iframe{width:100%;height:100%;border:0;display:block}
+@media (max-width:760px) and (max-height:780px){.opt{flex-direction:row;align-items:center;gap:6px;padding:5px 6px;text-align:left}.opt .th2{width:44px;height:25px}.opt b{font-size:10.5px;letter-spacing:.05em}.th b{font-size:14px}.ts{font-size:9px;letter-spacing:.12em}}
+@media (max-width:340px){.opt .th2{width:38px;height:21px}.opt b{font-size:9.5px;letter-spacing:.02em}}
 @media (max-height:520px) and (orientation:landscape){
   :root{--top:calc(52px + var(--safe-t)); --bot:calc(58px + var(--safe-b))}
   .prog{display:none}
+  .nav{gap:6px}
+  .term{padding:6px 10px}.tw{width:min(1140px,100%);gap:8px;padding-top:10px;padding-bottom:10px}.ts{display:none}
+  .nomuseum .proj small,.nomuseum .proj .go{display:none}.nomuseum .proj .lcd{font-size:11px;min-height:0;padding:4px 6px}.nomuseum .proj .bd{padding:6px}
+  .tl{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.opt{flex-direction:row;align-items:center;gap:8px;padding:5px 6px;text-align:left}.opt .th2{width:50px;height:28px}.opt b{font-size:11px;letter-spacing:.06em;overflow-wrap:anywhere}.opt small{display:none}
 }
 .slide.scrolly{overflow-y:auto;overflow-x:hidden;align-items:flex-start;touch-action:pan-y;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .slide.scrolly::-webkit-scrollbar{display:none}
@@ -581,7 +600,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
         </div>
       </div>
       <div class="crawl" data-in style="--i:3"><div class="cv"><div class="ctrack" id="ctrack"></div></div></div>
-      <p class="legal" data-in style="--i:4" data-t="enlaces a marcas comerciales registradas por sus respectivos propietarios de algunas de nuestras experiencias {H} favoritas · <a href='https://github.com/mediaservi/MEDIASERVI/blob/main/LEGAL.md' target='_blank' rel='noopener'>aviso legal</a>|links to trademarks registered by their respective owners of some of our {H} favourite experiences · <a href='https://github.com/mediaservi/MEDIASERVI/blob/main/LEGAL.md' target='_blank' rel='noopener'>legal notice</a>"></p>
+      <p class="legal" data-in style="--i:4" data-t="enlaces a marcas comerciales registradas por sus respectivos propietarios de algunas de nuestras experiencias {H} favoritas|links to trademarks registered by their respective owners of some of our {H} favourite experiences"></p>
     </div>
   </section>
 
@@ -646,7 +665,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   <div class="hw" id="holoW">
     <div class="hh"><span class="live"><i></i><span data-t="EN DIRECTO|LIVE"></span></span><b id="holoT"></b><a id="holoExt" href="#" target="_blank" rel="noopener" aria-label="↗">↗</a><button id="holoX" data-t="CERRAR ✕|CLOSE ✕"></button></div>
     <div class="hb"><aside class="hc"><p data-t="CONSOLA|CONSOLE"></p><ul id="holoList"></ul></aside><div class="hv" id="holoV"></div></div>
-    <div class="hf"><span data-t="¿No se ve?|Not showing?"></span><a id="holoExt2" href="#" target="_blank" rel="noopener" data-t="Ábrelo en una pestaña nueva ↗|Open it in a new tab ↗"></a></div>
+    <div class="hf" id="holoF"><span data-t="¿No se ve?|Not showing?"></span><a id="holoExt2" href="#" target="_blank" rel="noopener" data-t="Ábrelo en una pestaña nueva ↗|Open it in a new tab ↗"></a></div>
   </div>
 </div>
 
@@ -658,9 +677,11 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 <nav class="nav">
   <div class="prog"><b id="prog"></b></div>
   <div class="chs" id="chs"></div>
+  <footer class="pie">mediaservi.com · <a href="https://github.com/mediaservi/MEDIASERVI/blob/main/LEGAL.md" target="_blank" rel="noopener" data-aviso="" data-t="AVISO LEGAL|LEGAL NOTICE">AVISO LEGAL</a></footer>
 </nav>
 
 <audio id="bgm" loop preload="none"></audio>
+<script src="assets/aviso.js?v=1"></script>
 <canvas id="wipe" aria-hidden="true"></canvas>
 <div class="scan"></div>
 
@@ -756,20 +777,28 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
     ['Tropical Islands', 'https://www.tropical-islands.de/en', 'tropicalislands'],
     ['Atlantis The Palm', 'https://www.atlantis.com/es/atlantis-the-palm', 'atlantisthepalm']
   ];
+  // Opciones del museo digital, en el orden en que salen en el terminal: primero lo que es de museo.
+  // img = imagen grande (muro, pantalla holográfica) · th = miniatura del botón · fx = pantalla dibujada cuando no hay imagen
+  // frame = se abre dentro de la pantalla holográfica · solo = solo se mira ahí: sin enlace para abrirla fuera
+  const VGH = { nn: ['HISTORIA DEL VIDEOJUEGO', 'VIDEO GAME HISTORY'], n: 'HISTORIA DEL VIDEOJUEGO', d: ['Línea del tiempo de los videojuegos a pantalla completa', 'Full-screen video game timeline'], u: 'assets/img/historia-videojuego-' + (LANG === 'es' ? 'es' : 'en') + '.webp?v=2', img: 'assets/img/historia-videojuego-' + (LANG === 'es' ? 'es' : 'en') + '.webp?v=2', th: 'assets/img/mini/historia.webp', c: '#ffb000', view: 'image', frame: false, wide: true };   // lámina propia (dibujo original, en español e inglés)
   const PROJS = [
-    { n: 'VJSHOW', d: ['Visuales reactivos al audio para sesiones de VJ y salas inmersivas', 'Audio-reactive visuals for VJ sets and immersive rooms'], u: 'https://vjshow.mediaservi.com/', img: 'assets/img/vjshow.webp', c: '#e100ff', frame: true },
-    { n: 'SCREENCALC', d: ['Calculadora de pantallas LED', 'LED screen calculator'], u: 'https://screencalc.mediaservi.com/', img: 'assets/img/screencalc.webp', c: '#00ff04', frame: true },
-    { n: 'GAME HISTORY', d: ['library.gamehistory.org', 'library.gamehistory.org'], u: 'https://library.gamehistory.org/', fx: 'crt', c: '#ffb000', frame: false },
-    { n: 'HARDWARE', d: ['App en Google Play', 'App on Google Play'], u: 'https://play.google.com/store/apps/details?id=com.museodelvideojuego.hardware', fx: 'play', c: '#00b4ff', frame: false }
+    VGH,
+    { n: 'MUSEO DEL VIDEOJUEGO', d: ['MDV Hardware · la app para catalogar tu colección', 'MDV Hardware · the app to catalogue your collection'], u: 'https://play.google.com/store/apps/details?id=com.museodelvideojuego.hardware', img: 'assets/img/vgapp.webp', th: 'assets/img/mini/mdv.webp', c: '#00b4ff', frame: false },
+    { n: 'POSTERS CINE', d: ['Cartelería de cine · solo visualización', 'Cinema posters · view only'], u: 'https://msp-theater.netlify.app/', fx: 'cine', c: '#e9c967', frame: true, solo: true },
+    { n: 'POSTERS KLUB', d: ['Cartelería del KLUB · solo visualización', 'KLUB posters · view only'], u: 'https://msp-klub.netlify.app/', fx: 'klub', c: '#ff5a8a', frame: true, solo: true },
+    { n: 'MSGAME', d: ['Juegos de fiesta con el móvil como mando', 'Party games with your phone as the controller'], u: 'https://msgame.mediaservi.com/', img: 'assets/img/msgame.webp', th: 'assets/img/mini/msgame.webp', c: '#e100ff', frame: true },
+    { n: 'VJSHOW', d: ['Visuales reactivos al audio para sesiones de VJ y salas inmersivas', 'Audio-reactive visuals for VJ sets and immersive rooms'], u: 'https://vjshow.mediaservi.com/', img: 'assets/img/vjshow.webp', c: '#00ff04', frame: true },
+    { n: 'SCREENS', d: ['Calculadora de pantallas LED y de proyección', 'LED screen and projection calculator'], u: 'https://screens.mediaservi.com/', img: 'assets/img/screens.webp', th: 'assets/img/mini/screens.webp', c: '#d4ff00', frame: true },
+    { n: 'SYSTEMS', d: ['Calculadoras de audio y escenario', 'Audio and stage calculators'], u: 'https://systems.mediaservi.com/', img: 'assets/img/systems.webp', th: 'assets/img/mini/systems.webp', c: '#00b4ff', frame: true },
+    { n: 'ADPOSTER', d: ['Cartelería digital para cualquier pantalla', 'Digital signage for any screen'], u: 'https://adposter.mediaservi.com/', img: 'assets/img/adposter.webp', th: 'assets/img/mini/adposter.webp', c: '#ffb000', frame: true },
+    { n: 'AVHUB', d: ['Todas las herramientas audiovisuales, en una sola app', 'All the audiovisual tools, in a single app'], u: 'https://avhub.mediaservi.com/', img: 'assets/img/avhub.webp', th: 'assets/img/mini/avhub.webp', c: '#9900ff', frame: true },
+    { n: 'GAME HISTORY', d: ['Biblioteca digital · library.gamehistory.org', 'Digital library · library.gamehistory.org'], u: 'https://library.gamehistory.org/', fx: 'crt', c: '#ffb000', frame: false }
   ];
   window.__PROJS = PROJS;
   const OPTS = PROJS.concat([{ n: 'WHATSAPP', d: ['Contacta x WhatsApp', 'Contact via WhatsApp'], u: 'https://wa.me/JosepTarroja', c: '#25d366', wa: true }]);
   window.__OPTS = OPTS;
-  const VGH = { nn: ['HISTORIA DEL VIDEOJUEGO', 'VIDEO GAME HISTORY'], n: 'HISTORIA DEL VIDEOJUEGO', d: ['Línea del tiempo de los videojuegos a pantalla completa', 'Full-screen video game timeline'], u: 'assets/img/historia-videojuego-' + (LANG === 'es' ? 'es' : 'en') + '.webp?v=2', img: 'assets/img/historia-videojuego-' + (LANG === 'es' ? 'es' : 'en') + '.webp?v=2', c: '#ffb000', view: 'image', frame: false, wide: true };   // lámina propia (dibujo original, en español e inglés)
-  OPTS.splice(OPTS.length - 1, 0, VGH);
   const probe = src => new Promise(r => { const i = new Image(); i.onload = () => r(true); i.onerror = () => r(false); i.src = src; });
   const assetsReady = HYD.then(() => Promise.race([Promise.all([
-    probe('assets/img/vgapp.webp').then(ok => { if (ok) PROJS[3].img = 'assets/img/vgapp.webp'; }),
     probe('assets/img/accesovehiculos.png').then(ok => { if (ok) document.getElementById('vview').hidden = false; })
   ]), new Promise(r => setTimeout(r, 2500))])).then(() => { if (typeof renderDynamic === 'function') renderDynamic(); });
   const hexA = (h, a) => { const n = parseInt(h.slice(1), 16); return `rgba(${n >> 16},${n >> 8 & 255},${n & 255},${a})`; };
@@ -780,7 +809,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   document.getElementById('social').addEventListener('click', e => { if (e.target.closest('#klubTile')) { e.preventDefault(); openKlub(); } });
   function renderDynamic() {
     document.getElementById('projs').innerHTML = PROJS.map((p, k) =>
-      `<a class="proj" href="${p.u}" data-k="${k}" data-in style="--i:${k + 2};--c:${p.c};--cg:${hexA(p.c, .3)}"><span class="scr">${p.img ? `<img ${hydrate.done ? 'src' : 'data-src'}="${p.img}" alt="">` : `<canvas data-fx="${p.fx}" width="320" height="180"></canvas>`}</span>
+      `<a class="proj" href="${p.solo ? '#museo' : p.u}" data-k="${k}" data-in style="--i:${k + 2};--c:${p.c};--cg:${hexA(p.c, .3)}"><span class="scr">${p.img ? `<img ${hydrate.done ? 'src' : 'data-src'}="${p.img}" alt="">` : `<canvas data-fx="${p.fx}" width="320" height="180"></canvas>`}</span>
         <span class="bd"><span class="lcd">${p.n}</span><small>${T(...p.d)}</small><span class="go">${T('ENTRAR ↗', 'ENTER ↗')}</span></span></a>`).join('');
     fxc = [...document.querySelectorAll('canvas[data-fx]')];
     if (cur >= 0 && slides[cur].id === 'museo') slides[cur].querySelectorAll('[data-in]').forEach(e => e.style.opacity = 1);
@@ -788,14 +817,20 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   let fxc = [];
   document.getElementById('projs').addEventListener('click', e => { const a = e.target.closest('.proj'); if (!a) return; e.preventDefault(); openHolo(+a.dataset.k, e.clientX, e.clientY); });
   // pantallas generadas para los proyectos sin imagen
+  const FXT = { crt: ['GAME', 'HISTORY', '#ffb000', '#ff8a00'], cine: ['POSTERS', 'CINE', '#e9c967', '#ffb000'], klub: ['POSTERS', 'KLUB', '#ff5a8a', '#ff1f6b'] };
   function drawFxOn(cv, kind, t) {
     const g = cv.getContext('2d'), w = cv.width, h = cv.height, k = w / 320;
     g.fillStyle = '#05040a'; g.fillRect(0, 0, w, h);
-    if (kind === 'crt') {
-      for (let y = 0; y < h; y += 4 * k) { g.fillStyle = `rgba(255,176,0,${.03 + .03 * Math.sin(y * .1 / k + t * 3)})`; g.fillRect(0, y, w, 2 * k); }
-      g.font = `900 ${34 * k}px Doto, monospace`; g.textAlign = 'center'; g.fillStyle = '#ffb000'; g.shadowColor = '#ff8a00'; g.shadowBlur = 14 * k;
-      g.fillText('GAME', w / 2 + (Math.random() < .03 ? 4 * k : 0), h / 2 - 8 * k); g.fillText('HISTORY', w / 2, h / 2 + 30 * k); g.shadowBlur = 0;
-      g.fillStyle = `rgba(255,255,255,${.06 + .04 * Math.random()})`; g.fillRect(0, (t * 60 * k) % h, w, 6 * k);
+    const R = FXT[kind];
+    if (R) {
+      for (let y = 0; y < h; y += 4 * k) { g.fillStyle = hexA(R[2], .03 + .03 * Math.sin(y * .1 / k + t * 3)); g.fillRect(0, y, w, 2 * k); }
+      g.font = `900 ${34 * k}px Doto, monospace`; g.textAlign = 'center'; g.fillStyle = R[2]; g.shadowColor = R[3]; g.shadowBlur = 14 * k;
+      g.fillText(R[0], w / 2 + (Math.random() < .03 ? 4 * k : 0), h / 2 - 8 * k); g.fillText(R[1], w / 2, h / 2 + 30 * k); g.shadowBlur = 0;
+      if (kind === 'crt') { g.fillStyle = `rgba(255,255,255,${.06 + .04 * Math.random()})`; g.fillRect(0, (t * 60 * k) % h, w, 6 * k); }
+      else { const m = 12 * k, nx = 15, ny = 8, ph = Math.floor(t * 5); let i = 0;   // bombillas de marquesina corriendo por el borde
+        const luz = (x, y) => { g.fillStyle = (i++ + ph) % 3 ? hexA(R[2], .22) : '#fff6d0'; g.beginPath(); g.arc(x, y, 3.4 * k, 0, 7); g.fill(); };
+        for (let a = 0; a < nx; a++) luz(m + a * (w - 2 * m) / nx, m); for (let a = 0; a < ny; a++) luz(w - m, m + a * (h - 2 * m) / ny);
+        for (let a = 0; a < nx; a++) luz(w - m - a * (w - 2 * m) / nx, h - m); for (let a = 0; a < ny; a++) luz(m, h - m - a * (h - 2 * m) / ny); }
     } else {
       const s = 10 * k; for (let y = s / 2; y < h; y += s) for (let x = s / 2; x < w; x += s) {
         const dx = (x - w / 2) / (50 * k), dy = (y - h / 2) / (50 * k), inTri = dx > -.7 && dx < .9 && Math.abs(dy) < (.9 - dx) * .62;
@@ -1111,7 +1146,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   /* ---------- ajuste: cada diapositiva cabe siempre en la pantalla ---------- */
   const deck = document.getElementById('deck'), slides = [...document.querySelectorAll('.slide')];
   function fit(sl) {
-    const f = sl.querySelector('.fit'); if (!f || sl.id === 'museo') return; f.style.transform = 'none'; f.style.transformOrigin = ''; f.style.marginBottom = ''; sl.classList.remove('scrolly');
+    const f = sl.querySelector('.fit'); if (!f || (sl.id === 'museo' && !sl.classList.contains('nomuseum'))) return; f.style.transform = 'none'; f.style.transformOrigin = ''; f.style.marginBottom = ''; sl.classList.remove('scrolly');
     const W = deck.clientWidth, H = deck.clientHeight, sw = f.scrollWidth, sh = f.scrollHeight;
     let k = Math.min(1.3, W / sw, H * .94 / sh);
     const MIN = (W < 900 || H < 520) ? .78 : 0;   // en móvil nunca por debajo de un tamaño legible
@@ -1125,9 +1160,11 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   let holoOpen = false, holoK = 0;
   function fillHolo(k) {
     holoK = k; const p = OPTS[k];
-    document.getElementById('holoT').textContent = p.n + ' · ' + T(...p.d);
-    document.getElementById('holoExt').href = document.getElementById('holoExt2').href = p.u;
+    const ht = document.getElementById('holoT'); ht.textContent = innerWidth <= 760 ? p.n : p.n + ' · ' + T(...p.d); if (ht.scrollWidth > ht.clientWidth + 1) ht.textContent = p.n;   // si el título completo no cabe, solo el nombre: nunca cortado
+    document.getElementById('holoExt').href = document.getElementById('holoExt2').href = p.solo ? '#museo' : p.u;
+    document.getElementById('holoExt').style.display = document.getElementById('holoF').style.display = p.solo ? 'none' : '';
     holoList.innerHTML = OPTS.map((q, j) => q.wa ? '' : `<li><button data-k="${j}" class="${j === k ? 'sel' : ''}" style="--c:${q.c}"><i></i>${q.n}</button></li>`).join('');
+    const sel = holoList.querySelector('.sel'); if (sel) { const li = sel.parentElement, ul = holoList; ul.scrollLeft = Math.max(0, li.offsetLeft - ul.offsetLeft - (ul.clientWidth - li.offsetWidth) / 2); ul.scrollTop = Math.max(0, li.offsetTop - ul.offsetTop - (ul.clientHeight - li.offsetHeight) / 2); }   // la opción abierta, siempre a la vista en la consola
   }
   function loadHolo(k) {
     const p = OPTS[k]; fillHolo(k);
@@ -1149,7 +1186,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
     loadHolo(k);
   }
   window.__openHolo = openHolo;
-  function closeHolo() { if (!holoOpen) return; holo.classList.add('closing'); holoOpen = false; setTimeout(() => { holo.classList.remove('open', 'closing'); holoV.innerHTML = ''; }, 340); }
+  function closeHolo() { if (!holoOpen) return; holo.classList.add('closing'); holoOpen = false; setTimeout(() => { if (holoOpen) return; holo.classList.remove('open', 'closing'); holoV.innerHTML = ''; }, 340); }
   document.getElementById('holoX').addEventListener('click', closeHolo);
   holoList.addEventListener('click', e => { const b = e.target.closest('button'); if (b) loadHolo(+b.dataset.k); });
   holo.addEventListener('click', e => { if (e.target === holo) closeHolo(); });
@@ -1159,7 +1196,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   let museumMod = null, termOpen = false, hudTimer = 0;
   const museoSlide = document.getElementById('museo');
   function renderTerm() {
-    tlist.innerHTML = OPTS.map((o, k) => `<button class="opt${o.wa ? ' wa2' : ''}" data-k="${k}" style="--c:${o.c};animation-delay:${.35 + k * .08}s"><span class="th2"${o.img ? ` style="background-image:url(${o.img})"` : ''}>${o.fx ? '<canvas width="160" height="90"></canvas>' : o.wa ? svg(ICON.siWhatsapp) : ''}</span><span><b>${o.n}</b><small>${T(...o.d)}</small></span></button>`).join('');
+    tlist.innerHTML = OPTS.map((o, k) => `<button class="opt${o.wa ? ' wa2' : ''}" data-k="${k}" style="--c:${o.c};animation-delay:${.35 + k * .08}s"><span class="th2"${o.th || o.img ? ` style="background-image:url(${o.th || o.img})"` : ''}>${o.fx && !o.img ? '<canvas width="228" height="129"></canvas>' : o.wa ? svg(ICON.siWhatsapp) : ''}</span><span><b>${o.n}</b><small>${T(...o.d)}</small></span></button>`).join('');
     tlist.querySelectorAll('canvas').forEach((cv, i) => { const o = OPTS[+cv.closest('.opt').dataset.k]; (function an(t) { if (!cv.isConnected || !termOpen) return; drawFxOn(cv, o.fx, t / 1000); requestAnimationFrame(an); })(0); });
   }
   function openTerm() { termOpen = true; term.classList.remove('closing'); term.classList.add('open'); renderTerm();
