@@ -279,6 +279,12 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
 .hv .ext a{padding:12px 18px;border-radius:999px;background:linear-gradient(90deg,#00d0ff,#00ff9c);color:#00151c;font:800 12px/1 Inter,sans-serif;letter-spacing:.14em}
 .hf{display:flex;justify-content:flex-end;align-items:center;gap:10px;height:30px;padding:0 14px;border-top:1px solid rgba(0,220,255,.25);font:600 10px/1 'Share Tech Mono',monospace;letter-spacing:.14em;color:#7cc}
 .hf a{color:#bff;text-decoration:underline}
+@media (max-height:520px) and (orientation:landscape){
+  .hv .ext{display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-rows:minmax(0,1fr) minmax(0,1fr);gap:8px 16px;padding:10px 14px;align-items:center;justify-items:center}
+  .hv .ext canvas{grid-row:1/3;width:auto;height:100%;max-height:100%;max-width:46vw}
+  .hv .ext p{align-self:end;font-size:12px;line-height:1.35}
+  .hv .ext a{align-self:start;padding:10px 14px;font-size:11px}
+}
 
 /* 03 · FAVORITOS */
 .g5{display:grid;gap:clamp(8px,1.2vw,14px);grid-template-columns:repeat(5,minmax(0,1fr));width:min(1100px,86vw)}
@@ -720,7 +726,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
     document.querySelectorAll('[data-t]').forEach(el => { const [es, en] = el.dataset.t.split('|'); el.innerHTML = (LANG === 'es' ? es : en).replace('{H}', HEART); });
     document.getElementById('langCur').textContent = LANG.toUpperCase();
     document.querySelectorAll('#langMenu button').forEach(b => b.classList.toggle('sel', b.dataset.l === LANG));
-    OPTS.forEach(o => { if (o.nn) o.n = T(...o.nn); });
+    OPTS.forEach(o => { if (o.nn) o.n = T(...o.nn); if (o.nnl) o.nl = T(...o.nnl); if (o.nnc) o.nc = T(...o.nnc); });   // n: título de los botones · nl: título largo, el que se lee en pantalla · nc: el más corto, para la lista estrecha de la ventana
     renderDynamic();
     if (typeof chb !== 'undefined') chb.forEach((b, k) => b.querySelector('span').textContent = slides[k].dataset[LANG]);
     if (window.__museumLang) window.__museumLang();
@@ -780,10 +786,10 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   // Opciones del museo digital, en el orden en que salen en el terminal: primero lo que es de museo.
   // img = imagen grande (muro, pantalla holográfica) · th = miniatura del botón · fx = pantalla dibujada cuando no hay imagen
   // frame = se abre dentro de la pantalla holográfica · solo = solo se mira ahí: sin enlace para abrirla fuera
-  const VGH = { nn: ['HISTORIA DEL VIDEOJUEGO', 'VIDEO GAME HISTORY'], n: 'HISTORIA DEL VIDEOJUEGO', d: ['Línea del tiempo de los videojuegos a pantalla completa', 'Full-screen video game timeline'], u: 'assets/img/historia-videojuego-' + (LANG === 'es' ? 'es' : 'en') + '.webp?v=2', img: 'assets/img/historia-videojuego-' + (LANG === 'es' ? 'es' : 'en') + '.webp?v=2', th: 'assets/img/mini/historia.webp', c: '#ffb000', view: 'image', frame: false, wide: true };   // lámina propia (dibujo original, en español e inglés)
+  const VGH = { nn: ['HISTORIA DEL VIDEOJUEGO (LÍNEA DE TIEMPO)', 'VIDEO GAME HISTORY (TIMELINE)'], n: 'HISTORIA DEL VIDEOJUEGO (LÍNEA DE TIEMPO)', nnc: ['HISTORIA DEL VIDEOJUEGO', 'VIDEO GAME HISTORY'], nc: 'HISTORIA DEL VIDEOJUEGO', d: ['De los primeros videojuegos a hoy, a pantalla completa', 'From the first video games to today, full screen'], u: 'assets/img/historia-videojuego-' + (LANG === 'es' ? 'es' : 'en') + '.webp?v=2', img: 'assets/img/historia-videojuego-' + (LANG === 'es' ? 'es' : 'en') + '.webp?v=2', th: 'assets/img/mini/historia.webp', c: '#ffb000', view: 'image', frame: false, wide: true };   // lámina propia (dibujo original, en español e inglés)
   const PROJS = [
     VGH,
-    { n: 'MUSEO DEL VIDEOJUEGO', d: ['MDV Hardware · la app para catalogar tu colección', 'MDV Hardware · the app to catalogue your collection'], u: 'https://play.google.com/store/apps/details?id=com.museodelvideojuego.hardware', img: 'assets/img/vgapp.webp', th: 'assets/img/mini/mdv.webp', c: '#00b4ff', frame: false },
+    { n: 'MDV APP', nnl: ['APP DEL MUSEO DEL VIDEOJUEGO', 'MUSEO DEL VIDEOJUEGO APP'], nl: 'APP DEL MUSEO DEL VIDEOJUEGO', d: ['MDV Hardware · la app para catalogar tu colección', 'MDV Hardware · the app to catalogue your collection'], u: 'https://play.google.com/store/apps/details?id=com.museodelvideojuego.hardware', img: 'assets/img/vgapp.webp', th: 'assets/img/mini/mdv.webp', c: '#00b4ff', frame: false },
     { n: 'POSTERS CINE', d: ['Cartelería de cine · solo visualización', 'Cinema posters · view only'], u: 'https://adposter.mediaservi.com/cine/', fx: 'cine', c: '#e9c967', frame: true, solo: true },
     { n: 'POSTERS KLUB', d: ['Cartelería del KLUB · solo visualización', 'KLUB posters · view only'], u: 'https://adposter.mediaservi.com/klub/', fx: 'klub', c: '#ff5a8a', frame: true, solo: true },
     { n: 'MSGAME', d: ['Juegos de fiesta con el móvil como mando', 'Party games with your phone as the controller'], u: 'https://msgame.mediaservi.com/', img: 'assets/img/msgame.webp', th: 'assets/img/mini/msgame.webp', c: '#e100ff', frame: true },
@@ -792,7 +798,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
     { n: 'SYSTEMS', d: ['Calculadoras de audio y escenario', 'Audio and stage calculators'], u: 'https://systems.mediaservi.com/', img: 'assets/img/systems.webp', th: 'assets/img/mini/systems.webp', c: '#00b4ff', frame: true },
     { n: 'ADPOSTER', d: ['Cartelería digital para cualquier pantalla', 'Digital signage for any screen'], u: 'https://adposter.mediaservi.com/', img: 'assets/img/adposter.webp', th: 'assets/img/mini/adposter.webp', c: '#ffb000', frame: true },
     { n: 'AVHUB', d: ['Todas las herramientas audiovisuales, en una sola app', 'All the audiovisual tools, in a single app'], u: 'https://avhub.mediaservi.com/', img: 'assets/img/avhub.webp', th: 'assets/img/mini/avhub.webp', c: '#9900ff', frame: true },
-    { n: 'GAME HISTORY', d: ['Biblioteca digital · library.gamehistory.org', 'Digital library · library.gamehistory.org'], u: 'https://library.gamehistory.org/', fx: 'crt', c: '#ffb000', frame: false }
+    { n: 'GAME HISTORY', d: ['Biblioteca digital · library.gamehistory.org', 'Digital library · library.gamehistory.org'], u: 'https://library.gamehistory.org/', img: 'assets/img/gamehistory.webp', th: 'assets/img/mini/gamehistory.webp', fx: 'crt', c: '#ffb000', frame: false }
   ];
   window.__PROJS = PROJS;
   const OPTS = PROJS.concat([{ n: 'WHATSAPP', d: ['Contacta x WhatsApp', 'Contact via WhatsApp'], u: 'https://wa.me/JosepTarroja', c: '#25d366', wa: true }]);
@@ -1160,18 +1166,18 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   let holoOpen = false, holoK = 0;
   function fillHolo(k) {
     holoK = k; const p = OPTS[k];
-    const ht = document.getElementById('holoT'); ht.textContent = innerWidth <= 760 ? p.n : p.n + ' · ' + T(...p.d); if (ht.scrollWidth > ht.clientWidth + 1) ht.textContent = p.n;   // si el título completo no cabe, solo el nombre: nunca cortado
+    const ht = document.getElementById('holoT'); { const nl = p.nl || p.n; ht.textContent = innerWidth <= 760 ? nl : nl + ' · ' + T(...p.d); if (ht.scrollWidth > ht.clientWidth + 1) ht.textContent = nl; if (ht.scrollWidth > ht.clientWidth + 1) ht.textContent = p.n; }   // si el título completo no cabe, solo el nombre: nunca cortado
     document.getElementById('holoExt').href = document.getElementById('holoExt2').href = p.solo ? '#museo' : p.u;
     document.getElementById('holoExt').style.display = document.getElementById('holoF').style.display = p.solo ? 'none' : '';
-    holoList.innerHTML = OPTS.map((q, j) => q.wa ? '' : `<li><button data-k="${j}" class="${j === k ? 'sel' : ''}" style="--c:${q.c}"><i></i>${q.n}</button></li>`).join('');
+    holoList.innerHTML = OPTS.map((q, j) => q.wa ? '' : `<li><button data-k="${j}" class="${j === k ? 'sel' : ''}" style="--c:${q.c}"><i></i>${q.nc || q.n}</button></li>`).join('');
     const sel = holoList.querySelector('.sel'); if (sel) { const li = sel.parentElement, ul = holoList; ul.scrollLeft = Math.max(0, li.offsetLeft - ul.offsetLeft - (ul.clientWidth - li.offsetWidth) / 2); ul.scrollTop = Math.max(0, li.offsetTop - ul.offsetTop - (ul.clientHeight - li.offsetHeight) / 2); }   // la opción abierta, siempre a la vista en la consola
   }
   function loadHolo(k) {
     const p = OPTS[k]; fillHolo(k);
     if (p.view === 'image') {
-      holoV.innerHTML = `<a class="imgv" href="${p.img}" target="_blank" rel="noopener"><img src="${p.img}" alt="${p.n}"></a>`;
+      holoV.innerHTML = `<a class="imgv" href="${p.img}" target="_blank" rel="noopener"><img src="${p.img}" alt="${p.nl || p.n}"></a>`;
     } else if (p.frame) {
-      holoV.innerHTML = `<div class="ld"><i></i>${T('ESTABLECIENDO CONEXIÓN…', 'ESTABLISHING LINK…')}</div><iframe src="${p.u}" title="${p.n}" allow="autoplay; fullscreen; microphone; camera" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
+      holoV.innerHTML = `<div class="ld"><i></i>${T('ESTABLECIENDO CONEXIÓN…', 'ESTABLISHING LINK…')}</div><iframe src="${p.u}" title="${p.nl || p.n}" allow="autoplay; fullscreen; microphone; camera" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
     } else {
       holoV.innerHTML = `<div class="ext"><canvas width="640" height="360"></canvas><p>${/play\.google/.test(p.u) ? T('Esta app se abre en Google Play', 'This app opens on Google Play') : T('Esta web no permite mostrarse dentro de otra página', 'This website cannot be shown inside another page')}</p><a href="${p.u}" target="_blank" rel="noopener">${/play\.google/.test(p.u) ? T('ABRIR EN GOOGLE PLAY ↗', 'OPEN IN GOOGLE PLAY ↗') : T('ABRIR EN UNA PESTAÑA NUEVA ↗', 'OPEN IN A NEW TAB ↗')}</a></div>`;
       const cv = holoV.querySelector('canvas'); if (p.img) { const im = new Image(); im.onload = () => cv.getContext('2d').drawImage(im, 0, 0, 640, 360); im.src = p.img; } else (function an(t) { if (!cv.isConnected) return; drawFxOn(cv, p.fx, t / 1000); requestAnimationFrame(an); })(0);
@@ -1398,7 +1404,7 @@ window.__buildMuseum = function (THREE, host, api, PP) {
       }
       const o = OPTS[s.k]; if (!o) return;
       lg.strokeStyle = o.c; lg.lineWidth = 2; lg.strokeRect(x0 - 2, PY - 2, PW + 4, PH + 4);
-      lg.fillStyle = o.c; lg.font = '900 11px Doto, monospace'; lg.textAlign = 'center'; lg.fillText(o.n, s.x, PY + PH + 14);
+      lg.fillStyle = o.c; lg.font = '900 11px Doto, monospace'; lg.textAlign = 'center'; lg.fillText(o.nc || o.n, s.x, PY + PH + 14, PW * 1.3);   // un nombre largo se estrecha: nunca pisa al de al lado
       lg.textAlign = 'left';
     });
     // franja inferior
@@ -1490,7 +1496,7 @@ window.__buildMuseum = function (THREE, host, api, PP) {
     frame(c2, 1, ph); if (ph > .85) frame(nx, (ph - .85) / .15, 0);
     for (let y = 0; y < H; y += 3) { vg.fillStyle = 'rgba(0,0,0,.12)'; vg.fillRect(0, y, W, 1); }
     const o = OPTS[ph > .92 ? nx : c2]; vg.fillStyle = 'rgba(0,0,0,.55)'; vg.fillRect(0, H - 70, W, 70);
-    vg.fillStyle = o.c; vg.font = '900 42px Doto, monospace'; vg.textAlign = 'center'; vg.fillText(o.n, W / 2, H - 22);
+    vg.fillStyle = o.c; vg.font = '900 42px Doto, monospace'; vg.textAlign = 'center'; vg.fillText(o.nl || o.n, W / 2, H - 22, W * .94);
     vg.globalCompositeOperation = 'destination-in'; const gx = vg.createLinearGradient(0, 0, W, 0); gx.addColorStop(0, 'rgba(0,0,0,0)'); gx.addColorStop(.12, 'rgba(0,0,0,1)'); gx.addColorStop(.88, 'rgba(0,0,0,1)'); gx.addColorStop(1, 'rgba(0,0,0,0)');
     vg.fillStyle = gx; vg.fillRect(0, 0, W, H); vg.globalCompositeOperation = 'source-over';
     vtex.needsUpdate = true;

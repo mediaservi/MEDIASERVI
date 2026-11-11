@@ -93,6 +93,15 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .pant .lider{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}   /* sin fondo propio: lo que se quema deja ver el vídeo */
 .butacas{position:absolute;left:0;right:0;bottom:0;z-index:3;width:100%;height:calc(var(--sh) * 1.75);pointer-events:none;transform:translateY(104%);transition:transform .7s cubic-bezier(.2,.8,.3,1)}
 .teatro.set .butacas{transform:none}   /* dos filas de butacas vistas desde atrás, dibujadas por código, por delante de la pantalla */
+.bctl{position:absolute;left:0;right:0;bottom:0;z-index:3;height:calc(var(--sh) * 1.75);pointer-events:none;transform:translateY(104%);transition:transform .7s cubic-bezier(.2,.8,.3,1)}
+.teatro.set .bctl{transform:none}   /* los mandos de la película van en los respaldos de las butacas del centro de la primera fila: medio transparentes, como un parche cosido en el terciopelo */
+.bctl button{position:absolute;display:grid;place-items:center;margin:0;padding:0;border:0;background:none;color:rgba(255,226,206,.6);pointer-events:auto;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:opacity .4s}
+.bctl button i{display:grid;place-items:center;width:var(--b);height:var(--b);border-radius:24%;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(0,0,0,.24));border:1px dashed rgba(255,214,190,.36);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 -2px 5px rgba(0,0,0,.45),0 1px 2px rgba(0,0,0,.5);transition:background .15s,box-shadow .15s,transform .08s}
+.bctl svg{width:56%;height:56%;fill:currentColor;filter:drop-shadow(0 1px 0 rgba(0,0,0,.65))}
+.bctl button:hover,.bctl button:focus-visible{color:#fff2e6;outline:none}
+.bctl button:hover i,.bctl button:focus-visible i{background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(0,0,0,.2));box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 -2px 5px rgba(0,0,0,.45),0 0 14px rgba(255,200,170,.4)}
+.bctl button:active i{transform:translateY(1px) scale(.95);background:rgba(0,0,0,.34)}
+.bctl button[data-k=fin]{color:rgba(255,186,176,.72)}.bctl.sin button:not([data-k=fin]){opacity:.3;pointer-events:none}
 .telon{position:absolute;inset:0;z-index:2;pointer-events:none;transform:translateY(-104%)}
 .teatro.cae .telon{animation:telonCae .95s cubic-bezier(.45,0,.85,.55) forwards}
 .teatro.sube .telon{animation:telonSube .9s cubic-bezier(.5,0,.8,.45) forwards}
@@ -174,6 +183,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   <div class="telon"><i class="tl"></i><i class="tr"></i><b></b></div>
   <canvas class="tgl" id="telonGL" aria-hidden="true"></canvas>
   <canvas class="butacas" id="butacas" aria-hidden="true"></canvas>
+  <div class="bctl sin" id="bctl"></div>
   <div class="tacts"><a class="pill" id="cineYt" href="https://youtu.be/IO-6MYnFmw0" target="_blank" rel="noopener">YOUTUBE ↗</a><button class="pill" id="cineSnd" hidden>🔊 SONIDO</button><button class="pill" id="cineX">✕ CERRAR</button></div>
 </div>
 <script id="telonFS" type="x-shader/x-fragment">
@@ -269,6 +279,7 @@ void main(){
   const applyVol = () => { sndBtn.dataset.v = lvl; if (EMB) return; bgm.volume = VOL[lvl]; bgm.muted = lvl === 0; };
   let hush = false;   // con la película en pantalla, la música de fondo calla
   const tryPlay = () => { if (!EMB && !hush && lvl > 0 && bgm.paused) bgm.play().catch(() => {}); };
+  window.__klubVol = () => lvl;   // el nivel del botón de sonido, para los efectos
   window.__klubHush = on => { hush = !!on; if (EMB) parent.postMessage({ klub: 'cine', on: hush }, location.origin); else if (hush) bgm.pause(); else tryPlay(); };
   applyVol(); tryPlay();
   const unlock = () => { tryPlay(); if (!bgm.paused || lvl === 0) ['pointerdown', 'keydown', 'touchstart'].forEach(ev => removeEventListener(ev, unlock, true)); };
@@ -297,6 +308,15 @@ void main(){
 (() => {
   const HOLD = 4000;
   // zona(el, dentro, hacer): «dentro» dice si el punto pulsado cuenta; «hacer» se ejecuta al soltar tras 4 s sin mover el dedo
+  /* al conseguir el pase VIP suena un redoble y una fanfarria, como el premio de LA FORTUNA. Sintetizado aquí mismo (sin archivos) y con el volumen del botón de sonido: en silencio, calla */
+  let acP = null;
+  function premio() { const lvl = window.__klubVol ? window.__klubVol() : 1; if (lvl === 0) return; try { const ac = acP || (acP = new (window.AudioContext || window.webkitAudioContext)()); if (ac.state === 'suspended') ac.resume();
+      const bus = ac.createGain(), cmp = ac.createDynamicsCompressor(), t0 = ac.currentTime + .02; bus.gain.value = lvl === 1 ? .45 : 1; bus.connect(cmp); cmp.connect(ac.destination);
+      const tono = (f, d, dl, tipo, g0) => { const t = t0 + dl, o = ac.createOscillator(), g = ac.createGain(); o.type = tipo; o.frequency.value = f; g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(g0, t + .008); g.gain.exponentialRampToValueAtTime(.0001, t + d); o.connect(g); g.connect(bus); o.start(t); o.stop(t + d + .03); };
+      const nb = ac.createBuffer(1, Math.round(ac.sampleRate * .06), ac.sampleRate), dd = nb.getChannelData(0); for (let i = 0; i < dd.length; i++) dd[i] = Math.random() * 2 - 1;
+      for (let i = 0; i < 6; i++) { const t = t0 + i * .05, n = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain(); n.buffer = nb; f.type = 'bandpass'; f.Q.value = 1.5; f.frequency.setValueAtTime(900, t); f.frequency.exponentialRampToValueAtTime(600, t + .05); g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.16 + i * .02, t + .006); g.gain.exponentialRampToValueAtTime(.0001, t + .05); n.connect(f); f.connect(g); g.connect(bus); n.start(t); n.stop(t + .06); }
+      [[392, .14, .3], [523, .14, .45], [659, .14, .6], [784, .3, .75], [659, .12, 1.1], [784, .7, 1.25]].forEach(([f, d, dl]) => { tono(f, d, dl, 'triangle', .16); tono(f * 2, d * .8, dl, 'sine', .056); tono(f * 1.003, d, dl, 'sawtooth', .019); });
+    } catch (e) {} }
   function zona(el, dentro, hacer, listo) { let t0 = 0, x0 = 0, y0 = 0, tm = 0, ok = false;
     const fin = suelta => { if (!t0) return; clearTimeout(tm); t0 = 0; el.classList.remove('hold'); const o = ok; ok = false; if (listo) listo(false, suelta && o); if (suelta && o) hacer(); };
     el.addEventListener('pointerdown', e => { if (e.button > 0 || e.isPrimary === false || !dentro(e)) return; t0 = performance.now(); x0 = e.clientX; y0 = e.clientY; el.classList.add('hold'); try { el.setPointerCapture(e.pointerId); } catch (x) {}
@@ -344,20 +364,20 @@ void main(){
   const V = { p: null, listo: false, suena: false, quiere: false, simple: false, api: null, fase: '', pre: false };
   const ytApi = () => V.api || (V.api = new Promise(res => { if (window.YT && YT.Player) return res(true); const fin = ok => res(ok && !!(window.YT && YT.Player));
     window.onYouTubeIframeAPIReady = () => fin(true); const sc = document.createElement('script'); sc.src = 'https://www.youtube.com/iframe_api'; sc.async = true; sc.onerror = () => fin(false); document.head.appendChild(sc); setTimeout(() => fin(true), 7000); }));
-  function montaVideo() { Object.assign(V, { p: null, listo: false, suena: false, quiere: false, simple: false, fase: '', pre: false }); sonido.hidden = true; const d = document.createElement('div'); d.id = 'ytCine'; scr.insertBefore(d, scr.firstChild);
+  function montaVideo() { Object.assign(V, { p: null, listo: false, suena: false, quiere: false, simple: false, fase: '', pre: false, usr: false, st: -1 }); estadoMandos(); sonido.hidden = true; const d = document.createElement('div'); d.id = 'ytCine'; scr.insertBefore(d, scr.firstChild);
     ytApi().then(ok => { if (!abierto || !document.getElementById('ytCine') || V.p) return; if (!ok) { V.simple = true; if (V.quiere) arranca(); return; }
       V.p = new YT.Player('ytCine', { host: 'https://www.youtube-nocookie.com', videoId: VID, playerVars: { autoplay: 0, controls: 0, rel: 0, modestbranding: 1, iv_load_policy: 3, disablekb: 1, fs: 0, playsinline: 1, cc_load_policy: 0, origin: location.origin },
         events: { onReady: () => { V.listo = true; if (V.quiere) arranca(); else if (V.fase === 'pre') prepara(); },
-          onStateChange: e => { const st = e.data; V.st = st; if (st === 1) { if (V.fase === 'pre') { V.fase = 'lista'; V.pre = true; try { V.p.pauseVideo(); V.p.seekTo(0, true); } catch (x) {} } else if (V.fase === 'proy') V.suena = true; }
-            else if (st === 2 && V.fase === 'proy' && !V.suena && performance.now() - V.tArr > 900) sinSonido(); else if (st === 0 && V.fase === 'proy') { LID.negro(); cerrarCine(); } } } }); }); }   // al acabar la película, pantalla en negro y se cierra el telón
+          onStateChange: e => { const st = e.data; V.st = st; estadoMandos(); if (st === 1) { if (V.fase === 'pre') { V.fase = 'lista'; V.pre = true; try { V.p.pauseVideo(); V.p.seekTo(0, true); } catch (x) {} } else if (V.fase === 'proy') V.suena = true; }
+            else if (st === 2 && V.fase === 'proy' && !V.suena && !V.usr && performance.now() - V.tArr > 900) sinSonido(); else if (st === 0 && V.fase === 'proy') { LID.negro(); cerrarCine(); } } } }); }); }   // al acabar la película, pantalla en negro y se cierra el telón
   function prepara() { V.fase = 'pre'; if (V.listo && !V.simple) try { V.p.mute(); V.p.playVideo(); } catch (e) {} }   // en silencio: así el vídeo ya está cargado cuando toca
   function arranca() { V.quiere = true;
     if (V.simple) { const d = document.getElementById('ytCine'); if (d && d.tagName !== 'IFRAME') { d.outerHTML = '<iframe id="ytCine" src="https://www.youtube-nocookie.com/embed/' + VID + '?autoplay=1&controls=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&fs=0&playsinline=1" title="MEDIASERVI THEATER" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe>'; setTimeout(() => { V.suena = true; }, 1800); } return; }
-    if (V.listo) { V.fase = 'proy'; V.tArr = performance.now(); try { V.p.unMute(); V.p.setVolume(100); V.p.playVideo(); } catch (e) {} clearTimeout(V.tm); const mira = () => { if (V.st === 3) V.tm = setTimeout(mira, 1500); else sinSonido(); }; V.tm = setTimeout(mira, 3000); } }   // si sigue cargando, espera; si el navegador no lo deja sonar, arranca en silencio
+    if (V.listo) { V.fase = 'proy'; V.tArr = performance.now(); try { V.p.unMute(); V.p.setVolume(100); V.p.playVideo(); } catch (e) {} estadoMandos(); clearTimeout(V.tm); const mira = () => { if (V.st === 3) V.tm = setTimeout(mira, 1500); else if (!V.usr) sinSonido(); }; V.tm = setTimeout(mira, 3000); } }   // si sigue cargando, espera; si el navegador no lo deja sonar, arranca en silencio
   // si el navegador no deja empezar con sonido, empieza en silencio y aparece el botón de sonido
   function sinSonido() { if (!abierto || V.suena || !V.listo || V.fase !== 'proy') return; try { V.p.mute(); V.p.playVideo(); sonido.hidden = false; } catch (e) {} }
   sonido.addEventListener('click', () => { try { V.p.unMute(); V.p.setVolume(100); V.p.playVideo(); } catch (e) {} sonido.hidden = true; });
-  function quitaVideo() { clearTimeout(V.tm); try { V.p && V.p.destroy(); } catch (e) {} V.p = null; V.quiere = false; V.fase = ''; scr.innerHTML = ''; sonido.hidden = true; }
+  function quitaVideo() { clearTimeout(V.tm); try { V.p && V.p.destroy(); } catch (e) {} V.p = null; V.listo = false; V.quiere = false; V.fase = ''; estadoMandos(); scr.innerHTML = ''; sonido.hidden = true; }
   /* ---------- proyector: cuenta atrás de cine antiguo (cola de película con rayas, polvo y parpadeo, a 24 imágenes por segundo) y, al acabar,
      la película se atasca y se quema: el agujero crece con su borde incandescente y deja ver el vídeo ---------- */
   const LID = (() => { const W = 960, H = 540, cv = document.createElement('canvas'), x = cv.getContext('2d'); cv.className = 'lider'; cv.width = W; cv.height = H;
@@ -434,19 +454,35 @@ void main(){
   /* butacas: dos filas de terciopelo vistas desde atrás, con el canto de arriba iluminado por la pantalla, costuras, reposabrazos y sombra sobre la imagen */
   function butacas() { const cv = document.getElementById('butacas'), k = Math.min(devicePixelRatio || 1, 2), W = cv.clientWidth, H = cv.clientHeight; if (!W || !H) return; cv.width = Math.round(W * k); cv.height = Math.round(H * k);
     const x = cv.getContext('2d'); x.setTransform(k, 0, 0, k, 0, 0); x.clearRect(0, 0, W, H); const sh = H / 1.75;
-    const sent = []; let np = 0;   // quién se sienta: a los lados, nadie justo delante de otro y sin repetir cabeza hasta agotarlas
+    const sent = [], prim = []; let np = 0;   // quién se sienta: a los lados, nadie justo delante de otro y sin repetir cabeza hasta agotarlas
     const fila = (w, top, des, luz, osc, fi) => { const r = w * .3, hueco = w * .09, paso = w + hueco, n = Math.ceil(W / paso) + 2, x0 = (W - n * paso) / 2 + des * paso;
       const sg = x.createLinearGradient(0, top - sh * .16, 0, top + r); sg.addColorStop(0, 'rgba(0,0,0,0)'); sg.addColorStop(1, 'rgba(0,0,0,.5)'); x.fillStyle = sg; x.fillRect(0, top - sh * .16, W, sh * .16 + r);   // sombra sobre la pantalla
       for (let i = 0; i < n; i++) { const j = i - (n >> 1), m = ((j + fi * 2) % 7 + 7) % 7, cx = x0 + i * paso + w / 2; if (m === 2 || m === 5 || cx < -w * .3 || cx > W + w * .3 || Math.abs(cx - W / 2) < Math.max(W * .2, w * 1.1) || sent.some(px => Math.abs(px - cx) < w * .5)) continue; if (!fi) sent.push(cx); const q = np++; silueta(x, cx, top, w, q * 5 % 12, .94 + (q * 7 % 5) * .035); }   // las siluetas, antes de dibujar los respaldos
       x.fillStyle = osc; x.fillRect(0, top + r * .55, W, H);                                                                                                       // cuerpo de la fila: sin huecos
-      for (let i = 0; i < n; i++) { const X = x0 + i * paso, g = x.createLinearGradient(0, top, 0, top + w * 1.1); g.addColorStop(0, luz); g.addColorStop(.16, '#4a0c15'); g.addColorStop(.55, '#2a060c'); g.addColorStop(1, osc);
+      for (let i = 0; i < n; i++) { const X = x0 + i * paso, g = x.createLinearGradient(0, top, 0, top + w * 1.1); if (fi) prim.push([X, top, w]); g.addColorStop(0, luz); g.addColorStop(.16, '#4a0c15'); g.addColorStop(.55, '#2a060c'); g.addColorStop(1, osc);
         x.beginPath(); x.moveTo(X, H); x.lineTo(X + w * .03, top + r); x.quadraticCurveTo(X + w * .05, top, X + r, top); x.lineTo(X + w - r, top); x.quadraticCurveTo(X + w * .95, top, X + w * .97, top + r); x.lineTo(X + w, H); x.closePath(); x.fillStyle = g; x.fill();
         const lg = x.createLinearGradient(X, 0, X + w, 0); lg.addColorStop(0, 'rgba(0,0,0,.4)'); lg.addColorStop(.2, 'rgba(255,255,255,.05)'); lg.addColorStop(.5, 'rgba(255,255,255,.1)'); lg.addColorStop(.8, 'rgba(255,255,255,.03)'); lg.addColorStop(1, 'rgba(0,0,0,.5)'); x.fillStyle = lg; x.fill();   // volumen
         x.strokeStyle = 'rgba(196,214,255,.5)'; x.lineWidth = Math.max(1, w * .022); x.beginPath(); x.moveTo(X + w * .07, top + r * .8); x.quadraticCurveTo(X + w * .07, top + w * .012, X + r, top + w * .012); x.lineTo(X + w - r, top + w * .012); x.quadraticCurveTo(X + w * .93, top + w * .012, X + w * .93, top + r * .8); x.stroke();   // canto iluminado por la pantalla
         x.strokeStyle = 'rgba(0,0,0,.45)'; x.lineWidth = Math.max(1, w * .014); [.33, .67].forEach(u => { x.beginPath(); x.moveTo(X + w * u, top + w * .16); x.lineTo(X + w * (u + (u - .5) * .08), top + w * .95); x.stroke(); });   // costuras
         x.beginPath(); x.moveTo(X + w * .16, top + w * .2); x.quadraticCurveTo(X + w * .5, top + w * .13, X + w * .84, top + w * .2); x.stroke();
         const ax = X + w - hueco * .1, ay = top + w * .58, aw = hueco * 1.2, ah = w * .13; x.fillStyle = '#0d0507'; x.beginPath(); x.roundRect ? x.roundRect(ax, ay, aw, ah, ah * .4) : x.rect(ax, ay, aw, ah); x.fill(); x.fillStyle = 'rgba(196,214,255,.22)'; x.fillRect(ax + aw * .12, ay + 1, aw * .76, Math.max(1, ah * .14)); } };   // reposabrazos
-    fila(sh * .58, H - sh * 1.04, 0, '#7c1826', '#150406', 0); fila(sh * .86, H - sh * .64, .5, '#8e1c2b', '#0a0203', 1); }
+    fila(sh * .58, H - sh * 1.04, 0, '#7c1826', '#150406', 0); fila(sh * .86, H - sh * .64, .5, '#8e1c2b', '#0a0203', 1); mandos(prim, W, H); }
+  /* ---------- mandos en los respaldos: al principio, atrás 10 s, reproducir o pausar, adelante 10 s y parar y salir ---------- */
+  const bctl = document.getElementById('bctl'), ICO = { play: 'M7 4.5v15l13-7.5z', pausa: 'M6 5h4.2v14H6zM13.8 5H18v14h-4.2z' };
+  { const en = document.documentElement.lang === 'en';
+    bctl.innerHTML = [['ini', 'M5.5 5h2.6v14H5.5zM20 5v14L9.5 12z', 'Al principio', 'Back to the start'], ['atr', 'M12 5v14L2 12zM22 5v14l-10-7z', 'Atrás 10 segundos', 'Back 10 seconds'], ['pp', ICO.pausa, 'Reproducir o pausar', 'Play or pause'], ['ade', 'M2 5l10 7-10 7zM12 5l10 7-10 7z', 'Adelante 10 segundos', 'Forward 10 seconds'], ['fin', 'M5.5 5.5h13v13h-13z', 'Parar y salir', 'Stop and exit']]
+      .map(([k, d, es, i]) => `<button type="button" data-k="${k}" aria-label="${en ? i : es}" title="${en ? i : es}"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}"/></svg></i></button>`).join(''); }
+  /* cada mando, centrado en el respaldo de una butaca del centro; si en la pantalla caben menos de cinco butacas enteras, las de los lados llevan dos */
+  function mandos(prim, W, H) { const bs = [...bctl.children], ent = prim.filter(q => q[0] >= -1 && q[0] + q[2] <= W + 1).sort((a, b) => Math.abs(a[0] + a[2] / 2 - W / 2) - Math.abs(b[0] + b[2] / 2 - W / 2)), K = Math.min(bs.length, ent.length);
+    bctl.hidden = !K; if (!K) return; const el = ent.slice(0, K).sort((a, b) => a[0] - b[0]), n = Array(K).fill(Math.floor(bs.length / K)); for (let r = bs.length % K, i = 0; r > 0; i++, r--) n[i % 2 ? K - 1 - (i >> 1) : i >> 1]++;
+    let q = 0; el.forEach(([X, top, w], i) => { const c = n[i], alto = H - top, paso = w * .88 / c, b = Math.max(16, Math.min(w * .5, alto * .62, paso - 3)), hw = Math.max(b, Math.min(44, paso)), hh = Math.max(b, Math.min(44, alto)), cy = Math.min(top + Math.max(alto * .52, b * .5 + w * .12), H - hh / 2);
+      for (let k = 0; k < c; k++) { const cx = X + w / 2 + (k - (c - 1) / 2) * paso; bs[q++].style.cssText = `left:${(cx - hw / 2).toFixed(1)}px;top:${(cy - hh / 2).toFixed(1)}px;width:${hw.toFixed(1)}px;height:${hh.toFixed(1)}px;--b:${b.toFixed(1)}px`; } }); }
+  function estadoMandos() { bctl.classList.toggle('sin', !(V.listo && !V.simple && V.fase === 'proy')); const pp = bctl.querySelector('[data-k=pp] path'); if (pp) pp.setAttribute('d', V.fase === 'proy' && (V.st === 2 || V.st === 5 || V.st === -1) && V.usr ? ICO.play : ICO.pausa); }
+  const CTL = { ini() { V.p.seekTo(0, true); }, atr() { V.p.seekTo(Math.max(0, (V.p.getCurrentTime() || 0) - 10), true); }, ade() { const d = V.p.getDuration() || 0, t = (V.p.getCurrentTime() || 0) + 10; V.p.seekTo(d ? Math.min(d - 1, t) : t, true); },
+    pp() { if (V.usr) { V.usr = false; V.p.playVideo(); } else { V.usr = true; V.p.pauseVideo(); } estadoMandos(); } };
+  const manda = k => { if (k === 'fin') { cerrarCine(); return; } if (!V.listo || V.simple || V.fase !== 'proy' || !CTL[k]) return; try { CTL[k](); } catch (e) {} };
+  bctl.addEventListener('click', e => { const b = e.target.closest('button'); if (b) manda(b.dataset.k); });
+  addEventListener('keydown', e => { if (!abierto || e.ctrlKey || e.metaKey || e.altKey) return; const enBoton = !!(e.target.closest && e.target.closest('button, a, input')), k = e.key === 'ArrowLeft' ? 'atr' : e.key === 'ArrowRight' ? 'ade' : e.key === 'Home' ? 'ini' : !enBoton && (e.key === ' ' || e.key === 'k' || e.key === 'K') ? 'pp' : ''; if (k) { e.preventDefault(); manda(k); } });   // espacio no se toca si hay un botón enfocado: ahí pulsa ese botón
   addEventListener('resize', () => { if (abierto) butacas(); });
   function abrirCine() { if (abierto || ocupado) return; abierto = ocupado = true; teatro.classList.add('on'); teatro.setAttribute('aria-hidden', 'false'); butacas();
     const lista = () => { teatro.classList.add('set'); calla(true); scr.innerHTML = ''; montaVideo(); LID.pon();
@@ -470,7 +506,7 @@ void main(){
         x.strokeStyle = p.g ? `rgba(255,250,225,${a * .9})` : `rgba(255,200,80,${a * .9})`; x.lineWidth = Math.max(.6, s * .22); x.beginPath(); x.moveTo(p.x - s * 2.2, p.y); x.lineTo(p.x + s * 2.2, p.y); x.moveTo(p.x, p.y - s * 2.2); x.lineTo(p.x, p.y + s * 2.2); x.stroke(); });
       if (!on && !P.length) { cancelAnimationFrame(raf); raf = 0; } }
     return { ver(v, entra) { clearTimeout(tOff); on = v; if (v) { box.classList.add('on'); if (!raf) raf = requestAnimationFrame(tic); } else tOff = setTimeout(() => box.classList.remove('on'), entra ? 950 : 0); } }; })();   // al entrar se queda un instante: el telón cae por delante
-  zona(pano, e => matchMedia('(orientation:portrait)').matches || Math.hypot(e.clientX - innerWidth / 2, e.clientY - innerHeight * .53) <= innerHeight * .31, abrirCine, (v, entra) => TK.ver(v, entra));
+  zona(pano, e => matchMedia('(orientation:portrait)').matches || Math.hypot(e.clientX - innerWidth / 2, e.clientY - innerHeight * .53) <= innerHeight * .31, abrirCine, (v, entra) => { TK.ver(v, entra); if (v) premio(); });
 })();
 </script>
 </body>
