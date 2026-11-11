@@ -710,7 +710,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   }
   const langBtn = document.getElementById('langBtn'), langMenu = document.getElementById('langMenu');
   langBtn.addEventListener('click', e => { e.stopPropagation(); langMenu.classList.toggle('open'); });
-  langMenu.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LANG = b.dataset.l; store.set('ms-lang', LANG); langMenu.classList.remove('open'); applyLang(); });
+  langMenu.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; LANG = b.dataset.l; store.set('ms-lang', LANG); try { VGH.u = VGH.img = 'assets/img/historia-videojuego-' + (LANG === 'es' ? 'es' : 'en') + '.webp'; } catch (e) {} langMenu.classList.remove('open'); applyLang(); });
   addEventListener('click', () => langMenu.classList.remove('open'));
 
   /* ---------- música de fondo: suena bajita al abrir; 3 niveles (silencio, normal, alto) ---------- */
@@ -765,7 +765,7 @@ canvas#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events
   window.__PROJS = PROJS;
   const OPTS = PROJS.concat([{ n: 'WHATSAPP', d: ['Contacta x WhatsApp', 'Contact via WhatsApp'], u: 'https://wa.me/JosepTarroja', c: '#25d366', wa: true }]);
   window.__OPTS = OPTS;
-  const VGH = { nn: ['HISTORIA DEL VIDEOJUEGO', 'VIDEO GAME HISTORY'], n: 'HISTORIA DEL VIDEOJUEGO', d: ['Línea del tiempo de los videojuegos a pantalla completa', 'Full-screen video game timeline'], u: 'assets/img/videogamehistory.webp', img: 'assets/img/videogamehistory.webp', c: '#ffb000', view: 'image', frame: false, wide: true };
+  const VGH = { nn: ['HISTORIA DEL VIDEOJUEGO', 'VIDEO GAME HISTORY'], n: 'HISTORIA DEL VIDEOJUEGO', d: ['Línea del tiempo de los videojuegos a pantalla completa', 'Full-screen video game timeline'], u: 'assets/img/historia-videojuego-' + (LANG === 'es' ? 'es' : 'en') + '.webp', img: 'assets/img/historia-videojuego-' + (LANG === 'es' ? 'es' : 'en') + '.webp', c: '#ffb000', view: 'image', frame: false, wide: true };   // lámina propia (dibujo original, en español e inglés)
   OPTS.splice(OPTS.length - 1, 0, VGH);
   const probe = src => new Promise(r => { const i = new Image(); i.onload = () => r(true); i.onerror = () => r(false); i.src = src; });
   const assetsReady = HYD.then(() => Promise.race([Promise.all([
@@ -1433,7 +1433,7 @@ window.__buildMuseum = function (THREE, host, api, PP) {
   const vband = new THREE.Mesh(new THREE.CylinderGeometry(R - .1, R - .1, 5.4, 96, 1, true, Math.PI - VA / 2, VA), new THREE.MeshBasicMaterial({ map: vtex, color: '#c4c4c4', side: THREE.BackSide, transparent: true, toneMapped: false, depthWrite: false }));
   vband.position.y = 1.15 + 5.4 / 2 + .15; vband.renderOrder = 2; scene.add(vband);
   const vfx = document.createElement('canvas'); vfx.width = 640; vfx.height = 360;
-  const vid = document.createElement('video'); vid.src = vid.canPlayType('video/mp4; codecs="avc1.4D401F"') ? 'assets/video/museo.mp4' : 'assets/video/museo.webm'; vid.muted = true; vid.loop = true; vid.playsInline = true; vid.setAttribute('playsinline', ''); vid.preload = 'auto';
+  const vid = document.createElement('video'); vid.src = vid.canPlayType('video/mp4; codecs="avc1.4D401F"') ? 'assets/video/museo.mp4?v=2' : 'assets/video/museo.webm?v=2'; vid.muted = true; vid.loop = true; vid.playsInline = true; vid.setAttribute('playsinline', ''); vid.preload = 'auto';
   let useVid = false; const vidTex = new THREE.VideoTexture(vid); vidTex.colorSpace = THREE.SRGBColorSpace; vidTex.wrapS = THREE.RepeatWrapping; vidTex.repeat.x = -1; vidTex.offset.x = 1;
   vid.addEventListener('playing', () => { if (!useVid) { useVid = true; vband.material.map = vidTex; vband.material.needsUpdate = true; } });
   // máscara de bordes para fundir el vídeo con la pantalla LED
