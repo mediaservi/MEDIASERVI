@@ -23,11 +23,18 @@
 <link rel="icon" type="image/svg+xml" href="assets/logos/mediaservi-badge.svg">
 <link rel="icon" type="image/png" sizes="64x64" href="assets/logos/mediaservi-favicon.png">
 <link rel="apple-touch-icon" href="assets/logos/mediaservi-apple-touch.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Doto:wght@600;800;900&family=Inter:wght@400;600;800;900&family=Share+Tech+Mono&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Doto:wght@600;800;900&family=Inter:wght@400;600;800;900&family=Share+Tech+Mono&display=swap"></noscript>
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<!-- tipos de letra y three.js alojados aquí mismo (assets/fonts y assets/lib, licencias libres): la web no pide nada a redes de distribución de terceros -->
+<style>
+@font-face{font-family:'Doto';font-style:normal;font-weight:600;font-display:swap;src:url(assets/fonts/doto-latin-600-normal.woff2) format('woff2')}
+@font-face{font-family:'Doto';font-style:normal;font-weight:800;font-display:swap;src:url(assets/fonts/doto-latin-800-normal.woff2) format('woff2')}
+@font-face{font-family:'Doto';font-style:normal;font-weight:900;font-display:swap;src:url(assets/fonts/doto-latin-900-normal.woff2) format('woff2')}
+@font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url(assets/fonts/inter-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'Inter';font-style:normal;font-weight:600;font-display:swap;src:url(assets/fonts/inter-latin-600-normal.woff2) format('woff2')}
+@font-face{font-family:'Inter';font-style:normal;font-weight:800;font-display:swap;src:url(assets/fonts/inter-latin-800-normal.woff2) format('woff2')}
+@font-face{font-family:'Inter';font-style:normal;font-weight:900;font-display:swap;src:url(assets/fonts/inter-latin-900-normal.woff2) format('woff2')}
+@font-face{font-family:'Share Tech Mono';font-style:normal;font-weight:400;font-display:swap;src:url(assets/fonts/share-tech-mono-latin-400-normal.woff2) format('woff2')}
+</style>
+<script type="importmap">{"imports":{"three":"./assets/lib/three/three.module.min.js","three/addons/":"./assets/lib/three/addons/"}}</script>
 <style>
 :root{
   --green:#00ff04; --blue:#00b4ff; --violet:#9900ff; --magenta:#e100ff;
