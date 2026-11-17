@@ -1,9 +1,9 @@
 /* MEVI 3D · mascota animada de mediaservi.com
-   Un solo modelo (assets/3d/mevi.glb: malla con esqueleto y 5 animaciones: reposo, andar, senala, invita, saluda)
+   Un solo modelo (assets/3d/mevi.glb: malla con esqueleto y 6 animaciones: reposo, andar, senala, invita, saluda, excita)
    repartido en tres escenarios:
    · INICIO  → pequeña, paseando por la franja de la cuenta atrás y haciendo gestitos (pasa por detrás de los números)
    · CONECTA → en lugar de la imagen fija: señala las opciones y saluda de vez en cuando
-   · MUSEO   → esquina inferior izquierda, invitando a pulsar (al tocarla abre el terminal)
+   · MUSEO   → esquina inferior izquierda, animada y saludando para que pulses (al tocarla abre el terminal)
    Cada escenario solo se dibuja mientras su sección está en pantalla. Si WebGL falla, se queda la imagen fija. */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -15,7 +15,7 @@ const rnd = (a, b) => a + Math.random() * (b - a);
 const ease = t => t < .5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
 
 let base = null;
-const cargar = () => base || (base = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync('assets/3d/mevi.glb?v=1').then(g => {
+const cargar = () => base || (base = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync('assets/3d/mevi.glb?v=2').then(g => {
   g.scene.traverse(o => { if (o.isMesh) { o.frustumCulled = false; const m = o.material.map;
     // la textura viene en trocitos: sin mipmaps no se mezclan los colores vecinos (evita las rayitas)
     if (m) { m.generateMipmaps = false; m.minFilter = THREE.LinearFilter; m.anisotropy = 4; m.needsUpdate = true; } } });
@@ -78,9 +78,31 @@ class Escena {
 
 /* ---------- guiones ---------- */
 // INICIO: pasea a lo largo de la franja; se para, mira al público y hace un gesto
+const capa = (e, delante) => e.el.classList.toggle('delante', delante);
+async function anda(e, obj) {
+  const dir = Math.sign(obj - e.x) || 1;
+  e.pon('andar', { fade: .25 }); await e.gira(dir * Math.PI / 2, .35);
+  e.vel = dir * e.alto * .62; e.meta = obj; await new Promise(res => e.llega = res); e.vel = 0;
+}
+async function gesto(e) {
+  e.pon('reposo', { fade: .3 }); await e.gira(0, .45);
+  const r = Math.random();
+  if (r < .4) await e.pon('saluda', { veces: 3, fade: .2 });
+  else if (r < .6) await e.pon('excita', { fade: .3 });
+  else if (r < .8) await e.pon('senala', { fade: .3 });
+  e.pon('reposo', { fade: .35 }); await e.espera(rnd(.8, 1.8));
+}
 async function paseo(e) {
   e.pon('reposo'); await e.espera(rnd(.6, 1.4));
   for (;;) {
+    if (e.linea) {
+      // ida (izquierda → derecha) por delante del contador y de WhatsApp; vuelta por detrás
+      const ida = e.x < (e.seg[0] + e.seg[1]) / 2, fin = ida ? e.seg[1] : e.seg[0];
+      capa(e, ida);
+      if (Math.random() < .5) { const L = e.seg[1] - e.seg[0]; await anda(e, ida ? e.x + rnd(.3, .6) * (fin - e.x) : e.x - rnd(.3, .6) * (e.x - fin)); if (!e.linea) continue; await gesto(e); }
+      await anda(e, fin); if (!e.linea) continue; await gesto(e); continue;
+    }
+    capa(e, false);
     const [a, b] = e.seg, H = e.alto, L = b - a;
     let obj = rnd(a, b); if (Math.abs(obj - e.x) < L * .3) obj = e.x < a + L / 2 ? rnd(a + L * .6, b) : rnd(a, a + L * .4);
     const dir = Math.sign(obj - e.x) || 1;
@@ -104,13 +126,13 @@ async function conecta(e) {
     else { await e.pon('senala', { fade: .3 }); e.pon('reposo', { fade: .4 }); }
   }
 }
-// MUSEO: invita a pulsar; alguna vez saluda
+// MUSEO: se emociona («excited») para llamar la atención; alguna vez saluda
 async function museo(e) {
   e.pon('reposo'); let n = 0;
   for (;;) {
     await e.espera(rnd(1, 2.2));
     if (++n % 4 === 0) { await e.gira(0, .4); await e.pon('saluda', { veces: 3, fade: .2 }); e.pon('reposo', { fade: .3 }); await e.gira(e.giroBase, .45); }
-    else { await e.pon('invita', { fade: .3 }); e.pon('reposo', { fade: .35 }); }
+    else { await e.pon('excita', { fade: .35 }); e.pon('reposo', { fade: .4 }); await e.espera(rnd(.8, 1.6)); }
   }
 }
 
@@ -123,10 +145,22 @@ export function inicia({ abrirTerminal } = {}) {
   const museumEl = document.getElementById('museum');
 
   // INICIO: franja a todo lo ancho a la altura de la cuenta atrás
-  const fr = document.createElement('div'); fr.className = 'mevi-franja'; fr.setAttribute('aria-hidden', 'true'); sInicio.prepend(fr);
+  const fr = document.createElement('div'); fr.className = 'mevi-franja'; fr.setAttribute('aria-hidden', 'true'); document.body.appendChild(fr);
   const eI = new Escena(fr, { orto: true, activo: () => sInicio.classList.contains('on') && !eI.nada, guion: paseo });
   // busca dónde pasear: a los lados de la cuenta atrás (sin taparla ni pasar por detrás) o, si no cabe, justo debajo
   eI.al = () => { const cd = document.getElementById('avcd'); if (!cd) return;
+    // ordenador y tablet: anda sobre la línea de las pestañas, de punta a punta (ida por delante, vuelta por detrás)
+    const pr = document.querySelector('.nav .prog'), rp = pr && pr.getBoundingClientRect();
+    if (rp && rp.width > 0 && innerWidth > 760 && innerWidth > innerHeight) {
+      const A = Math.round(Math.max(56, Math.min(100, innerHeight * .095)));
+      eI.linea = true; eI.nada = false; fr.style.display = '';
+      fr.style.left = Math.round(rp.left) + 'px'; fr.style.width = Math.round(rp.width) + 'px';
+      fr.style.top = Math.round(rp.top + 1 - (A + 8)) + 'px'; fr.style.height = (A + 8) + 'px';
+      eI.seg = [A * .4, rp.width - A * .4]; eI.alto = A;
+      if (eI.piv) { eI.piv.scale.setScalar(A); eI.piv.position.y = 0;
+        if (!eI.x0 || eI.x < eI.seg[0] || eI.x > eI.seg[1]) { eI.x0 = 1; eI.x = eI.seg[0]; } }
+      return; }
+    eI.linea = false;
     const rs = sInicio.getBoundingClientRect(), rc = cd.getBoundingClientRect(), wa = document.getElementById('wa');
     const rw = wa && !wa.classList.contains('hide') ? wa.getBoundingClientRect() : null;
     const W = rs.width, alto = Math.round(Math.max(52, Math.min(104, innerHeight * .1))), g = alto * .35;
@@ -149,7 +183,8 @@ export function inicia({ abrirTerminal } = {}) {
     const el = ancho(opc[0]) >= alto * 4 || !opc[1] || ancho(opc[0]) >= ancho(opc[1]) ? opc[0] : opc[1];
     const A = el.alto;
     eI.nada = ancho(el) < A * 2.2; fr.style.display = eI.nada ? 'none' : '';
-    fr.style.top = Math.round(el.top) + 'px'; fr.style.height = (A + 8) + 'px';
+    fr.style.left = Math.round(rs.left) + 'px'; fr.style.width = Math.round(W) + 'px';
+    fr.style.top = Math.round(rs.top + el.top) + 'px'; fr.style.height = (A + 8) + 'px';
     eI.seg = [el.seg[0] + A * .45, el.seg[1] - A * .45]; eI.alto = A;
     if (eI.piv) { eI.piv.scale.setScalar(A); eI.piv.position.y = 3;
       if (!eI.x0 || eI.x < eI.seg[0] || eI.x > eI.seg[1]) { eI.x0 = 1; eI.x = rnd(eI.seg[0], eI.seg[1]); if (eI.meta != null) eI.meta = Math.min(eI.seg[1], Math.max(eI.seg[0], eI.meta)); } } };

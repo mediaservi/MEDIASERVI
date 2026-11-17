@@ -10,12 +10,13 @@ Web personal, gratuita y sin publicidad ni ingresos. Aviso legal en [`LEGAL.md`]
 
 ## Mevi 3D
 
-La mascota Mevi está en 3D y animada (`assets/mevi3d.js` y `assets/3d/mevi.glb`, un solo modelo de 550 KB con cinco animaciones: reposo, andar, señalar, invitar y saludar). Sale en tres sitios:
-- **INICIO**: pequeña, pasea por la franja de la cuenta atrás de AVHUB. Va a un lado de los números, sin taparlos. En móvil vertical pasea justo debajo, y en móvil horizontal, donde no cabe, no sale.
+La mascota Mevi está en 3D y animada (`assets/mevi3d.js` y `assets/3d/mevi.glb`). Es un solo modelo de 585 KB con seis animaciones: reposo, andar, señalar, invitar, saludar y emocionarse. Su textura está unificada a pocos colores lisos (suit, guantes, pelo y cinturón) y la piel está suavizada. Sale en tres sitios:
+- **INICIO, en ordenador y tablet**: camina sobre la línea que separa las pestañas, de punta a punta. A la ida (de izquierda a derecha) pasa por delante de la cuenta atrás y de la etiqueta de WhatsApp, y a la vuelta por detrás. Se para de vez en cuando a saludar, señalar o emocionarse.
+- **INICIO, en móvil**: en vertical pasea justo debajo de la cuenta atrás. En horizontal no hay hueco y no sale.
 - **CONECTA**: ocupa el lugar de la imagen fija. Mira hacia las redes, las señala y saluda de vez en cuando.
-- **MUSEO DIGITAL**: en la esquina inferior izquierda, invita a pulsar. Al tocarla se abre el terminal.
+- **MUSEO DIGITAL**: en la esquina inferior izquierda, se emociona («excited») para llamar la atención y a veces saluda. Al tocarla se abre el terminal.
 
-Cada escena solo se dibuja mientras su sección está en pantalla. Si el navegador no tiene WebGL, se queda la imagen fija (`assets/img/mevi.webp`). Las animaciones son de Mixamo (Adobe), sobre el modelo propio de Mevi. La textura se ha limpiado y se carga sin mipmaps para que no salgan rayitas entre los trozos.
+Cada escena solo se dibuja mientras su sección está en pantalla. Si el navegador no tiene WebGL, se queda la imagen fija (`assets/img/mevi.webp`). Las animaciones son de Mixamo (Adobe), sobre el modelo propio de Mevi. La textura se carga sin mipmaps para que no salgan rayitas entre los trozos.
 
 ## Museo digital
 
