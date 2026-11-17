@@ -10,8 +10,10 @@ Web personal, gratuita y sin publicidad ni ingresos. Aviso legal en [`LEGAL.md`]
 
 ## Mevi 3D
 
-La mascota Mevi está en 3D y animada (`assets/mevi3d.js` y `assets/3d/mevi.glb`). Es un solo modelo de 625 KB con siete animaciones: reposo, andar, señalar, invitar, saludar, contenta («happy») y saltar. Su textura está unificada a pocos colores lisos (suit, guantes, pelo y cinturón) y la piel está suavizada. Sale en tres sitios:
-- **INICIO, en ordenador y tablet**: camina sobre la línea que separa las pestañas, de punta a punta. A la ida (de izquierda a derecha) pasa por delante de la cuenta atrás y de la etiqueta de WhatsApp. A la vuelta salta por encima de la etiqueta de WhatsApp y pasa por detrás de la cuenta atrás. Se para de vez en cuando a saludar, señalar o bailar contenta.
+La mascota Mevi está en 3D y animada (`assets/mevi3d.js` y `assets/3d/mevi.glb`). Es un solo modelo de 600 KB con siete animaciones: reposo, andar, señalar, invitar, saludar, contenta («happy») y saltar. Antes de publicarla se pule:
+- La textura queda en pocos colores lisos (traje, guantes, pelo y cinturón), sin manchitas sueltas, y la piel va suavizada.
+- Las normales de la malla van suavizadas, para que la luz no marque los pliegues y bultos que deja la generación 3D. Sale en tres sitios:
+- **INICIO, en ordenador y tablet**: camina sobre la línea que separa las pestañas, de punta a punta. A la ida (de izquierda a derecha) pasa por delante de la cuenta atrás y de la etiqueta de WhatsApp. A la vuelta salta por encima de la etiqueta de WhatsApp: se agacha para coger impulso, sale estirada y amortigua al caer. Después pasa por detrás de la cuenta atrás. En cada pasada se para dos veces a medio camino, y otra al final, a saludar, señalar, invitar o bailar contenta.
 - **INICIO, en móvil**: en vertical pasea justo debajo de la cuenta atrás. En horizontal no hay hueco y no sale.
 - **CONECTA**: ocupa el lugar de la imagen fija. Mira hacia las redes, las señala y saluda de vez en cuando.
 - **MUSEO DIGITAL**: en la esquina inferior izquierda, baila contenta («happy») para llamar la atención y a veces saluda. Al tocarla se abre el terminal.

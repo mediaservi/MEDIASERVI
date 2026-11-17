@@ -15,13 +15,16 @@ const rnd = (a, b) => a + Math.random() * (b - a);
 const ease = t => t < .5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
 
 let base = null;
-const cargar = () => base || (base = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync('assets/3d/mevi.glb?v=3').then(g => {
+const cargar = () => base || (base = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync('assets/3d/mevi.glb?v=4').then(g => {
   // «vuelo»: el tramo en el aire del salto (piernas recogidas), sin el desplazamiento de cadera; la parábola la pone el guion
   const sl = g.animations.find(c => c.name === 'salta');
   if (sl) { const v = THREE.AnimationUtils.subclip(sl, 'vuelo', 23, 35, 30), an = g.animations.find(c => c.name === 'andar');
     const ref = an && an.tracks.find(t => /Hips\.position/.test(t.name));
     for (const t of v.tracks) if (/Hips\.position/.test(t.name) && ref) for (let i = 0; i < t.values.length; i += 3) t.values.set(ref.values.subarray(0, 3), i);   // cadera a su altura de andar
-    g.animations.push(v); }
+    g.animations.push(v);
+    const im = THREE.AnimationUtils.subclip(sl, 'impulso', 12, 23, 30);
+    for (const t of im.tracks) if (/Hips\.position/.test(t.name) && ref) for (let i = 0; i < t.values.length; i += 3) t.values.set(ref.values.subarray(0, 3), i);
+    g.animations.push(im); }
   g.scene.traverse(o => { if (o.isMesh) { o.frustumCulled = false; const m = o.material.map;
     // la textura viene en trocitos: sin mipmaps no se mezclan los colores vecinos (evita las rayitas)
     if (m) { m.generateMipmaps = false; m.minFilter = THREE.LinearFilter; m.anisotropy = 4; m.needsUpdate = true; } } });
@@ -68,9 +71,9 @@ class Escena {
   pon(n, { fade = .3, veces = 1, ritmo = 1, max = 99 } = {}) {
     const a = this.acc[n]; if (!a) return this.espera(0);
     a.reset(); a.timeScale = ritmo; a.setEffectiveWeight(1);
-    if (n === 'reposo' || n === 'andar' || n === 'vuelo') a.setLoop(THREE.LoopRepeat, Infinity); else { a.setLoop(THREE.LoopRepeat, veces); a.clampWhenFinished = true; }
+    if (n === 'reposo' || n === 'andar' || n === 'vuelo' || n === 'impulso') a.setLoop(THREE.LoopRepeat, Infinity); else { a.setLoop(THREE.LoopRepeat, veces); a.clampWhenFinished = true; }
     a.play(); if (this.act && this.act !== a) this.act.crossFadeTo(a, fade, false); this.act = a;
-    return this.espera(n === 'reposo' || n === 'andar' || n === 'vuelo' ? 0 : Math.max(0, Math.min(max, a.getClip().duration * veces / ritmo) - fade));
+    return this.espera(n === 'reposo' || n === 'andar' || n === 'vuelo' || n === 'impulso' ? 0 : Math.max(0, Math.min(max, a.getClip().duration * veces / ritmo) - fade));
   }
   gira(ang, seg = .4) { this.g0 = this.giro; this.giroObj = ang; this.gT = 0; this.gD = seg; return this.espera(seg); }
   paso(dt) {
@@ -90,13 +93,14 @@ async function anda(e, obj) {
   e.pon('andar', { fade: .25 }); await e.gira(dir * Math.PI / 2, .35);
   e.vel = dir * e.alto * .62; e.meta = obj; await new Promise(res => e.llega = res); e.vel = 0;
 }
-// salto por encima de un obstáculo (el cartel de WhatsApp): impulso, vuelo en parábola y aterrizaje andando
+// salto por encima de un obstáculo (el cartel de WhatsApp): se agacha para coger impulso, sale estirada,
+// vuela en parábola y amortigua al caer (aplastar y estirar, como en los dibujos animados)
 async function salta(e, obj) {
-  const dir = Math.sign(obj - e.x) || 1, L = Math.abs(obj - e.x), D = Math.max(.75, Math.min(1.3, L / (e.alto * 3.6)));
-  e.pon('vuelo', { fade: .12 });
-  e.salto = { x0: e.x, x1: obj, t: 0, D, h: e.altoSalto };
+  const L = Math.abs(obj - e.x), D = Math.max(.8, Math.min(1.25, L / (e.alto * 3.3)));
+  e.pon('impulso', { fade: .15 });
+  e.salto = { fase: 'imp', t: 0, x0: e.x, x1: obj, D, h: e.altoSalto };
   await new Promise(res => e.salto.fin = res);
-  e.pon('andar', { fade: .15 });
+  e.pon('andar', { fade: .2 });
 }
 async function gesto(e) {
   e.pon('reposo', { fade: .3 }); await e.gira(0, .45);
@@ -104,6 +108,7 @@ async function gesto(e) {
   if (r < .4) await e.pon('saluda', { veces: 3, fade: .2 });
   else if (r < .6) await e.pon('feliz', { fade: .3, max: 4.5 });
   else if (r < .8) await e.pon('senala', { fade: .3 });
+  else await e.pon('invita', { fade: .3 });
   e.pon('reposo', { fade: .35 }); await e.espera(rnd(.8, 1.8));
 }
 async function paseo(e) {
@@ -119,8 +124,10 @@ async function paseo(e) {
         await salta(e, Math.max(fin, wa[0] - e.alto * .55)); if (!e.linea) continue;
       }
       capa(e, ida);
-      if (Math.random() < .5) { const p = ida ? e.x + rnd(.3, .6) * (fin - e.x) : e.x - rnd(.3, .6) * (e.x - fin);
-        if (!dentro(p)) { await anda(e, p); if (!e.linea) continue; await gesto(e); } }
+      // dos paradas a medio camino para saludar o hacer un gesto (a un tercio y a dos tercios, con algo de azar)
+      { const x0 = e.x, L = fin - x0; let corta = false;
+        for (const f of [rnd(.26, .38), rnd(.6, .72)]) { const p = x0 + L * f; if (dentro(p)) continue; await anda(e, p); if (!e.linea) { corta = true; break; } await gesto(e); }
+        if (corta) continue; }
       await anda(e, fin); if (!e.linea) continue; await gesto(e); continue;
     }
     capa(e, false);
@@ -213,10 +220,18 @@ export function inicia({ abrirTerminal } = {}) {
     eI.seg = [el.seg[0] + A * .45, el.seg[1] - A * .45]; eI.alto = A;
     if (eI.piv) { eI.piv.scale.setScalar(A); eI.piv.position.y = 3;
       if (!eI.x0 || eI.x < eI.seg[0] || eI.x > eI.seg[1]) { eI.x0 = 1; eI.x = rnd(eI.seg[0], eI.seg[1]); if (eI.meta != null) eI.meta = Math.min(eI.seg[1], Math.max(eI.seg[0], eI.meta)); } } };
-  eI.mueve = () => { eI.piv.position.x = eI.x; };
+  eI.mueve = () => { eI.piv.position.x = eI.x; if (eI.alto) { const q = eI.sq || [1, 1]; eI.piv.scale.set(eI.alto * q[0], eI.alto * q[1], eI.alto * q[0]); } };
   const origPaso = eI.paso.bind(eI);
-  eI.paso = dt => { const S = eI.salto; if (S) { S.t += dt; const k = Math.min(1, S.t / S.D); eI.x = S.x0 + (S.x1 - S.x0) * k; eI.piv.position.y = 4 * S.h * k * (1 - k);
-      if (k >= 1) { eI.piv.position.y = 0; eI.salto = null; S.fin(); } } else if (eI.vel) { eI.x += eI.vel * dt; if ((eI.vel > 0 && eI.x >= eI.meta) || (eI.vel < 0 && eI.x <= eI.meta)) { eI.x = eI.meta; const f = eI.llega; eI.llega = null; f && f(); } } origPaso(dt); };
+  eI.paso = dt => { const S = eI.salto; let sx = 1, sy = 1;
+    if (S) { S.t += dt;
+      if (S.fase === 'imp') { const k = Math.min(1, S.t / .32); sy = 1 - .2 * Math.sin(k * Math.PI / 2); sx = 1 + .1 * Math.sin(k * Math.PI / 2);   // se agacha
+        if (k >= 1) { S.fase = 'vuelo'; S.t = 0; eI.pon('vuelo', { fade: .08 }); } }
+      else if (S.fase === 'vuelo') { const k = Math.min(1, S.t / S.D); eI.x = S.x0 + (S.x1 - S.x0) * k; eI.piv.position.y = 4 * S.h * k * (1 - k);
+        const st = Math.max(0, 1 - Math.abs(k - .5) * 4) ; sy = 1 + .14 * (1 - Math.min(1, k * 3)) + .06 * (k > .8 ? (k - .8) * 5 : 0) - .02 * st; sx = 1 / Math.sqrt(sy);   // sale estirada
+        if (k >= 1) { eI.piv.position.y = 0; S.fase = 'cae'; S.t = 0; eI.pon('impulso', { fade: .06 }); } }
+      else { const k = Math.min(1, S.t / .3); const a = Math.sin(k * Math.PI); sy = 1 - .18 * a; sx = 1 + .09 * a;   // amortigua al caer
+        if (k >= 1) { eI.salto = null; S.fin(); } } }
+    else if (eI.vel) { eI.x += eI.vel * dt; if ((eI.vel > 0 && eI.x >= eI.meta) || (eI.vel < 0 && eI.x <= eI.meta)) { eI.x = eI.meta; const f = eI.llega; eI.llega = null; f && f(); } } eI.sq = [sx, sy]; origPaso(dt); };
   escenas.push(eI);
 
   // CONECTA: en la caja de la imagen fija
