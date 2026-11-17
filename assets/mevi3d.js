@@ -1,9 +1,9 @@
 /* MEVI 3D · mascota animada de mediaservi.com
-   Un solo modelo (assets/3d/mevi.glb: malla con esqueleto y 6 animaciones: reposo, andar, senala, invita, saluda, excita)
+   Un solo modelo (assets/3d/mevi.glb: malla con esqueleto y 7 animaciones: reposo, andar, senala, invita, saluda, feliz, salta)
    repartido en tres escenarios:
    · INICIO  → pequeña, paseando por la franja de la cuenta atrás y haciendo gestitos (pasa por detrás de los números)
    · CONECTA → en lugar de la imagen fija: señala las opciones y saluda de vez en cuando
-   · MUSEO   → esquina inferior izquierda, animada y saludando para que pulses (al tocarla abre el terminal)
+   · MUSEO   → esquina inferior izquierda, contenta y saludando para que pulses (al tocarla abre el terminal)
    Cada escenario solo se dibuja mientras su sección está en pantalla. Si WebGL falla, se queda la imagen fija. */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -15,7 +15,13 @@ const rnd = (a, b) => a + Math.random() * (b - a);
 const ease = t => t < .5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
 
 let base = null;
-const cargar = () => base || (base = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync('assets/3d/mevi.glb?v=2').then(g => {
+const cargar = () => base || (base = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync('assets/3d/mevi.glb?v=3').then(g => {
+  // «vuelo»: el tramo en el aire del salto (piernas recogidas), sin el desplazamiento de cadera; la parábola la pone el guion
+  const sl = g.animations.find(c => c.name === 'salta');
+  if (sl) { const v = THREE.AnimationUtils.subclip(sl, 'vuelo', 23, 35, 30), an = g.animations.find(c => c.name === 'andar');
+    const ref = an && an.tracks.find(t => /Hips\.position/.test(t.name));
+    for (const t of v.tracks) if (/Hips\.position/.test(t.name) && ref) for (let i = 0; i < t.values.length; i += 3) t.values.set(ref.values.subarray(0, 3), i);   // cadera a su altura de andar
+    g.animations.push(v); }
   g.scene.traverse(o => { if (o.isMesh) { o.frustumCulled = false; const m = o.material.map;
     // la textura viene en trocitos: sin mipmaps no se mezclan los colores vecinos (evita las rayitas)
     if (m) { m.generateMipmaps = false; m.minFilter = THREE.LinearFilter; m.anisotropy = 4; m.needsUpdate = true; } } });
@@ -59,12 +65,12 @@ class Escena {
   }
   /* --- herramientas del guion (van con el reloj del escenario: si no se ve, se para) --- */
   espera(seg) { return new Promise(res => this.tareas.push({ fin: this.reloj + seg, res })); }
-  pon(n, { fade = .3, veces = 1, ritmo = 1 } = {}) {
+  pon(n, { fade = .3, veces = 1, ritmo = 1, max = 99 } = {}) {
     const a = this.acc[n]; if (!a) return this.espera(0);
     a.reset(); a.timeScale = ritmo; a.setEffectiveWeight(1);
-    if (n === 'reposo' || n === 'andar') a.setLoop(THREE.LoopRepeat, Infinity); else { a.setLoop(THREE.LoopRepeat, veces); a.clampWhenFinished = true; }
+    if (n === 'reposo' || n === 'andar' || n === 'vuelo') a.setLoop(THREE.LoopRepeat, Infinity); else { a.setLoop(THREE.LoopRepeat, veces); a.clampWhenFinished = true; }
     a.play(); if (this.act && this.act !== a) this.act.crossFadeTo(a, fade, false); this.act = a;
-    return this.espera(n === 'reposo' || n === 'andar' ? 0 : Math.max(0, a.getClip().duration * veces / ritmo - fade));
+    return this.espera(n === 'reposo' || n === 'andar' || n === 'vuelo' ? 0 : Math.max(0, Math.min(max, a.getClip().duration * veces / ritmo) - fade));
   }
   gira(ang, seg = .4) { this.g0 = this.giro; this.giroObj = ang; this.gT = 0; this.gD = seg; return this.espera(seg); }
   paso(dt) {
@@ -84,11 +90,19 @@ async function anda(e, obj) {
   e.pon('andar', { fade: .25 }); await e.gira(dir * Math.PI / 2, .35);
   e.vel = dir * e.alto * .62; e.meta = obj; await new Promise(res => e.llega = res); e.vel = 0;
 }
+// salto por encima de un obstáculo (el cartel de WhatsApp): impulso, vuelo en parábola y aterrizaje andando
+async function salta(e, obj) {
+  const dir = Math.sign(obj - e.x) || 1, L = Math.abs(obj - e.x), D = Math.max(.75, Math.min(1.3, L / (e.alto * 3.6)));
+  e.pon('vuelo', { fade: .12 });
+  e.salto = { x0: e.x, x1: obj, t: 0, D, h: e.altoSalto };
+  await new Promise(res => e.salto.fin = res);
+  e.pon('andar', { fade: .15 });
+}
 async function gesto(e) {
   e.pon('reposo', { fade: .3 }); await e.gira(0, .45);
   const r = Math.random();
   if (r < .4) await e.pon('saluda', { veces: 3, fade: .2 });
-  else if (r < .6) await e.pon('excita', { fade: .3 });
+  else if (r < .6) await e.pon('feliz', { fade: .3, max: 4.5 });
   else if (r < .8) await e.pon('senala', { fade: .3 });
   e.pon('reposo', { fade: .35 }); await e.espera(rnd(.8, 1.8));
 }
@@ -98,8 +112,15 @@ async function paseo(e) {
     if (e.linea) {
       // ida (izquierda → derecha) por delante del contador y de WhatsApp; vuelta por detrás
       const ida = e.x < (e.seg[0] + e.seg[1]) / 2, fin = ida ? e.seg[1] : e.seg[0];
+      const wa = e.wa, dentro = x => wa && x > wa[0] - e.alto && x < wa[1] + e.alto;
+      // a la vuelta, si está junto al cartel de WhatsApp (o delante de él), lo salta por encima y sigue por detrás
+      if (!ida && wa && e.x > wa[0] - e.alto * .55) {
+        if (e.x > wa[1] + e.alto * .6) { capa(e, false); await anda(e, wa[1] + e.alto * .55); if (!e.linea) continue; }
+        await salta(e, Math.max(fin, wa[0] - e.alto * .55)); if (!e.linea) continue;
+      }
       capa(e, ida);
-      if (Math.random() < .5) { const L = e.seg[1] - e.seg[0]; await anda(e, ida ? e.x + rnd(.3, .6) * (fin - e.x) : e.x - rnd(.3, .6) * (e.x - fin)); if (!e.linea) continue; await gesto(e); }
+      if (Math.random() < .5) { const p = ida ? e.x + rnd(.3, .6) * (fin - e.x) : e.x - rnd(.3, .6) * (e.x - fin);
+        if (!dentro(p)) { await anda(e, p); if (!e.linea) continue; await gesto(e); } }
       await anda(e, fin); if (!e.linea) continue; await gesto(e); continue;
     }
     capa(e, false);
@@ -126,13 +147,13 @@ async function conecta(e) {
     else { await e.pon('senala', { fade: .3 }); e.pon('reposo', { fade: .4 }); }
   }
 }
-// MUSEO: se emociona («excited») para llamar la atención; alguna vez saluda
+// MUSEO: baila contenta («happy») para llamar la atención; alguna vez saluda
 async function museo(e) {
   e.pon('reposo'); let n = 0;
   for (;;) {
     await e.espera(rnd(1, 2.2));
     if (++n % 4 === 0) { await e.gira(0, .4); await e.pon('saluda', { veces: 3, fade: .2 }); e.pon('reposo', { fade: .3 }); await e.gira(e.giroBase, .45); }
-    else { await e.pon('excita', { fade: .35 }); e.pon('reposo', { fade: .4 }); await e.espera(rnd(.8, 1.6)); }
+    else { await e.pon('feliz', { fade: .35, max: 5 }); e.pon('reposo', { fade: .45 }); await e.espera(rnd(.8, 1.6)); }
   }
 }
 
@@ -155,12 +176,16 @@ export function inicia({ abrirTerminal } = {}) {
       const A = Math.round(Math.max(56, Math.min(100, innerHeight * .095)));
       eI.linea = true; eI.nada = false; fr.style.display = '';
       fr.style.left = Math.round(rp.left) + 'px'; fr.style.width = Math.round(rp.width) + 'px';
-      fr.style.top = Math.round(rp.top + 1 - (A + 8)) + 'px'; fr.style.height = (A + 8) + 'px';
+      const wa = document.getElementById('wa'), rw = wa && !wa.classList.contains('hide') ? wa.getBoundingClientRect() : null;
+      eI.wa = rw && rw.width ? [rw.left - rp.left, rw.right - rp.left] : null;
+      eI.altoSalto = rw ? Math.max(A * .6, rp.top - rw.top + 12) : A * .6;
+      const HC = Math.ceil(A + eI.altoSalto + 14);
+      fr.style.top = Math.round(rp.top + 1 - HC) + 'px'; fr.style.height = HC + 'px';
       eI.seg = [A * .4, rp.width - A * .4]; eI.alto = A;
       if (eI.piv) { eI.piv.scale.setScalar(A); eI.piv.position.y = 0;
         if (!eI.x0 || eI.x < eI.seg[0] || eI.x > eI.seg[1]) { eI.x0 = 1; eI.x = eI.seg[0]; } }
       return; }
-    eI.linea = false;
+    eI.linea = false; eI.wa = null;
     const rs = sInicio.getBoundingClientRect(), rc = cd.getBoundingClientRect(), wa = document.getElementById('wa');
     const rw = wa && !wa.classList.contains('hide') ? wa.getBoundingClientRect() : null;
     const W = rs.width, alto = Math.round(Math.max(52, Math.min(104, innerHeight * .1))), g = alto * .35;
@@ -190,7 +215,8 @@ export function inicia({ abrirTerminal } = {}) {
       if (!eI.x0 || eI.x < eI.seg[0] || eI.x > eI.seg[1]) { eI.x0 = 1; eI.x = rnd(eI.seg[0], eI.seg[1]); if (eI.meta != null) eI.meta = Math.min(eI.seg[1], Math.max(eI.seg[0], eI.meta)); } } };
   eI.mueve = () => { eI.piv.position.x = eI.x; };
   const origPaso = eI.paso.bind(eI);
-  eI.paso = dt => { if (eI.vel) { eI.x += eI.vel * dt; if ((eI.vel > 0 && eI.x >= eI.meta) || (eI.vel < 0 && eI.x <= eI.meta)) { eI.x = eI.meta; const f = eI.llega; eI.llega = null; f && f(); } } origPaso(dt); };
+  eI.paso = dt => { const S = eI.salto; if (S) { S.t += dt; const k = Math.min(1, S.t / S.D); eI.x = S.x0 + (S.x1 - S.x0) * k; eI.piv.position.y = 4 * S.h * k * (1 - k);
+      if (k >= 1) { eI.piv.position.y = 0; eI.salto = null; S.fin(); } } else if (eI.vel) { eI.x += eI.vel * dt; if ((eI.vel > 0 && eI.x >= eI.meta) || (eI.vel < 0 && eI.x <= eI.meta)) { eI.x = eI.meta; const f = eI.llega; eI.llega = null; f && f(); } } origPaso(dt); };
   escenas.push(eI);
 
   // CONECTA: en la caja de la imagen fija
@@ -208,6 +234,7 @@ export function inicia({ abrirTerminal } = {}) {
   escenas.push(eM);
 
   addEventListener('resize', () => escenas.forEach(e => e.mide()));
+  if (/[?&]mevitest\b/.test(location.search)) window.__mevi = escenas;   // solo para pruebas
   cargar().then(g => { escenas.forEach(e => e.monta(g)); bucle(); }).catch(err => { console.warn('mevi3d', err); escenas.forEach(e => e.el.classList.remove('m3d-on')); });
 }
 
