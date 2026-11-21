@@ -22,7 +22,7 @@ Cada escena solo se dibuja mientras su sección está en pantalla. Si el navegad
 
 ## Museo digital
 
-El tótem del museo abre un terminal con estas opciones, por este orden: HISTORIA DEL VIDEOJUEGO (LÍNEA DE TIEMPO) (lámina propia), MDV APP (en pantalla, «APP DEL MUSEO DEL VIDEOJUEGO»: la app MDV Hardware, se abre en Google Play), POSTERS CINE y POSTERS KLUB (cartelerías, solo para verlas dentro de la pantalla del museo, sin enlace de salida; se sirven desde ADPOSTER en GitHub, `adposter.mediaservi.com/cine/` y `/klub/`, y Netlify queda como copia de respaldo), MSGAME, VJSHOW, SCREENS, SYSTEMS, ADPOSTER, AVHUB, GAME HISTORY (biblioteca digital externa; su botón lleva el logo de la Video Game History Foundation, que es suyo y aquí solo identifica el enlace) y WhatsApp. Cada botón lleva su miniatura (`assets/img/mini/`) o una pantalla dibujada.
+El tótem del museo abre un terminal con estas opciones, por este orden: HISTORIA DEL VIDEOJUEGO (LÍNEA DE TIEMPO) (lámina propia), MDV APP (en pantalla, «APP DEL MUSEO DEL VIDEOJUEGO»: la app MDV Hardware, se abre en Google Play), POSTERS CINE y POSTERS KLUB (cartelerías, solo para verlas dentro de la pantalla del museo, sin enlace de salida; se sirven desde Netlify, `msp-theater.netlify.app` y `msp-klub.netlify.app`; su copia privada está en GitHub), MSGAME, VJSHOW, SCREENS, SYSTEMS, ADPOSTER, AVHUB, GAME HISTORY (biblioteca digital externa; su botón lleva el logo de la Video Game History Foundation, que es suyo y aquí solo identifica el enlace) y WhatsApp. Cada botón lleva su miniatura (`assets/img/mini/`) o una pantalla dibujada.
 
 ## Lámina «Historia del videojuego»
 
