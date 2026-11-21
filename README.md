@@ -27,3 +27,6 @@ El tótem del museo abre un terminal con estas opciones, por este orden: HISTORI
 ## Lámina «Historia del videojuego»
 
 La lámina del museo (`assets/img/historia-videojuego-es.webp` y `-en.webp`) y su paso por la pantalla central (`assets/video/museo.*`) son un dibujo propio: iconos originales, sin fotografías ni logotipos de terceros. Los nombres citados pertenecen a sus titulares y se mencionan solo como referencia histórica.
+
+## Sin caché
+Desde el 18-11-2026, las páginas llevan las etiquetas equivalentes a `Cache-Control: no-cache, no-store, must-revalidate`. La web no tiene service worker; GitHub Pages no admite cabeceras propias.
