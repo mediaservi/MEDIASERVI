@@ -10,6 +10,8 @@ Web personal, gratuita y sin publicidad ni ingresos. Aviso legal en [`LEGAL.md`]
 
 ## Mevi 3D
 
+**Noviembre 2026 · Mevi nueva:** regenerada en alta calidad (Meshy 7.1 desde su imagen oficial, rig de Mixamo, pelo azul marino) con la cara lisa. Los ojos y la boca los pone la web desde una hoja de expresiones (`assets/3d/caras.png`, con `assets/mevicara.js`, el mismo sistema que MSGAME): parpadea cada pocos segundos y, cuando está contenta, pone ojos felices.
+
 La mascota Mevi está en 3D y animada (`assets/mevi3d.js` y `assets/3d/mevi.glb`). Es un solo modelo de 600 KB con siete animaciones: reposo, andar, señalar, invitar, saludar, contenta («happy») y saltar. Antes de publicarla se pule:
 - La textura queda en pocos colores lisos (traje, guantes, pelo y cinturón), sin manchitas sueltas, y la piel va suavizada.
 - Las normales de la malla van suavizadas, para que la luz no marque los pliegues y bultos que deja la generación 3D. Sale en tres sitios:

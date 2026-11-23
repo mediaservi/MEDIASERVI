@@ -9,13 +9,14 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { clone } from 'three/addons/utils/SkeletonUtils.js';
+import './mevicara.js?v=1';   // ojos y boca de Mevi: los pone el juego sobre la cara lisa del modelo (parpadea y pone gestos)
 
 const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const rnd = (a, b) => a + Math.random() * (b - a);
 const ease = t => t < .5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
 
 let base = null;
-const cargar = () => base || (base = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync('assets/3d/mevi.glb?v=4').then(g => {
+const cargar = () => base || (base = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync('assets/3d/mevi.glb?v=5').then(g => {
   // «vuelo»: el tramo en el aire del salto (piernas recogidas), sin el desplazamiento de cadera; la parábola la pone el guion
   const sl = g.animations.find(c => c.name === 'salta');
   if (sl) { const v = THREE.AnimationUtils.subclip(sl, 'vuelo', 23, 35, 30), an = g.animations.find(c => c.name === 'andar');
@@ -46,7 +47,8 @@ class Escena {
     this.reloj = 0; this.tareas = []; this.x = 0; this.giro = giro; this.giroObj = giro; this.listo = false;
   }
   async monta(g) {
-    const m = this.m = clone(g.scene);
+    const m = this.m = clone(g.scene); m.traverse(o => { if (o.isMesh) o.material = o.material.clone(); });
+    try { if (window.MEVICARA) this.cara = window.MEVICARA(THREE, m, 'assets/3d/caras.png?v=1'); } catch (e) {}
     const piv = this.piv = new THREE.Group(); piv.add(m); this.s.add(piv);
     const mx = this.mx = new THREE.AnimationMixer(m);
     this.acc = {}; for (const c of g.animations) this.acc[c.name] = mx.clipAction(c);
@@ -68,7 +70,7 @@ class Escena {
   }
   /* --- herramientas del guion (van con el reloj del escenario: si no se ve, se para) --- */
   espera(seg) { return new Promise(res => this.tareas.push({ fin: this.reloj + seg, res })); }
-  pon(n, { fade = .3, veces = 1, ritmo = 1, max = 99 } = {}) {
+  pon(n, { fade = .3, veces = 1, ritmo = 1, max = 99 } = {}) { if (this.cara) this.cara.gesto = n === 'feliz' ? 2 : 0;   // contenta: ojos felices
     const a = this.acc[n]; if (!a) return this.espera(0);
     a.reset(); a.timeScale = ritmo; a.setEffectiveWeight(1);
     if (n === 'reposo' || n === 'andar' || n === 'vuelo' || n === 'impulso') a.setLoop(THREE.LoopRepeat, Infinity); else { a.setLoop(THREE.LoopRepeat, veces); a.clampWhenFinished = true; }
@@ -80,7 +82,7 @@ class Escena {
     this.reloj += dt;
     for (let i = this.tareas.length; i--;) if (this.reloj >= this.tareas[i].fin) this.tareas.splice(i, 1)[0].res();
     if (this.gD) { this.gT += dt; const k = Math.min(1, this.gT / this.gD); this.giro = this.g0 + (this.giroObj - this.g0) * ease(k); if (k >= 1) this.gD = 0; }
-    this.piv.rotation.y = this.giro; this.mx.update(dt); this.mueve?.(dt);
+    this.piv.rotation.y = this.giro; this.mx.update(dt); this.mueve?.(dt); if (this.cara) this.cara.parpa(this.reloj);
     this.r.render(this.s, this.cam);
   }
 }
