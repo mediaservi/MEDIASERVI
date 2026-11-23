@@ -8,6 +8,10 @@ Una web de una sola pantalla, en español e inglés, con portada, museo digital 
 
 Web personal, gratuita y sin publicidad ni ingresos. Aviso legal en [`LEGAL.md`](LEGAL.md), garantías y responsabilidad en [`DISCLAIMER.md`](DISCLAIMER.md), privacidad en [`PRIVACY.md`](PRIVACY.md) y cookies en [`COOKIES.md`](COOKIES.md). Los tipos de letra y three.js se sirven desde este repositorio (`assets/fonts`, `assets/lib`). El enlace «Aviso legal» está en el pie de todas las páginas (portada y `klub/`) y abre un resumen en una ventana de la propia web (`assets/aviso.js`), con enlaces a los cuatro documentos.
 
+## Icono
+
+Icono de pestaña y de app en el estilo de placa de la familia AVHUB (`assets/logos/mediaservi-icono.svg`, `-icono-64.png`, `-icono-180.png`): placa con degradado negro a morado, filete negro y sombra morada, con la cara de Mevi en el aro verde. El logo de la cabecera no cambia.
+
 ## Mevi 3D
 
 **Noviembre 2026 · Mevi nueva:** regenerada en alta calidad (Meshy 7.1 desde su imagen oficial, rig de Mixamo, pelo azul marino) con la cara lisa. Los ojos y la boca los pone la web desde una hoja de expresiones (`assets/3d/caras.png`, con `assets/mevicara.js`, el mismo sistema que MSGAME): parpadea cada pocos segundos y, cuando está contenta, pone ojos felices.
