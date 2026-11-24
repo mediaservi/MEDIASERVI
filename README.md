@@ -36,3 +36,11 @@ La lámina del museo (`assets/img/historia-videojuego-es.webp` y `-en.webp`) y s
 
 ## Sin caché
 Desde el 18-11-2026, las páginas llevan las etiquetas equivalentes a `Cache-Control: no-cache, no-store, must-revalidate`. La web no tiene service worker; GitHub Pages no admite cabeceras propias.
+
+## Visibilidad (SEO) y contador anónimo
+
+**24-11-2026 · rama `mk-web`:** descripción con llamada a la acción, `og:locale`, `og:image:alt`, `twitter:site` y `twitter:image:alt`; datos estructurados schema.org (JSON-LD: Organization, Person y WebSite, con las redes y las apps de la familia); `robots.txt` deja fuera `klub/` (privada) y `sitemap.xml` con fecha al día; retrato de la portada con texto alternativo y prioridad de carga. Sin cambios de diseño.
+
+**Contador de visitas anónimo y sin cookies.** Al final de `index.html` hay un script mínimo que, al abrir la página, manda al panel AVHUB ADMIN (Google Apps Script) solo el sitio, la página, `utm_source`/`utm_campaign`/`utm_content` y el dominio de procedencia. Sin cookies (la petición sale con `credentials: 'omit'`), sin identificadores y sin guardar nada en el navegador; respeta «Do Not Track» y «Global Privacy Control». **Está apagado** hasta que se rellene `window.MS_STATS_URL = '…/exec'` en ese script. La parte del panel (función `doPost`, hoja «STATS» y `resumenStats()`) está en `stats-apps-script.gs`, fuera de este repositorio. Detalle en [`PRIVACY.md`](PRIVACY.md).
+
+Enlaces de campaña: las etiquetas UTM van solo en los enlaces publicados fuera (LinkedIn, correo, QR impresos), nunca en los enlaces entre mediaservi.com, AVHUB y las apps. Ejemplo: `https://avhub.mediaservi.com/?utm_source=linkedin&utm_campaign=lanzamiento&utm_content=post1`.
