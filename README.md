@@ -4,6 +4,9 @@
 
 Una web de una sola pantalla, en español e inglés, con portada, museo digital en 3D, parques temáticos y experiencias favoritas, redes de contacto y cómo llegar (solo con cita previa).
 
+## Accesos directos (27-11-2026)
+En el pie, junto a «Aviso legal», el enlace **ACCESOS DIRECTOS** abre una ventana con la dirección de esta web (resaltada, «Estás aquí»), la de la portada AVHUB y la de cada app: SCREENS, SYSTEMS, ADPOSTER, VJSHOW y MSGAME. Cada línea lleva el nombre (abre la web), la dirección entera para leerla o dictarla y un botón COPIAR. Va en el idioma de la web (en catalán si el navegador lo está); `mediaservi.com/#accesos` la abre directamente. Código en `assets/accesos.js`. Probada en TV, ordenador, tablet y móvil vertical y horizontal; en móviles estrechos el pie aprieta la interletra para que quepa entero.
+
 ## Aviso legal
 
 Web personal, gratuita y sin publicidad ni ingresos. Aviso legal en [`LEGAL.md`](LEGAL.md), garantías y responsabilidad en [`DISCLAIMER.md`](DISCLAIMER.md), privacidad en [`PRIVACY.md`](PRIVACY.md) y cookies en [`COOKIES.md`](COOKIES.md). Los tipos de letra y three.js se sirven desde este repositorio (`assets/fonts`, `assets/lib`). El enlace «Aviso legal» está en el pie de todas las páginas (portada y `klub/`) y abre un resumen en una ventana de la propia web (`assets/aviso.js`), con enlaces a los cuatro documentos.
